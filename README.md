@@ -196,7 +196,7 @@ GitHub Actions is used to:
 ### CI Status
 
 ```text
-[Insert GitHub Actions success screenshot here]
+[CI STATUS] https://github.com/Vu-Cee95/CybersecurityChatbot/blob/master/GitCIWorkflow.png
 ```
 
 ---
