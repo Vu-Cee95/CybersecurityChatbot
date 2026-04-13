@@ -83,6 +83,17 @@ Organised using:
 
 ---
 
+
+## 🧠 Code Quality
+
+The project follows clean coding practices:
+- Modular structure using MVC pattern
+- Separation of concerns
+- Readable and maintainable code
+- Use of methods and classes for scalability
+
+---
+
 ## 🛠️ Technologies Used
 
 * C#
@@ -197,6 +208,8 @@ GitHub Actions is used to:
 
 ```text
 [CI STATUS] https://github.com/Vu-Cee95/CybersecurityChatbot/blob/master/GitCIWorkflow.png
+
+
 ```
 
 ---
@@ -204,16 +217,17 @@ GitHub Actions is used to:
 ## 🎥 Video Demonstration
 
 ```text
+Watch the full project walkthrough below:
+
 [YOUTUBE PRESENTATION LINK] https://youtu.be/A_N5yeuaaAg
 ```
 
-Your video should include:
+This video includes:
 
-* Explanation of code
-* Demonstration of chatbot
-* Explanation of features
-* Program execution
-
+- Program execution
+- Code structure explanation
+- Logic and flow
+- Feature demonstration
 ---
 
 ## ✅ Alignment with Requirements
