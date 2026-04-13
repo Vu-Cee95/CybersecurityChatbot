@@ -117,10 +117,24 @@ CybersecurityChatbot/
     │── Program.cs
     │
     ├── Controllers/
+    │   └── ChatbotController.cs
+    │
     ├── Models/
+    │   ├── User.cs
+    │   ├── Message.cs
+    │   └── ChatSession.cs
+    │
     ├── Services/
+    │   ├── ChatbotService.cs
+    │   ├── ResponseService.cs
+    │   └── NavigationService.cs
+    │
     ├── Views/
+    │   └── ConsoleView.cs
+    │
     ├── Utils/
+    │   ├── InputValidator.cs
+    │   └── Helper.cs
     │
     └── Assets/
         └── welcome.wav
