@@ -246,7 +246,7 @@ namespace CybersecurityChatbot.Controllers
 
             CenterWriteLine("================================================");
             CenterWriteLine("What Do You Want To Learn About?");
-            CenterWriteLine("================================================");
+            CenterWriteLine("================================================\n");
             Console.ResetColor();
 
             // Display all main menu options
