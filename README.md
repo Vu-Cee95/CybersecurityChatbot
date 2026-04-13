@@ -107,4 +107,7 @@ CybersecurityChatbot/
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone 
+   https://github.com/Vu-Cee95/CybersecurityChatbot
+
+   ## 📌 Update Log
+- README created and structured
