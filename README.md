@@ -238,9 +238,9 @@ This project includes:
 * [x] README file included
 * [x] WAV audio file included
 * [x] ASCII art implemented
-* [ ] GitHub Actions CI working
-* [ ] CI screenshot added
-* [ ] YouTube video link added
+* [x] GitHub Actions CI working
+* [x] CI screenshot added
+* [x] YouTube video link added
 
 ---
 
