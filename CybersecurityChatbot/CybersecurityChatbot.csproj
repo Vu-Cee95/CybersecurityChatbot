@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Assets\**" />
-    <EmbeddedResource Remove="Assets\**" />
-    <None Remove="Assets\**" />
+    <PackageReference Include="System.Windows.Extensions" Version="10.0.5" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Windows.Extensions" Version="10.0.5" />
-  </ItemGroup>
+  <Content Include="Assets\welcome.wav">
+    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  </Content>
+</ItemGroup>
 
 </Project>
