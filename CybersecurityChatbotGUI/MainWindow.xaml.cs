@@ -9,14 +9,18 @@ namespace CybersecurityChatbotGUI
     public partial class MainWindow : Window
     {
         private readonly AudioPlayer audioPlayer = new AudioPlayer();
+        private readonly ChatbotEngine chatbotEngine = new ChatbotEngine();
 
         public MainWindow()
         {
             InitializeComponent();
+
             audioPlayer.PlayWelcomeSound();
 
             AddBotMessage("Hello! Welcome to Cyber-Bot, your Cybersecurity Awareness Assistant.");
-            AddBotMessage("You can ask me about password safety, phishing, privacy, scams, and safe browsing.");
+            AddBotMessage("You can ask me about password safety, phishing, privacy, scams, safe browsing, malware, and 2FA.");
+
+            UserInputTextBox.Focus();
         }
 
         private void SendButton_Click(object sender, RoutedEventArgs e)
@@ -34,13 +38,16 @@ namespace CybersecurityChatbotGUI
 
         private void HelpButton_Click(object sender, RoutedEventArgs e)
         {
-            AddBotMessage("You can type questions like: 'Tell me about password safety', 'I am worried about scams', or 'Give me a phishing tip'.");
+            AddBotMessage("You can type questions like: 'Tell me about password safety', 'I am worried about scams', 'Give me a phishing tip', 'How do I protect my privacy?', or 'Tell me more'.");
+            UserInputTextBox.Focus();
         }
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             ChatPanel.Children.Clear();
+
             AddBotMessage("Chat cleared. How can I help you stay safe online?");
+            UserInputTextBox.Focus();
         }
 
         private void SendUserMessage()
@@ -50,13 +57,17 @@ namespace CybersecurityChatbotGUI
             if (string.IsNullOrWhiteSpace(userInput))
             {
                 AddBotMessage("Please type something first so I can help you.");
+                UserInputTextBox.Focus();
                 return;
             }
 
             AddUserMessage(userInput);
             UserInputTextBox.Clear();
 
-            AddBotMessage("I received your message. In the next step, we will connect this to the chatbot response engine.");
+            string botResponse = chatbotEngine.ProcessUserMessage(userInput);
+            AddBotMessage(botResponse);
+
+            UserInputTextBox.Focus();
         }
 
         private void AddUserMessage(string message)
