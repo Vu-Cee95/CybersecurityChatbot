@@ -11,6 +11,7 @@ namespace CybersecurityChatbotGUI.Services
         private readonly SentimentService sentimentService;
         private readonly PersonalityService personalityService;
         private readonly InputNormaliserService inputNormaliserService;
+        private readonly ContextChoiceService contextChoiceService;
 
         private readonly UserMemory userMemory;
         private readonly ConversationState conversationState;
@@ -24,6 +25,7 @@ namespace CybersecurityChatbotGUI.Services
             sentimentService = new SentimentService();
             personalityService = new PersonalityService();
             inputNormaliserService = new InputNormaliserService();
+            contextChoiceService = new ContextChoiceService();
 
             userMemory = new UserMemory();
             conversationState = new ConversationState();
@@ -68,6 +70,11 @@ namespace CybersecurityChatbotGUI.Services
             conversationState.FollowUpCount = 0;
             conversationState.TotalMessages = 0;
 
+            conversationState.IsWaitingForChoice = false;
+            conversationState.PendingTopic = "";
+            conversationState.PendingQuestionType = "";
+            conversationState.PendingOptions = "";
+
             userMemory.LastTopic = "";
             userMemory.LastSentiment = "";
             userMemory.LastEmergencyType = "";
@@ -98,11 +105,28 @@ namespace CybersecurityChatbotGUI.Services
 
             conversationState.LastIntent = detectedIntent;
 
+            string contextualChoiceResponse = TryHandleContextualChoice(
+                userInput,
+                normalisedInput,
+                detectedTopic,
+                detectedIntent,
+                detectedSentiment);
+
+            if (!string.IsNullOrWhiteSpace(contextualChoiceResponse))
+            {
+                return contextualChoiceResponse;
+            }
+
             string baseResponse;
 
             if (keywordService.IsHelpRequest(normalisedInput))
             {
                 baseResponse = responseService.GetHelpResponse();
+
+                SetPendingChoice(
+                    conversationState.CurrentTopic,
+                    "help",
+                    "tip, example, checklist");
 
                 return BuildSmartResponse(
                     userInput,
@@ -123,6 +147,8 @@ namespace CybersecurityChatbotGUI.Services
                     conversationState.TotalMessages
                 );
 
+                ClearPendingChoice();
+
                 return BuildSmartResponse(
                     userInput,
                     detectedTopic,
@@ -136,6 +162,11 @@ namespace CybersecurityChatbotGUI.Services
             {
                 baseResponse = GetMemorySummary();
 
+                SetPendingChoice(
+                    userMemory.LastTopic,
+                    "recall",
+                    "tip, example, checklist");
+
                 return BuildSmartResponse(
                     userInput,
                     detectedTopic,
@@ -148,6 +179,8 @@ namespace CybersecurityChatbotGUI.Services
             if (IsNameIntroduction(normalisedInput))
             {
                 baseResponse = SaveUserNameFromConversation(userInput);
+
+                ClearPendingChoice();
 
                 return BuildSmartResponse(
                     userInput,
@@ -169,6 +202,11 @@ namespace CybersecurityChatbotGUI.Services
 
                 baseResponse = responseService.GetEmergencyResponse(emergencyType);
 
+                SetPendingChoice(
+                    string.IsNullOrWhiteSpace(detectedTopic) ? conversationState.CurrentTopic : detectedTopic,
+                    "emergency",
+                    "checklist, tip, example");
+
                 return BuildSmartResponse(
                     userInput,
                     detectedTopic,
@@ -182,6 +220,11 @@ namespace CybersecurityChatbotGUI.Services
             {
                 baseResponse = SaveFavouriteTopic(detectedTopic, detectedSentiment);
 
+                SetPendingChoice(
+                    detectedTopic,
+                    "interest",
+                    "tip, example, checklist");
+
                 return BuildSmartResponse(
                     userInput,
                     detectedTopic,
@@ -194,6 +237,11 @@ namespace CybersecurityChatbotGUI.Services
             if (detectedIntent == "follow-up")
             {
                 baseResponse = HandleFollowUp(detectedSentiment);
+
+                SetPendingChoice(
+                    conversationState.CurrentTopic,
+                    "follow-up",
+                    "tip, example, checklist");
 
                 return BuildSmartResponse(
                     userInput,
@@ -215,6 +263,11 @@ namespace CybersecurityChatbotGUI.Services
             {
                 baseResponse = HandleTopicResponse(detectedTopic, detectedIntent, detectedSentiment);
 
+                SetPendingChoice(
+                    detectedTopic,
+                    "topic",
+                    "tip, example, checklist");
+
                 return BuildSmartResponse(
                     userInput,
                     detectedTopic,
@@ -224,7 +277,31 @@ namespace CybersecurityChatbotGUI.Services
                 );
             }
 
+            if (contextChoiceService.LooksLikeVagueFollowUp(normalisedInput) &&
+                !string.IsNullOrWhiteSpace(conversationState.CurrentTopic))
+            {
+                baseResponse = BuildAllDetailsResponse(conversationState.CurrentTopic);
+
+                SetPendingChoice(
+                    conversationState.CurrentTopic,
+                    "vague-follow-up",
+                    "tip, example, checklist");
+
+                return BuildSmartResponse(
+                    userInput,
+                    conversationState.CurrentTopic,
+                    "follow-up",
+                    detectedSentiment,
+                    baseResponse
+                );
+            }
+
             baseResponse = responseService.GetDefaultResponse();
+
+            SetPendingChoice(
+                conversationState.CurrentTopic,
+                "default",
+                "tip, example, checklist");
 
             return BuildSmartResponse(
                 userInput,
@@ -233,6 +310,221 @@ namespace CybersecurityChatbotGUI.Services
                 detectedSentiment,
                 baseResponse
             );
+        }
+
+        private string TryHandleContextualChoice(
+            string originalInput,
+            string normalisedInput,
+            string detectedTopic,
+            string detectedIntent,
+            string detectedSentiment)
+        {
+            if (!conversationState.IsWaitingForChoice)
+            {
+                return "";
+            }
+
+            if (!string.IsNullOrWhiteSpace(detectedTopic) &&
+                detectedTopic != conversationState.PendingTopic)
+            {
+                return "";
+            }
+
+            string choice = contextChoiceService.DetectChoice(
+                normalisedInput,
+                conversationState.PendingOptions);
+
+            if (string.IsNullOrWhiteSpace(choice))
+            {
+                return "";
+            }
+
+            if (choice == "no")
+            {
+                ClearPendingChoice();
+
+                return BuildSmartResponse(
+                    originalInput,
+                    conversationState.CurrentTopic,
+                    "choice",
+                    detectedSentiment,
+                    "No problem. You can ask me about another cybersecurity topic whenever you are ready.");
+            }
+
+            string topic = !string.IsNullOrWhiteSpace(detectedTopic)
+                ? detectedTopic
+                : conversationState.PendingTopic;
+
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                topic = conversationState.CurrentTopic;
+            }
+
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                topic = userMemory.LastTopic;
+            }
+
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                return "";
+            }
+
+            UpdateTopic(topic);
+
+            string baseResponse;
+
+            if (choice == "yes" || choice == "all")
+            {
+                baseResponse = BuildAllDetailsResponse(topic);
+            }
+            else
+            {
+                baseResponse = BuildSpecificChoiceResponse(topic, choice);
+            }
+
+            SetPendingChoice(
+                topic,
+                "choice-response",
+                "tip, example, checklist");
+
+            return BuildSmartResponse(
+                originalInput,
+                topic,
+                choice,
+                detectedSentiment,
+                baseResponse);
+        }
+
+        private string BuildSpecificChoiceResponse(string topic, string choice)
+        {
+            switch (choice)
+            {
+                case "tip":
+                    return responseService.GetTopicResponse(topic, "prevention");
+
+                case "example":
+                    return responseService.GetTopicResponse(topic, "example");
+
+                case "checklist":
+                    return BuildChecklistResponse(topic);
+
+                case "definition":
+                    return responseService.GetTopicResponse(topic, "definition");
+
+                default:
+                    return responseService.GetTopicResponse(topic, "general");
+            }
+        }
+
+        private string BuildAllDetailsResponse(string topic)
+        {
+            string definition = responseService.GetTopicResponse(topic, "definition");
+            string tip = responseService.GetTopicResponse(topic, "prevention");
+            string example = responseService.GetTopicResponse(topic, "example");
+            string checklist = BuildChecklistResponse(topic);
+
+            return $"Here is the full breakdown for {topic}:\n\n" +
+                   $"1. Meaning\n{definition}\n\n" +
+                   $"2. Practical Safety Tip\n{tip}\n\n" +
+                   $"3. Real-Life Example\n{example}\n\n" +
+                   $"4. Quick Checklist\n{checklist}";
+        }
+
+        private string BuildChecklistResponse(string topic)
+        {
+            switch (topic)
+            {
+                case "password":
+                    return "Password checklist:\n" +
+                           "• Use at least 12 characters.\n" +
+                           "• Mix letters, numbers, and symbols.\n" +
+                           "• Do not reuse the same password on different accounts.\n" +
+                           "• Use a password manager if possible.\n" +
+                           "• Enable 2FA on important accounts.";
+
+                case "phishing":
+                    return "Phishing checklist:\n" +
+                           "• Check the sender carefully.\n" +
+                           "• Do not click links from unknown messages.\n" +
+                           "• Watch for urgent or threatening language.\n" +
+                           "• Never share passwords or OTPs.\n" +
+                           "• Visit websites by typing the address yourself.";
+
+                case "scam":
+                    return "Scam checklist:\n" +
+                           "• Be careful of offers that sound too good to be true.\n" +
+                           "• Do not pay upfront fees to unknown people.\n" +
+                           "• Verify the person or company independently.\n" +
+                           "• Do not share banking details or OTPs.\n" +
+                           "• Take time to think before responding.";
+
+                case "privacy":
+                    return "Privacy checklist:\n" +
+                           "• Limit what you post publicly.\n" +
+                           "• Review app permissions.\n" +
+                           "• Keep social media profiles private where possible.\n" +
+                           "• Avoid sharing ID numbers, addresses, or banking details online.\n" +
+                           "• Use strong passwords and 2FA.";
+
+                case "safe browsing":
+                    return "Safe browsing checklist:\n" +
+                           "• Check for HTTPS on websites.\n" +
+                           "• Avoid suspicious pop-ups.\n" +
+                           "• Do not download files from unknown sites.\n" +
+                           "• Keep your browser updated.\n" +
+                           "• Be careful with shortened links.";
+
+                case "malware":
+                    return "Malware checklist:\n" +
+                           "• Do not open unknown attachments.\n" +
+                           "• Keep antivirus protection active.\n" +
+                           "• Update your device regularly.\n" +
+                           "• Avoid pirated software.\n" +
+                           "• Scan suspicious files before opening them.";
+
+                case "2fa":
+                    return "2FA checklist:\n" +
+                           "• Enable 2FA on email, banking, and social media.\n" +
+                           "• Use an authenticator app where possible.\n" +
+                           "• Never share OTP codes.\n" +
+                           "• Save backup codes securely.\n" +
+                           "• Review trusted devices regularly.";
+
+                default:
+                    return "General cyber safety checklist:\n" +
+                           "• Think before clicking links.\n" +
+                           "• Use strong passwords.\n" +
+                           "• Enable 2FA.\n" +
+                           "• Keep your device updated.\n" +
+                           "• Never share OTPs or passwords.";
+            }
+        }
+
+        private void SetPendingChoice(string topic, string questionType, string options)
+        {
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                topic = conversationState.CurrentTopic;
+            }
+
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                topic = userMemory.LastTopic;
+            }
+
+            conversationState.IsWaitingForChoice = !string.IsNullOrWhiteSpace(topic);
+            conversationState.PendingTopic = topic;
+            conversationState.PendingQuestionType = questionType;
+            conversationState.PendingOptions = options;
+        }
+
+        private void ClearPendingChoice()
+        {
+            conversationState.IsWaitingForChoice = false;
+            conversationState.PendingTopic = "";
+            conversationState.PendingQuestionType = "";
+            conversationState.PendingOptions = "";
         }
 
         private string BuildSmartResponse(
