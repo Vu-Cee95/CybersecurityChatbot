@@ -10,6 +10,7 @@ namespace CybersecurityChatbotGUI.Services
         private readonly KeywordService keywordService;
         private readonly SentimentService sentimentService;
         private readonly PersonalityService personalityService;
+        private readonly InputNormaliserService inputNormaliserService;
 
         private readonly UserMemory userMemory;
         private readonly ConversationState conversationState;
@@ -22,6 +23,7 @@ namespace CybersecurityChatbotGUI.Services
             keywordService = new KeywordService();
             sentimentService = new SentimentService();
             personalityService = new PersonalityService();
+            inputNormaliserService = new InputNormaliserService();
 
             userMemory = new UserMemory();
             conversationState = new ConversationState();
@@ -80,12 +82,14 @@ namespace CybersecurityChatbotGUI.Services
 
             userInput = userInput.Trim();
 
+            string normalisedInput = inputNormaliserService.Normalise(userInput);
+
             conversationState.TotalMessages++;
 
-            string detectedSentiment = sentimentService.DetectSentiment(userInput);
-            string detectedTopic = keywordService.DetectTopic(userInput);
-            string detectedIntent = keywordService.DetectIntent(userInput);
-            string emergencyType = keywordService.DetectEmergencyType(userInput);
+            string detectedSentiment = sentimentService.DetectSentiment(normalisedInput);
+            string detectedTopic = keywordService.DetectTopic(normalisedInput);
+            string detectedIntent = keywordService.DetectIntent(normalisedInput);
+            string emergencyType = keywordService.DetectEmergencyType(normalisedInput);
 
             if (!string.IsNullOrWhiteSpace(detectedSentiment))
             {
@@ -96,7 +100,7 @@ namespace CybersecurityChatbotGUI.Services
 
             string baseResponse;
 
-            if (keywordService.IsHelpRequest(userInput))
+            if (keywordService.IsHelpRequest(normalisedInput))
             {
                 baseResponse = responseService.GetHelpResponse();
 
@@ -128,7 +132,7 @@ namespace CybersecurityChatbotGUI.Services
                 );
             }
 
-            if (IsRecallRequest(userInput))
+            if (IsRecallRequest(normalisedInput))
             {
                 baseResponse = GetMemorySummary();
 
@@ -141,7 +145,7 @@ namespace CybersecurityChatbotGUI.Services
                 );
             }
 
-            if (IsNameIntroduction(userInput))
+            if (IsNameIntroduction(normalisedInput))
             {
                 baseResponse = SaveUserNameFromConversation(userInput);
 
@@ -174,7 +178,7 @@ namespace CybersecurityChatbotGUI.Services
                 );
             }
 
-            if (IsInterestStatement(userInput) && !string.IsNullOrWhiteSpace(detectedTopic))
+            if (IsInterestStatement(normalisedInput) && !string.IsNullOrWhiteSpace(detectedTopic))
             {
                 baseResponse = SaveFavouriteTopic(detectedTopic, detectedSentiment);
 
