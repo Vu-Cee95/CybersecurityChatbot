@@ -12,6 +12,9 @@ namespace CybersecurityChatbotGUI.Services
         private readonly PersonalityService personalityService;
         private readonly InputNormaliserService inputNormaliserService;
         private readonly ContextChoiceService contextChoiceService;
+        private readonly RiskLevelService riskLevelService;
+        private readonly PlatformExampleService platformExampleService;
+        private readonly ClarifyingQuestionService clarifyingQuestionService;
 
         private readonly UserMemory userMemory;
         private readonly ConversationState conversationState;
@@ -26,6 +29,9 @@ namespace CybersecurityChatbotGUI.Services
             personalityService = new PersonalityService();
             inputNormaliserService = new InputNormaliserService();
             contextChoiceService = new ContextChoiceService();
+            riskLevelService = new RiskLevelService();
+            platformExampleService = new PlatformExampleService();
+            clarifyingQuestionService = new ClarifyingQuestionService();
 
             userMemory = new UserMemory();
             conversationState = new ConversationState();
@@ -75,9 +81,17 @@ namespace CybersecurityChatbotGUI.Services
             conversationState.PendingQuestionType = "";
             conversationState.PendingOptions = "";
 
+            conversationState.IsWaitingForClarification = false;
+            conversationState.ClarificationReason = "";
+            conversationState.LastBotOffer = "";
+
             userMemory.LastTopic = "";
             userMemory.LastSentiment = "";
             userMemory.LastEmergencyType = "";
+            userMemory.CurrentRiskLevel = "Low";
+            userMemory.LastDetectedIssue = "";
+            userMemory.LastPlatform = "";
+            userMemory.LastIntentRequested = "";
         }
 
         private string GenerateResponse(string userInput)
@@ -97,13 +111,50 @@ namespace CybersecurityChatbotGUI.Services
             string detectedTopic = keywordService.DetectTopic(normalisedInput);
             string detectedIntent = keywordService.DetectIntent(normalisedInput);
             string emergencyType = keywordService.DetectEmergencyType(normalisedInput);
+            string riskLevel = riskLevelService.DetectRiskLevel(normalisedInput);
+            string detectedIssue = riskLevelService.DetectIssue(normalisedInput);
+            string detectedPlatform = platformExampleService.DetectPlatform(normalisedInput);
 
             if (!string.IsNullOrWhiteSpace(detectedSentiment))
             {
                 userMemory.LastSentiment = detectedSentiment;
             }
 
+            if (!string.IsNullOrWhiteSpace(detectedPlatform))
+            {
+                userMemory.LastPlatform = detectedPlatform;
+            }
+
+            if (!string.IsNullOrWhiteSpace(detectedIssue))
+            {
+                userMemory.LastDetectedIssue = detectedIssue;
+            }
+
+            userMemory.CurrentRiskLevel = riskLevel;
+
+            if (!string.IsNullOrWhiteSpace(detectedIntent))
+            {
+                userMemory.LastIntentRequested = detectedIntent;
+            }
+
             conversationState.LastIntent = detectedIntent;
+
+            if (conversationState.IsWaitingForClarification)
+            {
+                string clarificationResponse = HandleClarificationAnswer(
+                    userInput,
+                    normalisedInput,
+                    detectedSentiment,
+                    detectedTopic,
+                    detectedIntent,
+                    riskLevel,
+                    detectedIssue);
+
+                if (!string.IsNullOrWhiteSpace(clarificationResponse))
+                {
+                    return clarificationResponse;
+                }
+            }
 
             string contextualChoiceResponse = TryHandleContextualChoice(
                 userInput,
@@ -115,6 +166,27 @@ namespace CybersecurityChatbotGUI.Services
             if (!string.IsNullOrWhiteSpace(contextualChoiceResponse))
             {
                 return contextualChoiceResponse;
+            }
+
+            if (clarifyingQuestionService.NeedsClarification(
+                    normalisedInput,
+                    detectedTopic,
+                    detectedIntent,
+                    riskLevel))
+            {
+                conversationState.IsWaitingForClarification = true;
+                conversationState.ClarificationReason = "vague-risk-or-help-request";
+
+                string clarificationQuestion = clarifyingQuestionService.BuildClarifyingQuestion(
+                    userMemory.UserName,
+                    riskLevel);
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    "clarification",
+                    detectedSentiment,
+                    clarificationQuestion);
             }
 
             string baseResponse;
@@ -146,6 +218,8 @@ namespace CybersecurityChatbotGUI.Services
                     userMemory.LastSentiment,
                     conversationState.TotalMessages
                 );
+
+                baseResponse += "\n\n" + BuildIntelligenceSnapshot();
 
                 ClearPendingChoice();
 
@@ -191,6 +265,34 @@ namespace CybersecurityChatbotGUI.Services
                 );
             }
 
+            if (riskLevel == "High" || riskLevel == "Emergency")
+            {
+                if (!string.IsNullOrWhiteSpace(detectedTopic))
+                {
+                    UpdateTopic(detectedTopic);
+                }
+
+                userMemory.LastEmergencyType = emergencyType;
+
+                baseResponse =
+                    riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) +
+                    "\n\n" +
+                    responseService.GetEmergencyResponse(emergencyType);
+
+                SetPendingChoice(
+                    string.IsNullOrWhiteSpace(detectedTopic) ? conversationState.CurrentTopic : detectedTopic,
+                    "risk",
+                    "checklist, tip, example");
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    "emergency",
+                    detectedSentiment,
+                    baseResponse
+                );
+            }
+
             if (detectedIntent == "emergency")
             {
                 userMemory.LastEmergencyType = emergencyType;
@@ -200,7 +302,10 @@ namespace CybersecurityChatbotGUI.Services
                     UpdateTopic(detectedTopic);
                 }
 
-                baseResponse = responseService.GetEmergencyResponse(emergencyType);
+                baseResponse =
+                    riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) +
+                    "\n\n" +
+                    responseService.GetEmergencyResponse(emergencyType);
 
                 SetPendingChoice(
                     string.IsNullOrWhiteSpace(detectedTopic) ? conversationState.CurrentTopic : detectedTopic,
@@ -254,7 +359,9 @@ namespace CybersecurityChatbotGUI.Services
 
             if (string.IsNullOrWhiteSpace(detectedTopic) &&
                 !string.IsNullOrWhiteSpace(conversationState.CurrentTopic) &&
-                (detectedIntent == "definition" || detectedIntent == "prevention" || detectedIntent == "example"))
+                (detectedIntent == "definition" ||
+                 detectedIntent == "prevention" ||
+                 detectedIntent == "example"))
             {
                 detectedTopic = conversationState.CurrentTopic;
             }
@@ -262,6 +369,23 @@ namespace CybersecurityChatbotGUI.Services
             if (!string.IsNullOrWhiteSpace(detectedTopic))
             {
                 baseResponse = HandleTopicResponse(detectedTopic, detectedIntent, detectedSentiment);
+
+                if (detectedIntent == "example")
+                {
+                    string platformExample = platformExampleService.GetPlatformExample(
+                        detectedTopic,
+                        string.IsNullOrWhiteSpace(detectedPlatform) ? userMemory.LastPlatform : detectedPlatform);
+
+                    if (!string.IsNullOrWhiteSpace(platformExample))
+                    {
+                        baseResponse += "\n\n" + platformExample;
+                    }
+                }
+
+                if (riskLevel == "Medium")
+                {
+                    baseResponse = riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) + "\n\n" + baseResponse;
+                }
 
                 SetPendingChoice(
                     detectedTopic,
@@ -296,7 +420,7 @@ namespace CybersecurityChatbotGUI.Services
                 );
             }
 
-            baseResponse = responseService.GetDefaultResponse();
+            baseResponse = BuildSmartDefaultResponse(normalisedInput, detectedSentiment, riskLevel, detectedIssue);
 
             SetPendingChoice(
                 conversationState.CurrentTopic,
@@ -310,6 +434,75 @@ namespace CybersecurityChatbotGUI.Services
                 detectedSentiment,
                 baseResponse
             );
+        }
+
+        private string HandleClarificationAnswer(
+            string originalInput,
+            string normalisedInput,
+            string detectedSentiment,
+            string detectedTopic,
+            string detectedIntent,
+            string riskLevel,
+            string detectedIssue)
+        {
+            conversationState.IsWaitingForClarification = false;
+
+            if (string.IsNullOrWhiteSpace(detectedTopic))
+            {
+                if (normalisedInput.Contains("clicked") || normalisedInput.Contains("link"))
+                {
+                    detectedTopic = "phishing";
+                }
+                else if (normalisedInput.Contains("password"))
+                {
+                    detectedTopic = "password";
+                }
+                else if (normalisedInput.Contains("otp") || normalisedInput.Contains("one time password"))
+                {
+                    detectedTopic = "2fa";
+                }
+                else if (normalisedInput.Contains("download") || normalisedInput.Contains("file"))
+                {
+                    detectedTopic = "malware";
+                }
+                else if (normalisedInput.Contains("message") || normalisedInput.Contains("sms") || normalisedInput.Contains("whatsapp") || normalisedInput.Contains("email"))
+                {
+                    detectedTopic = "scam";
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(detectedTopic))
+            {
+                conversationState.IsWaitingForClarification = true;
+
+                return BuildSmartResponse(
+                    originalInput,
+                    "",
+                    "clarification",
+                    detectedSentiment,
+                    "I still need one more detail. Was it about a link, password, OTP, file download, suspicious message, or learning a topic?");
+            }
+
+            UpdateTopic(detectedTopic);
+
+            string baseResponse =
+                riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) +
+                "\n\n" +
+                responseService.GetTopicResponse(detectedTopic, "general") +
+                "\n\n" +
+                BuildChecklistResponse(detectedTopic);
+
+            SetPendingChoice(
+                detectedTopic,
+                "clarification-result",
+                "tip, example, checklist");
+
+            return BuildSmartResponse(
+                originalInput,
+                detectedTopic,
+                detectedIntent,
+                detectedSentiment,
+                baseResponse);
         }
 
         private string TryHandleContextualChoice(
@@ -333,6 +526,11 @@ namespace CybersecurityChatbotGUI.Services
             string choice = contextChoiceService.DetectChoice(
                 normalisedInput,
                 conversationState.PendingOptions);
+
+            if (string.IsNullOrWhiteSpace(choice))
+            {
+                choice = DetectIntentMemoryChoice(normalisedInput);
+            }
 
             if (string.IsNullOrWhiteSpace(choice))
             {
@@ -396,14 +594,58 @@ namespace CybersecurityChatbotGUI.Services
                 baseResponse);
         }
 
+        private string DetectIntentMemoryChoice(string normalisedInput)
+        {
+            if (string.IsNullOrWhiteSpace(normalisedInput))
+            {
+                return "";
+            }
+
+            if (normalisedInput.Contains("another") || normalisedInput.Contains("more like that"))
+            {
+                if (!string.IsNullOrWhiteSpace(userMemory.LastIntentRequested))
+                {
+                    return userMemory.LastIntentRequested;
+                }
+
+                return "example";
+            }
+
+            if (normalisedInput.Contains("tips") || normalisedInput.Contains("advice"))
+            {
+                return "tip";
+            }
+
+            if (normalisedInput.Contains("example") || normalisedInput.Contains("scenario"))
+            {
+                return "example";
+            }
+
+            if (normalisedInput.Contains("steps") || normalisedInput.Contains("checklist"))
+            {
+                return "checklist";
+            }
+
+            return "";
+        }
+
         private string BuildSpecificChoiceResponse(string topic, string choice)
         {
+            userMemory.LastIntentRequested = choice;
+
             switch (choice)
             {
                 case "tip":
                     return responseService.GetTopicResponse(topic, "prevention");
 
                 case "example":
+                    string platformExample = platformExampleService.GetPlatformExample(topic, userMemory.LastPlatform);
+
+                    if (!string.IsNullOrWhiteSpace(platformExample))
+                    {
+                        return platformExample;
+                    }
+
                     return responseService.GetTopicResponse(topic, "example");
 
                 case "checklist":
@@ -422,7 +664,13 @@ namespace CybersecurityChatbotGUI.Services
             string definition = responseService.GetTopicResponse(topic, "definition");
             string tip = responseService.GetTopicResponse(topic, "prevention");
             string example = responseService.GetTopicResponse(topic, "example");
+            string platformExample = platformExampleService.GetPlatformExample(topic, userMemory.LastPlatform);
             string checklist = BuildChecklistResponse(topic);
+
+            if (!string.IsNullOrWhiteSpace(platformExample))
+            {
+                example += "\n\n" + platformExample;
+            }
 
             return $"Here is the full breakdown for {topic}:\n\n" +
                    $"1. Meaning\n{definition}\n\n" +
@@ -501,6 +749,38 @@ namespace CybersecurityChatbotGUI.Services
             }
         }
 
+        private string BuildSmartDefaultResponse(string normalisedInput, string detectedSentiment, string riskLevel, string detectedIssue)
+        {
+            if (!string.IsNullOrWhiteSpace(detectedSentiment))
+            {
+                return "I can tell there may be a concern here, but I need a bit more detail. Are you asking about a password, phishing message, scam, privacy, safe browsing, malware, or 2FA?";
+            }
+
+            if (riskLevel == "Medium")
+            {
+                return riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) +
+                       "\n\nTell me what happened next: did you click a link, enter details, download a file, or only receive the message?";
+            }
+
+            return responseService.GetDefaultResponse();
+        }
+
+        private string BuildIntelligenceSnapshot()
+        {
+            string platform = string.IsNullOrWhiteSpace(userMemory.LastPlatform)
+                ? "Not detected"
+                : userMemory.LastPlatform;
+
+            string issue = string.IsNullOrWhiteSpace(userMemory.LastDetectedIssue)
+                ? "None detected"
+                : userMemory.LastDetectedIssue;
+
+            return "CyberBot intelligence snapshot:\n" +
+                   $"• Current risk level: {userMemory.CurrentRiskLevel}\n" +
+                   $"• Last detected issue: {issue}\n" +
+                   $"• Last platform detected: {platform}";
+        }
+
         private void SetPendingChoice(string topic, string questionType, string options)
         {
             if (string.IsNullOrWhiteSpace(topic))
@@ -517,6 +797,7 @@ namespace CybersecurityChatbotGUI.Services
             conversationState.PendingTopic = topic;
             conversationState.PendingQuestionType = questionType;
             conversationState.PendingOptions = options;
+            conversationState.LastBotOffer = options;
         }
 
         private void ClearPendingChoice()
@@ -525,6 +806,7 @@ namespace CybersecurityChatbotGUI.Services
             conversationState.PendingTopic = "";
             conversationState.PendingQuestionType = "";
             conversationState.PendingOptions = "";
+            conversationState.LastBotOffer = "";
         }
 
         private string BuildSmartResponse(
@@ -695,11 +977,22 @@ namespace CybersecurityChatbotGUI.Services
                 ? "not detected yet"
                 : userMemory.LastSentiment;
 
+            string platform = string.IsNullOrWhiteSpace(userMemory.LastPlatform)
+                ? "not detected yet"
+                : userMemory.LastPlatform;
+
+            string issue = string.IsNullOrWhiteSpace(userMemory.LastDetectedIssue)
+                ? "not detected yet"
+                : userMemory.LastDetectedIssue;
+
             string response =
                 $"I remember that your name is {userMemory.UserName}.\n\n" +
                 $"• Favourite cybersecurity topic: {favouriteTopic}\n" +
                 $"• Last topic discussed: {lastTopic}\n" +
-                $"• Last mood detected: {lastSentiment}";
+                $"• Last mood detected: {lastSentiment}\n" +
+                $"• Current risk level: {userMemory.CurrentRiskLevel}\n" +
+                $"• Last detected issue: {issue}\n" +
+                $"• Last platform detected: {platform}";
 
             if (favouriteTopic != "not set yet")
             {

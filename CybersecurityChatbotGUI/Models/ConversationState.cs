@@ -13,5 +13,9 @@
         public string PendingTopic { get; set; } = "";
         public string PendingQuestionType { get; set; } = "";
         public string PendingOptions { get; set; } = "";
+
+        public bool IsWaitingForClarification { get; set; } = false;
+        public string ClarificationReason { get; set; } = "";
+        public string LastBotOffer { get; set; } = "";
     }
 }
