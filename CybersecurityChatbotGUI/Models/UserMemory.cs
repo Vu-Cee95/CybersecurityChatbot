@@ -9,8 +9,11 @@
         public string LastEmergencyType { get; set; } = "";
 
         public string CurrentRiskLevel { get; set; } = "Low";
+        public string HighestRiskLevel { get; set; } = "Low";
         public string LastDetectedIssue { get; set; } = "";
         public string LastPlatform { get; set; } = "";
         public string LastIntentRequested { get; set; } = "";
+
+        public int ReportsGenerated { get; set; } = 0;
     }
 }
