@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Media;
+using System.Runtime.Versioning;
 
 namespace CybersecurityChatbotGUI.Services
 {
@@ -8,13 +9,20 @@ namespace CybersecurityChatbotGUI.Services
     {
         public void PlayWelcomeSound()
         {
+            if (!OperatingSystem.IsWindows())
+            {
+                return;
+            }
+
+            PlayWelcomeSoundOnWindows();
+        }
+
+        [SupportedOSPlatform("windows")]
+        private void PlayWelcomeSoundOnWindows()
+        {
             try
             {
-                string audioPath = Path.Combine(
-                    AppDomain.CurrentDomain.BaseDirectory,
-                    "Assets",
-                    "welcome.wav"
-                );
+                string audioPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "welcome.wav");
 
                 if (!File.Exists(audioPath))
                 {
@@ -23,11 +31,11 @@ namespace CybersecurityChatbotGUI.Services
 
                 using SoundPlayer player = new SoundPlayer(audioPath);
                 player.Load();
-                player.Play();
+                player.PlaySync();
             }
             catch
             {
-                // The app must not crash if the audio fails.
+                // Audio should not crash the application.
             }
         }
     }
