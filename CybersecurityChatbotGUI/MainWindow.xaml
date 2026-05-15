@@ -11,20 +11,42 @@
 
     <Window.Resources>
 
-        <Style x:Key="SendIconButtonStyle" TargetType="Button">
+        <!-- PREMIUM ANIMATED BUTTON BASE -->
+        <Style x:Key="PremiumAnimatedButtonBaseStyle" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- SEND BUTTON -->
+        <Style x:Key="SendIconButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
+
             <Setter Property="Width" Value="44"/>
             <Setter Property="Height" Value="44"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="#F97316"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="0"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="22">
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12"
+                                                  ShadowDepth="2"
+                                                  Opacity="0.20"/>
+                            </Border.Effect>
+
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
@@ -49,16 +71,19 @@
             </Setter>
         </Style>
 
-        <!-- PREMIUM THREE DOTS BUTTON - GREY THEME -->
-        <Style x:Key="PremiumDotsButtonStyle" TargetType="Button">
+        <!-- THREE DOTS BUTTON -->
+        <Style x:Key="PremiumDotsButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
+
             <Setter Property="Width" Value="42"/>
             <Setter Property="Height" Value="42"/>
             <Setter Property="Background" Value="#3F3F46"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
             <Setter Property="BorderBrush" Value="#F97316"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="0"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -68,28 +93,30 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="21">
 
-                            <Grid HorizontalAlignment="Center"
-                                  VerticalAlignment="Center">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="12"
+                                                  ShadowDepth="2"
+                                                  Opacity="0.18"/>
+                            </Border.Effect>
 
-                                <StackPanel Orientation="Horizontal"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
 
-                                    <Ellipse Width="4.5"
-                                             Height="4.5"
-                                             Fill="#FFFFFF"
-                                             Margin="0,0,3.5,0"/>
+                                <Ellipse Width="4.5"
+                                         Height="4.5"
+                                         Fill="#FFFFFF"
+                                         Margin="0,0,3.5,0"/>
 
-                                    <Ellipse Width="4.5"
-                                             Height="4.5"
-                                             Fill="#FFFFFF"
-                                             Margin="0,0,3.5,0"/>
+                                <Ellipse Width="4.5"
+                                         Height="4.5"
+                                         Fill="#FFFFFF"
+                                         Margin="0,0,3.5,0"/>
 
-                                    <Ellipse Width="4.5"
-                                             Height="4.5"
-                                             Fill="#FFFFFF"/>
-                                </StackPanel>
-                            </Grid>
+                                <Ellipse Width="4.5"
+                                         Height="4.5"
+                                         Fill="#FFFFFF"/>
+                            </StackPanel>
                         </Border>
 
                         <ControlTemplate.Triggers>
@@ -114,7 +141,7 @@
             </Setter>
         </Style>
 
-        <!-- PREMIUM DROPDOWN MENU - GREY THEME -->
+        <!-- PREMIUM CONTEXT MENU -->
         <Style x:Key="PremiumContextMenuStyle" TargetType="ContextMenu">
             <Setter Property="Background" Value="#3F3F46"/>
             <Setter Property="BorderBrush" Value="#F97316"/>
@@ -122,6 +149,7 @@
             <Setter Property="Padding" Value="8"/>
             <Setter Property="HasDropShadow" Value="True"/>
             <Setter Property="MinWidth" Value="210"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContextMenu">
@@ -151,6 +179,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Padding" Value="14,10"/>
             <Setter Property="Cursor" Value="Hand"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
@@ -160,11 +189,9 @@
                                 Padding="{TemplateBinding Padding}"
                                 Margin="0,2">
 
-                            <Grid>
-                                <ContentPresenter ContentSource="Header"
-                                                  RecognizesAccessKey="True"
-                                                  VerticalAlignment="Center"/>
-                            </Grid>
+                            <ContentPresenter ContentSource="Header"
+                                              RecognizesAccessKey="True"
+                                              VerticalAlignment="Center"/>
                         </Border>
 
                         <ControlTemplate.Triggers>
@@ -182,7 +209,8 @@
             </Setter>
         </Style>
 
-        <Style x:Key="PremiumLogoutMenuItemStyle" TargetType="MenuItem"
+        <Style x:Key="PremiumLogoutMenuItemStyle"
+               TargetType="MenuItem"
                BasedOn="{StaticResource PremiumMenuItemStyle}">
             <Setter Property="Foreground" Value="#FED7AA"/>
         </Style>
@@ -201,15 +229,19 @@
             </Setter>
         </Style>
 
-        <Style x:Key="WelcomePrimaryButtonStyle" TargetType="Button">
+        <!-- WELCOME PRIMARY BUTTON -->
+        <Style x:Key="WelcomePrimaryButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
+
             <Setter Property="Height" Value="46"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="#F97316"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="18,0"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -217,6 +249,13 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="23"
                                 Padding="{TemplateBinding Padding}">
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="14"
+                                                  ShadowDepth="2"
+                                                  Opacity="0.20"/>
+                            </Border.Effect>
+
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
@@ -240,8 +279,11 @@
             </Setter>
         </Style>
 
-        <!-- SMALL HOME EXIT BUTTON - ORANGE -->
-        <Style x:Key="HomeExitButtonStyle" TargetType="Button">
+        <!-- HOME EXIT BUTTON -->
+        <Style x:Key="HomeExitButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
+
             <Setter Property="Width" Value="86"/>
             <Setter Property="Height" Value="34"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
@@ -250,8 +292,8 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Padding" Value="12,0"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -263,9 +305,9 @@
                                 Padding="{TemplateBinding Padding}">
 
                             <Border.Effect>
-                                <DropShadowEffect BlurRadius="8"
+                                <DropShadowEffect BlurRadius="10"
                                                   ShadowDepth="1"
-                                                  Opacity="0.16"/>
+                                                  Opacity="0.18"/>
                             </Border.Effect>
 
                             <ContentPresenter HorizontalAlignment="Center"
@@ -293,6 +335,52 @@
             </Setter>
         </Style>
 
+        <!-- PREMIUM HOVER CARD EFFECT -->
+        <Style x:Key="PremiumHoverCardStyle" TargetType="Border">
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TranslateTransform Y="0"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8"
+                                      ShadowDepth="1"
+                                      Opacity="0.08"/>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             To="-3"
+                                             Duration="0:0:0.18"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="0.96"
+                                             Duration="0:0:0.18"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                                             To="0"
+                                             Duration="0:0:0.18"/>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                             To="1"
+                                             Duration="0:0:0.18"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- SCROLLBAR -->
         <Style x:Key="ScrollNavigationButtonStyle" TargetType="{x:Type RepeatButton}">
             <Setter Property="Width" Value="18"/>
             <Setter Property="Height" Value="18"/>
@@ -302,6 +390,7 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="IsTabStop" Value="False"/>
             <Setter Property="Focusable" Value="False"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type RepeatButton}">
@@ -351,6 +440,7 @@
             <Setter Property="MinWidth" Value="22"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#F97316"/>
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ScrollBar}">
@@ -367,6 +457,7 @@
                             <RepeatButton Grid.Row="0"
                                           Style="{StaticResource ScrollNavigationButtonStyle}"
                                           Command="ScrollBar.LineUpCommand">
+
                                 <Path Fill="White"
                                       Width="8"
                                       Height="8"
@@ -402,6 +493,7 @@
                                                             Width="9"
                                                             MinHeight="34"
                                                             Opacity="0.95">
+
                                                         <Border.Effect>
                                                             <DropShadowEffect BlurRadius="5"
                                                                               ShadowDepth="0"
@@ -427,13 +519,13 @@
                                         <RepeatButton Command="ScrollBar.PageDownCommand"
                                                       Style="{StaticResource InvisibleTrackButtonStyle}"/>
                                     </Track.IncreaseRepeatButton>
-
                                 </Track>
                             </Grid>
 
                             <RepeatButton Grid.Row="2"
                                           Style="{StaticResource ScrollNavigationButtonStyle}"
                                           Command="ScrollBar.LineDownCommand">
+
                                 <Path Fill="White"
                                       Width="8"
                                       Height="8"
@@ -450,7 +542,7 @@
 
     <Grid>
 
-        <!-- PAGE 1: WELCOME PAGE -->
+        <!-- WELCOME PAGE -->
         <Grid x:Name="WelcomePage"
               Background="#F5F5F5"
               Visibility="Visible">
@@ -461,6 +553,7 @@
                     <ColumnDefinition Width="0.92*"/>
                 </Grid.ColumnDefinitions>
 
+                <!-- LEFT WELCOME HERO -->
                 <Border Grid.Column="0"
                         Background="#111111"
                         CornerRadius="30"
@@ -496,6 +589,7 @@
                                         Height="56"
                                         Background="#F97316"
                                         CornerRadius="28">
+
                                     <TextBlock Text="🔐"
                                                FontSize="28"
                                                HorizontalAlignment="Center"
@@ -547,6 +641,7 @@
                                        Margin="0,0,0,12"/>
                         </StackPanel>
 
+                        <!-- ASCII ART -->
                         <Border Grid.Row="1"
                                 Background="#1F1F1F"
                                 CornerRadius="20"
@@ -584,6 +679,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             </Grid>
                         </Border>
 
+                        <!-- FEATURE CARDS -->
                         <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -594,6 +690,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             </Grid.ColumnDefinitions>
 
                             <Border Grid.Column="0"
+                                    Style="{StaticResource PremiumHoverCardStyle}"
                                     Background="#FFFFFF"
                                     CornerRadius="15"
                                     Padding="10"
@@ -601,11 +698,13 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                                 <StackPanel>
                                     <TextBlock Text="🔑" FontSize="18" Margin="0,0,0,4"/>
+
                                     <TextBlock Text="Password Safety"
                                                Foreground="#111111"
                                                FontSize="11.5"
                                                FontWeight="Bold"
                                                Margin="0,0,0,3"/>
+
                                     <TextBlock Text="Create stronger passwords."
                                                Foreground="#525252"
                                                FontSize="10"
@@ -616,6 +715,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             </Border>
 
                             <Border Grid.Column="2"
+                                    Style="{StaticResource PremiumHoverCardStyle}"
                                     Background="#FFFFFF"
                                     CornerRadius="15"
                                     Padding="10"
@@ -623,11 +723,13 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                                 <StackPanel>
                                     <TextBlock Text="🎣" FontSize="18" Margin="0,0,0,4"/>
+
                                     <TextBlock Text="Phishing Awareness"
                                                Foreground="#111111"
                                                FontSize="11.5"
                                                FontWeight="Bold"
                                                Margin="0,0,0,3"/>
+
                                     <TextBlock Text="Spot fake links and scams."
                                                Foreground="#525252"
                                                FontSize="10"
@@ -638,6 +740,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             </Border>
 
                             <Border Grid.Column="4"
+                                    Style="{StaticResource PremiumHoverCardStyle}"
                                     Background="#FFFFFF"
                                     CornerRadius="15"
                                     Padding="10"
@@ -645,11 +748,13 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                                 <StackPanel>
                                     <TextBlock Text="🛡" FontSize="18" Margin="0,0,0,4"/>
+
                                     <TextBlock Text="Privacy Protection"
                                                Foreground="#111111"
                                                FontSize="11.5"
                                                FontWeight="Bold"
                                                Margin="0,0,0,3"/>
+
                                     <TextBlock Text="Keep your data private."
                                                Foreground="#525252"
                                                FontSize="10"
@@ -660,6 +765,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             </Border>
                         </Grid>
 
+                        <!-- EXIT AND NOTE -->
                         <Grid Grid.Row="3"
                               Margin="0,14,0,0">
 
@@ -692,6 +798,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                     </Grid>
                 </Border>
 
+                <!-- RIGHT LOGIN CARD -->
                 <Border Grid.Column="1"
                         Background="#FFFFFF"
                         CornerRadius="30"
@@ -832,7 +939,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
             </Grid>
         </Grid>
 
-        <!-- PAGE 2: CHAT PAGE -->
+        <!-- CHAT PAGE -->
         <Grid x:Name="ChatPage"
               Background="#F5F5F5"
               Visibility="Collapsed"
@@ -844,7 +951,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- LEFT SESSION PANEL -->
+            <!-- SIDEBAR -->
             <Border Grid.Column="0"
                     Background="#111111"
                     CornerRadius="24"
@@ -875,6 +982,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 CornerRadius="28"
                                 HorizontalAlignment="Left"
                                 Margin="0,0,0,10">
+
                             <TextBlock Text="🔐"
                                        FontSize="27"
                                        HorizontalAlignment="Center"
@@ -905,7 +1013,9 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             Margin="0,0,0,12">
 
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,0,0,8">
+
                                 <Ellipse Width="8"
                                          Height="8"
                                          Fill="#22C55E"
@@ -976,24 +1086,58 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                    FontWeight="Bold"
                                    Margin="0,0,0,8"/>
 
-                        <Border Background="#FFFFFF" CornerRadius="14" Padding="9" Margin="0,0,0,6">
-                            <TextBlock Text="🔑 Password safety" Foreground="#111111" FontSize="12.5" FontWeight="SemiBold"/>
+                        <Border Style="{StaticResource PremiumHoverCardStyle}"
+                                Background="#FFFFFF"
+                                CornerRadius="14"
+                                Padding="9"
+                                Margin="0,0,0,6">
+                            <TextBlock Text="🔑 Password safety"
+                                       Foreground="#111111"
+                                       FontSize="12.5"
+                                       FontWeight="SemiBold"/>
                         </Border>
 
-                        <Border Background="#FFFFFF" CornerRadius="14" Padding="9" Margin="0,0,0,6">
-                            <TextBlock Text="🎣 Phishing scams" Foreground="#111111" FontSize="12.5" FontWeight="SemiBold"/>
+                        <Border Style="{StaticResource PremiumHoverCardStyle}"
+                                Background="#FFFFFF"
+                                CornerRadius="14"
+                                Padding="9"
+                                Margin="0,0,0,6">
+                            <TextBlock Text="🎣 Phishing scams"
+                                       Foreground="#111111"
+                                       FontSize="12.5"
+                                       FontWeight="SemiBold"/>
                         </Border>
 
-                        <Border Background="#FFFFFF" CornerRadius="14" Padding="9" Margin="0,0,0,6">
-                            <TextBlock Text="🛡 Privacy protection" Foreground="#111111" FontSize="12.5" FontWeight="SemiBold"/>
+                        <Border Style="{StaticResource PremiumHoverCardStyle}"
+                                Background="#FFFFFF"
+                                CornerRadius="14"
+                                Padding="9"
+                                Margin="0,0,0,6">
+                            <TextBlock Text="🛡 Privacy protection"
+                                       Foreground="#111111"
+                                       FontSize="12.5"
+                                       FontWeight="SemiBold"/>
                         </Border>
 
-                        <Border Background="#FFFFFF" CornerRadius="14" Padding="9" Margin="0,0,0,6">
-                            <TextBlock Text="🌐 Safe browsing" Foreground="#111111" FontSize="12.5" FontWeight="SemiBold"/>
+                        <Border Style="{StaticResource PremiumHoverCardStyle}"
+                                Background="#FFFFFF"
+                                CornerRadius="14"
+                                Padding="9"
+                                Margin="0,0,0,6">
+                            <TextBlock Text="🌐 Safe browsing"
+                                       Foreground="#111111"
+                                       FontSize="12.5"
+                                       FontWeight="SemiBold"/>
                         </Border>
 
-                        <Border Background="#FFFFFF" CornerRadius="14" Padding="9">
-                            <TextBlock Text="📱 2FA and malware" Foreground="#111111" FontSize="12.5" FontWeight="SemiBold"/>
+                        <Border Style="{StaticResource PremiumHoverCardStyle}"
+                                Background="#FFFFFF"
+                                CornerRadius="14"
+                                Padding="9">
+                            <TextBlock Text="📱 2FA and malware"
+                                       Foreground="#111111"
+                                       FontSize="12.5"
+                                       FontWeight="SemiBold"/>
                         </Border>
                     </StackPanel>
 
@@ -1003,7 +1147,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             Padding="11"
                             Margin="0,14,0,0">
 
-                        <TextBlock Text="Try: “I clicked a suspicious link” or “Give me an example of phishing”."
+                        <TextBlock Text="Try: “I clicked a suspicious link” or “Generate report”."
                                    Foreground="#9A3412"
                                    FontSize="11.5"
                                    FontWeight="SemiBold"
@@ -1034,7 +1178,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         <RowDefinition Height="76"/>
                     </Grid.RowDefinitions>
 
-                    <!-- CHAT HEADER WITH PREMIUM THREE-DOT MENU -->
+                    <!-- CHAT HEADER -->
                     <Border Grid.Row="0"
                             Background="#FFFFFF"
                             CornerRadius="24,24,0,0"
@@ -1056,6 +1200,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     Height="42"
                                     Background="#F97316"
                                     CornerRadius="21">
+
                                 <TextBlock Text="🤖"
                                            FontSize="22"
                                            HorizontalAlignment="Center"
@@ -1065,6 +1210,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             <StackPanel Grid.Column="1"
                                         VerticalAlignment="Center"
                                         Margin="10,0,0,0">
+
                                 <TextBlock Text="CyberBot"
                                            Foreground="#111111"
                                            FontSize="18"
@@ -1117,99 +1263,85 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                   Click="LogoutMenuItem_Click"/>
                                     </ContextMenu>
                                 </Button.ContextMenu>
-
-                                <Grid/>
                             </Button>
                         </Grid>
                     </Border>
 
-                    <!-- CHAT DISPLAY -->
+                    <!-- CHAT AREA -->
                     <Border Grid.Row="1"
                             Background="#FAFAFA"
-                            Padding="18,18,10,18">
+                            BorderBrush="#E5E5E5"
+                            BorderThickness="0,0,0,1">
 
                         <ScrollViewer x:Name="ChatScrollViewer"
-                                      VerticalAlignment="Top"
-                                      VerticalContentAlignment="Top"
                                       VerticalScrollBarVisibility="Auto"
                                       HorizontalScrollBarVisibility="Disabled"
-                                      Padding="0,0,8,0">
+                                      Padding="18">
 
                             <ScrollViewer.Resources>
                                 <Style TargetType="{x:Type ScrollBar}"
                                        BasedOn="{StaticResource PremiumScrollBarStyle}"/>
                             </ScrollViewer.Resources>
 
-                            <StackPanel x:Name="ChatPanel"
-                                        VerticalAlignment="Top"/>
+                            <StackPanel x:Name="ChatPanel"/>
                         </ScrollViewer>
                     </Border>
 
                     <!-- TYPING INDICATOR -->
                     <Border Grid.Row="2"
-                            Background="#FAFAFA"
-                            Padding="18,0,18,0">
+                            Background="#FFFFFF"
+                            Padding="18,0">
 
                         <Border x:Name="TypingIndicatorBorder"
                                 Background="#FFF3E8"
-                                CornerRadius="14"
-                                Padding="10,5"
+                                CornerRadius="13"
+                                Padding="12,6"
                                 HorizontalAlignment="Left"
-                                Visibility="Collapsed">
+                                Visibility="Collapsed"
+                                Opacity="0">
 
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="7"
-                                         Height="7"
-                                         Fill="#F97316"
-                                         Margin="0,0,6,0"/>
-
-                                <TextBlock x:Name="TypingIndicatorTextBlock"
-                                           Text="CyberBot is typing"
-                                           Foreground="#9A3412"
-                                           FontSize="12"
-                                           FontWeight="Bold"
-                                           FontStyle="Italic"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
+                            <TextBlock x:Name="TypingIndicatorTextBlock"
+                                       Text=""
+                                       Foreground="#9A3412"
+                                       FontSize="12"
+                                       FontWeight="Bold"/>
                         </Border>
                     </Border>
 
-                    <!-- INPUT BAR -->
+                    <!-- INPUT AREA -->
                     <Border Grid.Row="3"
                             Background="#FFFFFF"
                             CornerRadius="0,0,24,24"
-                            BorderBrush="#E5E5E5"
-                            BorderThickness="0,1,0,0"
-                            Padding="14">
+                            Padding="16,12">
 
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="54"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <Border Grid.Column="0"
                                     Background="#F5F5F5"
-                                    CornerRadius="22"
-                                    Padding="4"
+                                    CornerRadius="24"
                                     BorderBrush="#DDDDDD"
-                                    BorderThickness="1">
+                                    BorderThickness="1"
+                                    Padding="4">
 
                                 <Grid>
                                     <TextBlock x:Name="PlaceholderTextBlock"
-                                               Text="Type your message here..."
+                                               Text="Type your cybersecurity question here..."
                                                Foreground="#6B7280"
                                                FontSize="14"
                                                FontWeight="SemiBold"
-                                               Margin="13,0,0,0"
+                                               Margin="15,0,0,0"
                                                VerticalAlignment="Center"
                                                IsHitTestVisible="False"/>
 
                                     <TextBox x:Name="UserInputTextBox"
-                                             Height="40"
+                                             Height="44"
                                              FontSize="14"
                                              FontWeight="SemiBold"
-                                             Padding="13,0"
+                                             Padding="15,0"
                                              VerticalContentAlignment="Center"
                                              Background="Transparent"
                                              Foreground="#111111"
@@ -1241,35 +1373,50 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
             </Border>
         </Grid>
 
-        <!-- LOADING OVERLAY -->
+        <!-- PREMIUM LOADING OVERLAY -->
         <Grid x:Name="LoadingOverlay"
               Background="#99000000"
               Visibility="Collapsed"
               Opacity="0">
 
-            <Border Width="360"
+            <Border x:Name="LoadingCardBorder"
+                    Width="380"
                     Background="#FFFFFF"
-                    CornerRadius="26"
-                    Padding="28"
+                    CornerRadius="28"
+                    Padding="30"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
+                    VerticalAlignment="Center"
+                    RenderTransformOrigin="0.5,0.5">
+
+                <Border.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="0.96" ScaleY="0.96"/>
+                        <TranslateTransform Y="18"/>
+                    </TransformGroup>
+                </Border.RenderTransform>
 
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="28"
-                                      ShadowDepth="3"
-                                      Opacity="0.25"/>
+                    <DropShadowEffect BlurRadius="32"
+                                      ShadowDepth="4"
+                                      Opacity="0.28"/>
                 </Border.Effect>
 
                 <StackPanel>
-                    <Border Width="64"
-                            Height="64"
+                    <Border x:Name="LoadingShieldIconBorder"
+                            Width="66"
+                            Height="66"
                             Background="#F97316"
-                            CornerRadius="32"
+                            CornerRadius="33"
                             HorizontalAlignment="Center"
-                            Margin="0,0,0,16">
+                            Margin="0,0,0,16"
+                            RenderTransformOrigin="0.5,0.5">
+
+                        <Border.RenderTransform>
+                            <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        </Border.RenderTransform>
 
                         <TextBlock Text="🔐"
-                                   FontSize="30"
+                                   FontSize="31"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </Border>
@@ -1282,27 +1429,45 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                Margin="0,0,0,8"/>
 
                     <TextBlock x:Name="LoadingStatusTextBlock"
-                               Text="Setting up CyberBot..."
+                               Text="Setting up CyberBot."
                                Foreground="#6B7280"
                                FontSize="13"
                                FontWeight="SemiBold"
                                TextAlignment="Center"
                                TextWrapping="Wrap"
                                LineHeight="20"
-                               Margin="0,0,0,14"/>
+                               Margin="0,0,0,16"/>
 
-                    <Border Height="8"
+                    <Border Height="9"
                             Background="#E5E5E5"
-                            CornerRadius="4">
+                            CornerRadius="5"
+                            ClipToBounds="True">
 
-                        <Border Width="190"
-                                Height="8"
-                                Background="#F97316"
-                                CornerRadius="4"
-                                HorizontalAlignment="Left"/>
+                        <Grid>
+                            <Border x:Name="LoadingProgressBar"
+                                    Width="90"
+                                    Height="9"
+                                    Background="#F97316"
+                                    CornerRadius="5"
+                                    HorizontalAlignment="Left"
+                                    RenderTransformOrigin="0.5,0.5">
+
+                                <Border.RenderTransform>
+                                    <TranslateTransform X="-100"/>
+                                </Border.RenderTransform>
+                            </Border>
+                        </Grid>
                     </Border>
+
+                    <TextBlock Text="Smart risk detection • Secure awareness • Professional guidance"
+                               Foreground="#9A3412"
+                               FontSize="11.5"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Margin="0,14,0,0"/>
                 </StackPanel>
             </Border>
         </Grid>
+
     </Grid>
 </Window>

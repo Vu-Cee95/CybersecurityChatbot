@@ -18,6 +18,9 @@ namespace CybersecurityChatbotGUI
         private readonly Validator validator = new Validator();
 
         private readonly DispatcherTimer typingDotsTimer = new DispatcherTimer();
+        private readonly Random random = new Random();
+
+        private Storyboard loadingProgressStoryboard;
 
         private bool isChatEnded = false;
         private bool isBotTyping = false;
@@ -27,6 +30,17 @@ namespace CybersecurityChatbotGUI
         private int typingDotCount = 0;
 
         private string userName = "User";
+        private string currentTypingMessage = "CyberBot is typing";
+
+        private readonly string[] typingMessages =
+        {
+            "CyberBot is analysing your message",
+            "CyberBot is checking the risk level",
+            "CyberBot is reviewing possible red flags",
+            "CyberBot is preparing safe guidance",
+            "CyberBot is connecting the conversation context",
+            "CyberBot is thinking securely"
+        };
 
         public MainWindow()
         {
@@ -64,10 +78,10 @@ namespace CybersecurityChatbotGUI
             WelcomePage.Visibility = Visibility.Visible;
             WelcomePage.Opacity = 0;
 
-            await FadeElementAsync(ChatPage, 1, 0, 260);
+            await FadeSlideElementAsync(ChatPage, 1, 0, 0, 18, 280);
             ChatPage.Visibility = Visibility.Collapsed;
 
-            await FadeElementAsync(WelcomePage, 0, 1, 320);
+            await FadeSlideElementAsync(WelcomePage, 0, 1, 18, 0, 360);
 
             WelcomeNameTextBox.Focus();
         }
@@ -77,10 +91,10 @@ namespace CybersecurityChatbotGUI
             ChatPage.Visibility = Visibility.Visible;
             ChatPage.Opacity = 0;
 
-            await FadeElementAsync(WelcomePage, 1, 0, 260);
+            await FadeSlideElementAsync(WelcomePage, 1, 0, 0, -18, 280);
             WelcomePage.Visibility = Visibility.Collapsed;
 
-            await FadeElementAsync(ChatPage, 0, 1, 320);
+            await FadeSlideElementAsync(ChatPage, 0, 1, 20, 0, 360);
 
             UserInputTextBox.Focus();
             ScrollChatToTop();
@@ -90,12 +104,30 @@ namespace CybersecurityChatbotGUI
         {
             LoadingStatusTextBlock.Text = statusMessage;
             LoadingOverlay.Visibility = Visibility.Visible;
-            await FadeElementAsync(LoadingOverlay, 0, 1, 220);
+
+            if (LoadingCardBorder != null)
+            {
+                LoadingCardBorder.Opacity = 0;
+            }
+
+            await FadeElementAsync(LoadingOverlay, 0, 1, 180);
+
+            AnimateLoadingCardIn();
+            StartLoadingProgressAnimation();
+            StartLoadingIconPulse();
         }
 
         private async Task HideLoadingOverlayAsync()
         {
-            await FadeElementAsync(LoadingOverlay, 1, 0, 220);
+            StopLoadingProgressAnimation();
+
+            if (LoadingCardBorder != null)
+            {
+                AnimateLoadingCardOut();
+                await Task.Delay(180);
+            }
+
+            await FadeElementAsync(LoadingOverlay, 1, 0, 200);
             LoadingOverlay.Visibility = Visibility.Collapsed;
         }
 
@@ -108,7 +140,8 @@ namespace CybersecurityChatbotGUI
                 From = from,
                 To = to,
                 Duration = TimeSpan.FromMilliseconds(milliseconds),
-                FillBehavior = FillBehavior.HoldEnd
+                FillBehavior = FillBehavior.HoldEnd,
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
 
             animation.Completed += (sender, args) =>
@@ -121,8 +154,217 @@ namespace CybersecurityChatbotGUI
             return completionSource.Task;
         }
 
+        private Task FadeSlideElementAsync(
+            UIElement element,
+            double fromOpacity,
+            double toOpacity,
+            double fromY,
+            double toY,
+            int milliseconds)
+        {
+            TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
+
+            TranslateTransform translateTransform = element.RenderTransform as TranslateTransform;
+
+            if (translateTransform == null)
+            {
+                translateTransform = new TranslateTransform();
+                element.RenderTransform = translateTransform;
+            }
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = fromOpacity,
+                To = toOpacity,
+                Duration = TimeSpan.FromMilliseconds(milliseconds),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            DoubleAnimation slideAnimation = new DoubleAnimation
+            {
+                From = fromY,
+                To = toY,
+                Duration = TimeSpan.FromMilliseconds(milliseconds),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            opacityAnimation.Completed += (sender, args) =>
+            {
+                completionSource.SetResult(true);
+            };
+
+            element.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+            translateTransform.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+
+            return completionSource.Task;
+        }
+
+        private void AnimateLoadingCardIn()
+        {
+            if (LoadingCardBorder == null)
+            {
+                return;
+            }
+
+            LoadingCardBorder.Opacity = 0;
+
+            TransformGroup transformGroup = LoadingCardBorder.RenderTransform as TransformGroup;
+
+            if (transformGroup == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = transformGroup.Children[0] as ScaleTransform;
+            TranslateTransform translateTransform = transformGroup.Children[1] as TranslateTransform;
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(260),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            DoubleAnimation scaleAnimation = new DoubleAnimation
+            {
+                From = 0.94,
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(320),
+                EasingFunction = new BackEase
+                {
+                    EasingMode = EasingMode.EaseOut,
+                    Amplitude = 0.22
+                }
+            };
+
+            DoubleAnimation slideAnimation = new DoubleAnimation
+            {
+                From = 18,
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(320),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            LoadingCardBorder.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+            scaleTransform?.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+            scaleTransform?.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            translateTransform?.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+        }
+
+        private void AnimateLoadingCardOut()
+        {
+            if (LoadingCardBorder == null)
+            {
+                return;
+            }
+
+            TransformGroup transformGroup = LoadingCardBorder.RenderTransform as TransformGroup;
+
+            if (transformGroup == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = transformGroup.Children[0] as ScaleTransform;
+            TranslateTransform translateTransform = transformGroup.Children[1] as TranslateTransform;
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+            };
+
+            DoubleAnimation scaleAnimation = new DoubleAnimation
+            {
+                To = 0.97,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+            };
+
+            DoubleAnimation slideAnimation = new DoubleAnimation
+            {
+                To = 10,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+            };
+
+            LoadingCardBorder.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+            scaleTransform?.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+            scaleTransform?.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            translateTransform?.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+        }
+
+        private void StartLoadingProgressAnimation()
+        {
+            if (LoadingProgressBar == null)
+            {
+                return;
+            }
+
+            StopLoadingProgressAnimation();
+
+            DoubleAnimation progressAnimation = new DoubleAnimation
+            {
+                From = -110,
+                To = 390,
+                Duration = TimeSpan.FromMilliseconds(1350),
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            loadingProgressStoryboard = new Storyboard();
+            loadingProgressStoryboard.Children.Add(progressAnimation);
+
+            Storyboard.SetTarget(progressAnimation, LoadingProgressBar);
+            Storyboard.SetTargetProperty(
+                progressAnimation,
+                new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
+
+            loadingProgressStoryboard.Begin();
+        }
+
+        private void StopLoadingProgressAnimation()
+        {
+            if (loadingProgressStoryboard != null)
+            {
+                loadingProgressStoryboard.Stop();
+                loadingProgressStoryboard = null;
+            }
+        }
+
+        private void StartLoadingIconPulse()
+        {
+            if (LoadingShieldIconBorder == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = LoadingShieldIconBorder.RenderTransform as ScaleTransform;
+
+            if (scaleTransform == null)
+            {
+                return;
+            }
+
+            DoubleAnimation pulseAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 1.07,
+                Duration = TimeSpan.FromMilliseconds(650),
+                AutoReverse = true,
+                RepeatBehavior = new RepeatBehavior(3),
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, pulseAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, pulseAnimation);
+        }
+
         private async void StartChatButton_Click(object sender, RoutedEventArgs e)
         {
+            AnimateButtonPress(sender as Button);
             await TryStartChatAsync();
         }
 
@@ -153,14 +395,14 @@ namespace CybersecurityChatbotGUI
                 isChatEnded = false;
 
                 WelcomeValidationTextBlock.Foreground = new SolidColorBrush(Color.FromRgb(22, 101, 52));
-                WelcomeValidationTextBlock.Text = $"Welcome, {userName}. Preparing your secure chat...";
+                WelcomeValidationTextBlock.Text = $"Welcome, {userName}. Preparing your secure chat.";
 
-                await ShowLoadingOverlayAsync("Setting up CyberBot and preparing your cybersecurity guidance...");
+                await ShowLoadingOverlayAsync("Setting up CyberBot and preparing your cybersecurity guidance.");
                 await Task.Delay(900);
 
                 PrepareChatSession();
 
-                LoadingStatusTextBlock.Text = "Opening your secure chat...";
+                LoadingStatusTextBlock.Text = "Opening your secure chat.";
                 await Task.Delay(500);
 
                 await ShowChatPageWithTransitionAsync();
@@ -271,6 +513,7 @@ namespace CybersecurityChatbotGUI
 
         private async void ExitApplicationButton_Click(object sender, RoutedEventArgs e)
         {
+            AnimateButtonPress(sender as Button);
             await ExitApplicationAsync();
         }
 
@@ -299,6 +542,7 @@ namespace CybersecurityChatbotGUI
 
         private async void SendButton_Click(object sender, RoutedEventArgs e)
         {
+            AnimateButtonPress(sender as Button);
             await SendUserMessageAsync();
         }
 
@@ -330,6 +574,8 @@ namespace CybersecurityChatbotGUI
 
         private void MenuDotsButton_Click(object sender, RoutedEventArgs e)
         {
+            AnimateButtonPress(sender as Button);
+
             ChatOptionsContextMenu.PlacementTarget = MenuDotsButton;
             ChatOptionsContextMenu.IsOpen = true;
         }
@@ -358,7 +604,7 @@ namespace CybersecurityChatbotGUI
 
             keepChatAtTop = false;
 
-            await ShowBotReplyAsync("You can type naturally. Try asking:\n\n• What is phishing?\n• How do I create a strong password?\n• I clicked a suspicious link\n• How do I protect my privacy?\n• Give me an example of a scam\n• Summarise this chat");
+            await ShowBotReplyAsync("You can type naturally. Try asking:\n\n• What is phishing?\n• How do I create a strong password?\n• I clicked a suspicious link\n• How do I protect my privacy?\n• Give me an example of a scam\n• Generate report");
 
             UserInputTextBox.Focus();
         }
@@ -487,8 +733,13 @@ namespace CybersecurityChatbotGUI
         {
             typingDotCount = 0;
 
+            currentTypingMessage = typingMessages[random.Next(typingMessages.Length)];
+
             TypingIndicatorBorder.Visibility = Visibility.Visible;
-            TypingIndicatorTextBlock.Text = "CyberBot is typing";
+            TypingIndicatorBorder.Opacity = 0;
+            TypingIndicatorTextBlock.Text = currentTypingMessage;
+
+            FadeElementAsync(TypingIndicatorBorder, 0, 1, 180);
 
             typingDotsTimer.Start();
         }
@@ -497,11 +748,13 @@ namespace CybersecurityChatbotGUI
         {
             typingDotsTimer.Stop();
 
+            FadeElementAsync(TypingIndicatorBorder, TypingIndicatorBorder.Opacity, 0, 140);
+
             TypingIndicatorTextBlock.Text = "";
             TypingIndicatorBorder.Visibility = Visibility.Collapsed;
         }
 
-        private void TypingDotsTimer_Tick(object? sender, EventArgs e)
+        private void TypingDotsTimer_Tick(object sender, EventArgs e)
         {
             typingDotCount++;
 
@@ -510,26 +763,31 @@ namespace CybersecurityChatbotGUI
                 typingDotCount = 0;
             }
 
-            TypingIndicatorTextBlock.Text = "CyberBot is typing" + new string('.', typingDotCount);
+            TypingIndicatorTextBlock.Text = currentTypingMessage + new string('.', typingDotCount);
         }
 
         private int CalculateTypingDelay(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                return 3000;
+                return 1700;
             }
 
-            int delay = message.Length * 20;
+            int delay = message.Length * 18;
 
-            if (delay < 2200)
+            if (message.Contains("Risk Level: HIGH") || message.Contains("Risk Level: EMERGENCY"))
             {
-                delay = 2200;
+                delay += 700;
             }
 
-            if (delay > 5200)
+            if (delay < 1700)
             {
-                delay = 5200;
+                delay = 1700;
+            }
+
+            if (delay > 4800)
+            {
+                delay = 4800;
             }
 
             return delay;
@@ -595,21 +853,37 @@ namespace CybersecurityChatbotGUI
                 Color.FromRgb(249, 115, 22),
                 Colors.White,
                 HorizontalAlignment.Right,
-                true
-            );
+                true);
         }
 
         private void AddBotMessage(string message)
         {
+            string riskLevel = DetectRiskLevelFromMessage(message);
+
+            Color backgroundColor = Color.FromRgb(237, 237, 237);
+            Color foregroundColor = Color.FromRgb(17, 17, 17);
+
+            if (riskLevel == "Emergency")
+            {
+                backgroundColor = Color.FromRgb(255, 237, 213);
+            }
+            else if (riskLevel == "High")
+            {
+                backgroundColor = Color.FromRgb(255, 247, 237);
+            }
+            else if (riskLevel == "Medium")
+            {
+                backgroundColor = Color.FromRgb(255, 251, 235);
+            }
+
             AddMessageBubble(
                 "CyberBot",
                 message,
                 DateTime.Now.ToString("HH:mm"),
-                Color.FromRgb(237, 237, 237),
-                Color.FromRgb(17, 17, 17),
+                backgroundColor,
+                foregroundColor,
                 HorizontalAlignment.Left,
-                false
-            );
+                false);
         }
 
         private void AddMessageBubble(
@@ -627,6 +901,8 @@ namespace CybersecurityChatbotGUI
                 ? new Thickness(100, 7, 0, 7)
                 : new Thickness(0, 7, 100, 7);
 
+            string riskLevel = isUserMessage ? "" : DetectRiskLevelFromMessage(message);
+
             Border bubble = new Border
             {
                 Background = new SolidColorBrush(backgroundColor),
@@ -635,17 +911,36 @@ namespace CybersecurityChatbotGUI
                 Margin = bubbleMargin,
                 HorizontalAlignment = alignment,
                 MinWidth = 175,
-                MaxWidth = maxBubbleWidth
+                MaxWidth = maxBubbleWidth,
+                Opacity = 0,
+                RenderTransformOrigin = new Point(0.5, 0.5)
             };
+
+            TransformGroup transformGroup = new TransformGroup();
+            transformGroup.Children.Add(new ScaleTransform(0.96, 0.96));
+            transformGroup.Children.Add(new TranslateTransform(0, 14));
+            bubble.RenderTransform = transformGroup;
 
             bubble.Effect = new DropShadowEffect
             {
-                BlurRadius = 8,
+                BlurRadius = isUserMessage ? 10 : 12,
                 ShadowDepth = 1,
-                Opacity = 0.10
+                Opacity = isUserMessage ? 0.13 : 0.11
             };
 
+            if (!isUserMessage && riskLevel != "")
+            {
+                bubble.BorderThickness = new Thickness(2);
+                bubble.BorderBrush = GetRiskBrush(riskLevel);
+            }
+
             StackPanel messageStack = new StackPanel();
+
+            if (!isUserMessage && riskLevel != "")
+            {
+                Border riskBanner = BuildRiskBanner(riskLevel);
+                messageStack.Children.Add(riskBanner);
+            }
 
             TextBlock senderTextBlock = new TextBlock
             {
@@ -687,6 +982,13 @@ namespace CybersecurityChatbotGUI
 
             ChatPanel.Children.Add(bubble);
 
+            AnimateMessageBubble(bubble, isUserMessage);
+
+            if (riskLevel == "Emergency")
+            {
+                AnimateEmergencyPulse(bubble);
+            }
+
             if (keepChatAtTop)
             {
                 ScrollChatToTop();
@@ -695,6 +997,194 @@ namespace CybersecurityChatbotGUI
             {
                 ScrollChatToBottom();
             }
+        }
+
+        private Border BuildRiskBanner(string riskLevel)
+        {
+            string bannerText = "CYBER RISK DETECTED";
+
+            if (riskLevel == "Emergency")
+            {
+                bannerText = "🚨 CYBER EMERGENCY MODE";
+            }
+            else if (riskLevel == "High")
+            {
+                bannerText = "⚠ HIGH RISK GUIDANCE";
+            }
+            else if (riskLevel == "Medium")
+            {
+                bannerText = "⚠ MEDIUM RISK CHECK";
+            }
+            else if (riskLevel == "Low")
+            {
+                bannerText = "✓ LOW RISK LEARNING";
+            }
+
+            Border banner = new Border
+            {
+                Background = GetRiskBrush(riskLevel),
+                CornerRadius = new CornerRadius(12),
+                Padding = new Thickness(10, 5, 10, 5),
+                Margin = new Thickness(0, 0, 0, 8),
+                HorizontalAlignment = HorizontalAlignment.Left
+            };
+
+            TextBlock textBlock = new TextBlock
+            {
+                Text = bannerText,
+                Foreground = Brushes.White,
+                FontSize = 10,
+                FontWeight = FontWeights.Bold
+            };
+
+            banner.Child = textBlock;
+
+            return banner;
+        }
+
+        private SolidColorBrush GetRiskBrush(string riskLevel)
+        {
+            switch (riskLevel)
+            {
+                case "Emergency":
+                    return new SolidColorBrush(Color.FromRgb(185, 28, 28));
+
+                case "High":
+                    return new SolidColorBrush(Color.FromRgb(234, 88, 12));
+
+                case "Medium":
+                    return new SolidColorBrush(Color.FromRgb(249, 115, 22));
+
+                case "Low":
+                    return new SolidColorBrush(Color.FromRgb(34, 197, 94));
+
+                default:
+                    return new SolidColorBrush(Color.FromRgb(249, 115, 22));
+            }
+        }
+
+        private string DetectRiskLevelFromMessage(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return "";
+            }
+
+            string lowerMessage = message.ToLower();
+
+            if (lowerMessage.Contains("risk level: emergency") ||
+                lowerMessage.Contains("risk level: emergency") ||
+                lowerMessage.Contains("cyber emergency"))
+            {
+                return "Emergency";
+            }
+
+            if (lowerMessage.Contains("risk level: high"))
+            {
+                return "High";
+            }
+
+            if (lowerMessage.Contains("risk level: medium"))
+            {
+                return "Medium";
+            }
+
+            if (lowerMessage.Contains("risk level: low"))
+            {
+                return "Low";
+            }
+
+            return "";
+        }
+
+        private void AnimateMessageBubble(Border bubble, bool isUserMessage)
+        {
+            TransformGroup transformGroup = bubble.RenderTransform as TransformGroup;
+
+            if (transformGroup == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = transformGroup.Children[0] as ScaleTransform;
+            TranslateTransform translateTransform = transformGroup.Children[1] as TranslateTransform;
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(260),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            DoubleAnimation scaleAnimation = new DoubleAnimation
+            {
+                From = 0.96,
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(260),
+                EasingFunction = new BackEase
+                {
+                    EasingMode = EasingMode.EaseOut,
+                    Amplitude = 0.20
+                }
+            };
+
+            DoubleAnimation slideAnimation = new DoubleAnimation
+            {
+                From = 14,
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(280),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            bubble.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+            scaleTransform?.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+            scaleTransform?.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            translateTransform?.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+        }
+
+        private void AnimateEmergencyPulse(Border bubble)
+        {
+            DoubleAnimation pulseAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 0.72,
+                Duration = TimeSpan.FromMilliseconds(520),
+                AutoReverse = true,
+                RepeatBehavior = new RepeatBehavior(2),
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            if (bubble.BorderBrush is SolidColorBrush borderBrush)
+            {
+                borderBrush.BeginAnimation(SolidColorBrush.OpacityProperty, pulseAnimation);
+            }
+        }
+
+        private void AnimateButtonPress(Button button)
+        {
+            if (button == null || button.RenderTransform == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = button.RenderTransform as ScaleTransform;
+
+            if (scaleTransform == null)
+            {
+                return;
+            }
+
+            DoubleAnimation shrinkAnimation = new DoubleAnimation
+            {
+                To = 0.94,
+                Duration = TimeSpan.FromMilliseconds(80),
+                AutoReverse = true,
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, shrinkAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, shrinkAnimation);
         }
 
         private double GetResponsiveBubbleMaxWidth()
@@ -706,16 +1196,16 @@ namespace CybersecurityChatbotGUI
                 return 560;
             }
 
-            double calculatedWidth = chatWidth * 0.70;
+            double calculatedWidth = chatWidth * 0.68;
 
-            if (calculatedWidth < 300)
+            if (calculatedWidth < 360)
             {
-                return 300;
+                return 360;
             }
 
-            if (calculatedWidth > 610)
+            if (calculatedWidth > 650)
             {
-                return 610;
+                return 650;
             }
 
             return calculatedWidth;
@@ -723,18 +1213,14 @@ namespace CybersecurityChatbotGUI
 
         private void ScrollChatToTop()
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                ChatScrollViewer.ScrollToTop();
-            }), DispatcherPriority.Background);
+            ChatScrollViewer.UpdateLayout();
+            ChatScrollViewer.ScrollToTop();
         }
 
         private void ScrollChatToBottom()
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                ChatScrollViewer.ScrollToEnd();
-            }), DispatcherPriority.Background);
+            ChatScrollViewer.UpdateLayout();
+            ChatScrollViewer.ScrollToEnd();
         }
     }
 }
