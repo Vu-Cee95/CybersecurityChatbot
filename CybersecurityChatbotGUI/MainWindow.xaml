@@ -12,14 +12,10 @@
     <Window.Resources>
 
         <!-- PREMIUM ANIMATED BUTTON BASE -->
+        <!-- IMPORTANT: No RenderTransform here because transforms inside styles can become frozen in WPF -->
         <Style x:Key="PremiumAnimatedButtonBaseStyle" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <!-- SEND BUTTON -->
@@ -336,13 +332,9 @@
         </Style>
 
         <!-- PREMIUM HOVER CARD EFFECT -->
+        <!-- IMPORTANT: Hover animation is handled in MainWindow.xaml.cs to avoid frozen transforms -->
         <Style x:Key="PremiumHoverCardStyle" TargetType="Border">
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-            <Setter Property="RenderTransform">
-                <Setter.Value>
-                    <TranslateTransform Y="0"/>
-                </Setter.Value>
-            </Setter>
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect BlurRadius="8"
@@ -351,33 +343,8 @@
                 </Setter.Value>
             </Setter>
 
-            <Style.Triggers>
-                <EventTrigger RoutedEvent="MouseEnter">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                             To="-3"
-                                             Duration="0:0:0.18"/>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.96"
-                                             Duration="0:0:0.18"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-
-                <EventTrigger RoutedEvent="MouseLeave">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                                             To="0"
-                                             Duration="0:0:0.18"/>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="1"
-                                             Duration="0:0:0.18"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Style.Triggers>
+            <EventSetter Event="MouseEnter" Handler="PremiumHoverCard_MouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="PremiumHoverCard_MouseLeave"/>
         </Style>
 
         <!-- SCROLLBAR -->

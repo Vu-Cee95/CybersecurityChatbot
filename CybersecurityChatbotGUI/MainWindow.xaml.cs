@@ -166,7 +166,7 @@ namespace CybersecurityChatbotGUI
 
             TranslateTransform translateTransform = element.RenderTransform as TranslateTransform;
 
-            if (translateTransform == null)
+            if (translateTransform == null || translateTransform.IsFrozen)
             {
                 translateTransform = new TranslateTransform();
                 element.RenderTransform = translateTransform;
@@ -210,13 +210,29 @@ namespace CybersecurityChatbotGUI
 
             TransformGroup transformGroup = LoadingCardBorder.RenderTransform as TransformGroup;
 
-            if (transformGroup == null)
+            if (transformGroup == null || transformGroup.IsFrozen)
             {
-                return;
+                transformGroup = new TransformGroup();
+                transformGroup.Children.Add(new ScaleTransform(0.96, 0.96));
+                transformGroup.Children.Add(new TranslateTransform(0, 18));
+                LoadingCardBorder.RenderTransform = transformGroup;
+                LoadingCardBorder.RenderTransformOrigin = new Point(0.5, 0.5);
             }
 
             ScaleTransform scaleTransform = transformGroup.Children[0] as ScaleTransform;
             TranslateTransform translateTransform = transformGroup.Children[1] as TranslateTransform;
+
+            if (scaleTransform == null || scaleTransform.IsFrozen)
+            {
+                scaleTransform = new ScaleTransform(0.96, 0.96);
+                transformGroup.Children[0] = scaleTransform;
+            }
+
+            if (translateTransform == null || translateTransform.IsFrozen)
+            {
+                translateTransform = new TranslateTransform(0, 18);
+                transformGroup.Children[1] = translateTransform;
+            }
 
             DoubleAnimation opacityAnimation = new DoubleAnimation
             {
@@ -247,9 +263,9 @@ namespace CybersecurityChatbotGUI
             };
 
             LoadingCardBorder.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-            scaleTransform?.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
-            scaleTransform?.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
-            translateTransform?.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            translateTransform.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
         }
 
         private void AnimateLoadingCardOut()
@@ -261,7 +277,7 @@ namespace CybersecurityChatbotGUI
 
             TransformGroup transformGroup = LoadingCardBorder.RenderTransform as TransformGroup;
 
-            if (transformGroup == null)
+            if (transformGroup == null || transformGroup.IsFrozen)
             {
                 return;
             }
@@ -291,9 +307,17 @@ namespace CybersecurityChatbotGUI
             };
 
             LoadingCardBorder.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-            scaleTransform?.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
-            scaleTransform?.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
-            translateTransform?.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+
+            if (scaleTransform != null && !scaleTransform.IsFrozen)
+            {
+                scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+                scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            }
+
+            if (translateTransform != null && !translateTransform.IsFrozen)
+            {
+                translateTransform.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+            }
         }
 
         private void StartLoadingProgressAnimation()
@@ -304,6 +328,14 @@ namespace CybersecurityChatbotGUI
             }
 
             StopLoadingProgressAnimation();
+
+            TranslateTransform translateTransform = LoadingProgressBar.RenderTransform as TranslateTransform;
+
+            if (translateTransform == null || translateTransform.IsFrozen)
+            {
+                translateTransform = new TranslateTransform(-100, 0);
+                LoadingProgressBar.RenderTransform = translateTransform;
+            }
 
             DoubleAnimation progressAnimation = new DoubleAnimation
             {
@@ -343,9 +375,11 @@ namespace CybersecurityChatbotGUI
 
             ScaleTransform scaleTransform = LoadingShieldIconBorder.RenderTransform as ScaleTransform;
 
-            if (scaleTransform == null)
+            if (scaleTransform == null || scaleTransform.IsFrozen)
             {
-                return;
+                scaleTransform = new ScaleTransform(1, 1);
+                LoadingShieldIconBorder.RenderTransform = scaleTransform;
+                LoadingShieldIconBorder.RenderTransformOrigin = new Point(0.5, 0.5);
             }
 
             DoubleAnimation pulseAnimation = new DoubleAnimation
@@ -448,7 +482,7 @@ namespace CybersecurityChatbotGUI
 
             AddBotMessage($"Welcome, {userName}. I am CyberBot, your cybersecurity awareness assistant.");
             AddBotMessage("You can ask me about passwords, phishing, scams, privacy, safe browsing, malware, 2FA, or what to do if something suspicious already happened.");
-            AddBotMessage("For example, you can type: 'What is phishing?', 'How do I avoid scams?', 'I clicked a suspicious link', or 'Give me an example'.");
+            AddBotMessage("For example, you can type: 'What is phishing?', 'How do I avoid scams?', 'I clicked a suspicious link', or 'Generate report'.");
 
             UpdatePlaceholderState();
             UpdateSendButtonState();
@@ -739,7 +773,7 @@ namespace CybersecurityChatbotGUI
             TypingIndicatorBorder.Opacity = 0;
             TypingIndicatorTextBlock.Text = currentTypingMessage;
 
-            FadeElementAsync(TypingIndicatorBorder, 0, 1, 180);
+            _ = FadeElementAsync(TypingIndicatorBorder, 0, 1, 180);
 
             typingDotsTimer.Start();
         }
@@ -748,9 +782,8 @@ namespace CybersecurityChatbotGUI
         {
             typingDotsTimer.Stop();
 
-            FadeElementAsync(TypingIndicatorBorder, TypingIndicatorBorder.Opacity, 0, 140);
-
             TypingIndicatorTextBlock.Text = "";
+            TypingIndicatorBorder.Opacity = 0;
             TypingIndicatorBorder.Visibility = Visibility.Collapsed;
         }
 
@@ -982,7 +1015,7 @@ namespace CybersecurityChatbotGUI
 
             ChatPanel.Children.Add(bubble);
 
-            AnimateMessageBubble(bubble, isUserMessage);
+            AnimateMessageBubble(bubble);
 
             if (riskLevel == "Emergency")
             {
@@ -1073,7 +1106,6 @@ namespace CybersecurityChatbotGUI
             string lowerMessage = message.ToLower();
 
             if (lowerMessage.Contains("risk level: emergency") ||
-                lowerMessage.Contains("risk level: emergency") ||
                 lowerMessage.Contains("cyber emergency"))
             {
                 return "Emergency";
@@ -1097,17 +1129,32 @@ namespace CybersecurityChatbotGUI
             return "";
         }
 
-        private void AnimateMessageBubble(Border bubble, bool isUserMessage)
+        private void AnimateMessageBubble(Border bubble)
         {
             TransformGroup transformGroup = bubble.RenderTransform as TransformGroup;
 
-            if (transformGroup == null)
+            if (transformGroup == null || transformGroup.IsFrozen)
             {
-                return;
+                transformGroup = new TransformGroup();
+                transformGroup.Children.Add(new ScaleTransform(0.96, 0.96));
+                transformGroup.Children.Add(new TranslateTransform(0, 14));
+                bubble.RenderTransform = transformGroup;
             }
 
             ScaleTransform scaleTransform = transformGroup.Children[0] as ScaleTransform;
             TranslateTransform translateTransform = transformGroup.Children[1] as TranslateTransform;
+
+            if (scaleTransform == null || scaleTransform.IsFrozen)
+            {
+                scaleTransform = new ScaleTransform(0.96, 0.96);
+                transformGroup.Children[0] = scaleTransform;
+            }
+
+            if (translateTransform == null || translateTransform.IsFrozen)
+            {
+                translateTransform = new TranslateTransform(0, 14);
+                transformGroup.Children[1] = translateTransform;
+            }
 
             DoubleAnimation opacityAnimation = new DoubleAnimation
             {
@@ -1138,45 +1185,48 @@ namespace CybersecurityChatbotGUI
             };
 
             bubble.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-            scaleTransform?.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
-            scaleTransform?.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
-            translateTransform?.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            translateTransform.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
         }
 
         private void AnimateEmergencyPulse(Border bubble)
         {
-            DoubleAnimation pulseAnimation = new DoubleAnimation
+            if (bubble.BorderBrush is SolidColorBrush borderBrush && !borderBrush.IsFrozen)
             {
-                From = 1,
-                To = 0.72,
-                Duration = TimeSpan.FromMilliseconds(520),
-                AutoReverse = true,
-                RepeatBehavior = new RepeatBehavior(2),
-                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
-            };
+                DoubleAnimation pulseAnimation = new DoubleAnimation
+                {
+                    From = 1,
+                    To = 0.72,
+                    Duration = TimeSpan.FromMilliseconds(520),
+                    AutoReverse = true,
+                    RepeatBehavior = new RepeatBehavior(2),
+                    EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+                };
 
-            if (bubble.BorderBrush is SolidColorBrush borderBrush)
-            {
                 borderBrush.BeginAnimation(SolidColorBrush.OpacityProperty, pulseAnimation);
             }
         }
 
         private void AnimateButtonPress(Button button)
         {
-            if (button == null || button.RenderTransform == null)
+            if (button == null)
             {
                 return;
             }
 
             ScaleTransform scaleTransform = button.RenderTransform as ScaleTransform;
 
-            if (scaleTransform == null)
+            if (scaleTransform == null || scaleTransform.IsFrozen)
             {
-                return;
+                scaleTransform = new ScaleTransform(1, 1);
+                button.RenderTransform = scaleTransform;
+                button.RenderTransformOrigin = new Point(0.5, 0.5);
             }
 
             DoubleAnimation shrinkAnimation = new DoubleAnimation
             {
+                From = 1,
                 To = 0.94,
                 Duration = TimeSpan.FromMilliseconds(80),
                 AutoReverse = true,
@@ -1185,6 +1235,78 @@ namespace CybersecurityChatbotGUI
 
             scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, shrinkAnimation);
             scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, shrinkAnimation);
+        }
+
+        private void PremiumHoverCard_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Border card = sender as Border;
+
+            if (card == null)
+            {
+                return;
+            }
+
+            TranslateTransform translateTransform = card.RenderTransform as TranslateTransform;
+
+            if (translateTransform == null || translateTransform.IsFrozen)
+            {
+                translateTransform = new TranslateTransform(0, 0);
+                card.RenderTransform = translateTransform;
+                card.RenderTransformOrigin = new Point(0.5, 0.5);
+            }
+
+            DoubleAnimation liftAnimation = new DoubleAnimation
+            {
+                To = -3,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                To = 0.96,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            translateTransform.BeginAnimation(TranslateTransform.YProperty, liftAnimation);
+            card.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+        }
+
+        private void PremiumHoverCard_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Border card = sender as Border;
+
+            if (card == null)
+            {
+                return;
+            }
+
+            TranslateTransform translateTransform = card.RenderTransform as TranslateTransform;
+
+            if (translateTransform == null || translateTransform.IsFrozen)
+            {
+                translateTransform = new TranslateTransform(0, -3);
+                card.RenderTransform = translateTransform;
+                card.RenderTransformOrigin = new Point(0.5, 0.5);
+            }
+
+            DoubleAnimation dropAnimation = new DoubleAnimation
+            {
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                To = 1,
+                Duration = TimeSpan.FromMilliseconds(180),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            translateTransform.BeginAnimation(TranslateTransform.YProperty, dropAnimation);
+            card.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
         }
 
         private double GetResponsiveBubbleMaxWidth()
