@@ -9,6 +9,7 @@ namespace CybersecurityChatbotGUI.Services
         private readonly ResponseService responseService;
         private readonly KeywordService keywordService;
         private readonly SentimentService sentimentService;
+        private readonly PersonalityService personalityService;
 
         private readonly UserMemory userMemory;
         private readonly ConversationState conversationState;
@@ -20,6 +21,7 @@ namespace CybersecurityChatbotGUI.Services
             responseService = new ResponseService();
             keywordService = new KeywordService();
             sentimentService = new SentimentService();
+            personalityService = new PersonalityService();
 
             userMemory = new UserMemory();
             conversationState = new ConversationState();
@@ -92,30 +94,64 @@ namespace CybersecurityChatbotGUI.Services
 
             conversationState.LastIntent = detectedIntent;
 
+            string baseResponse;
+
             if (keywordService.IsHelpRequest(userInput))
             {
-                return responseService.GetHelpResponse();
+                baseResponse = responseService.GetHelpResponse();
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    "help",
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (detectedIntent == "summary")
             {
-                return responseService.GetSessionSummary(
+                baseResponse = responseService.GetSessionSummary(
                     userMemory.UserName,
                     userMemory.FavouriteTopic,
                     userMemory.LastTopic,
                     userMemory.LastSentiment,
                     conversationState.TotalMessages
                 );
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    detectedIntent,
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (IsRecallRequest(userInput))
             {
-                return GetMemorySummary();
+                baseResponse = GetMemorySummary();
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    "recall",
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (IsNameIntroduction(userInput))
             {
-                return SaveUserNameFromConversation(userInput);
+                baseResponse = SaveUserNameFromConversation(userInput);
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    "name",
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (detectedIntent == "emergency")
@@ -127,17 +163,41 @@ namespace CybersecurityChatbotGUI.Services
                     UpdateTopic(detectedTopic);
                 }
 
-                return responseService.GetEmergencyResponse(emergencyType);
+                baseResponse = responseService.GetEmergencyResponse(emergencyType);
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    detectedIntent,
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (IsInterestStatement(userInput) && !string.IsNullOrWhiteSpace(detectedTopic))
             {
-                return SaveFavouriteTopic(detectedTopic, detectedSentiment);
+                baseResponse = SaveFavouriteTopic(detectedTopic, detectedSentiment);
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    "interest",
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (detectedIntent == "follow-up")
             {
-                return HandleFollowUp(detectedSentiment);
+                baseResponse = HandleFollowUp(detectedSentiment);
+
+                return BuildSmartResponse(
+                    userInput,
+                    conversationState.CurrentTopic,
+                    detectedIntent,
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
             if (string.IsNullOrWhiteSpace(detectedTopic) &&
@@ -149,10 +209,46 @@ namespace CybersecurityChatbotGUI.Services
 
             if (!string.IsNullOrWhiteSpace(detectedTopic))
             {
-                return HandleTopicResponse(detectedTopic, detectedIntent, detectedSentiment);
+                baseResponse = HandleTopicResponse(detectedTopic, detectedIntent, detectedSentiment);
+
+                return BuildSmartResponse(
+                    userInput,
+                    detectedTopic,
+                    detectedIntent,
+                    detectedSentiment,
+                    baseResponse
+                );
             }
 
-            return responseService.GetDefaultResponse();
+            baseResponse = responseService.GetDefaultResponse();
+
+            return BuildSmartResponse(
+                userInput,
+                detectedTopic,
+                detectedIntent,
+                detectedSentiment,
+                baseResponse
+            );
+        }
+
+        private string BuildSmartResponse(
+            string userInput,
+            string detectedTopic,
+            string detectedIntent,
+            string detectedSentiment,
+            string baseResponse)
+        {
+            return personalityService.BuildPersonalisedResponse(
+                userMemory.UserName,
+                userInput,
+                detectedTopic,
+                detectedIntent,
+                detectedSentiment,
+                baseResponse,
+                conversationState.TotalMessages,
+                userMemory.FavouriteTopic,
+                conversationState.FollowUpCount
+            );
         }
 
         private string HandleTopicResponse(string detectedTopic, string detectedIntent, string detectedSentiment)
