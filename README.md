@@ -302,3 +302,64 @@ Rosebank College
 
 * README created and structured
 * Project prepared for Part 1 submission
+
+------------------------------------------
+# CyberBot – Cybersecurity Awareness Chatbot
+
+CyberBot is a WPF-based cybersecurity awareness chatbot that helps users learn about online safety topics such as passwords, phishing, scams, privacy, malware, safe browsing, and two-factor authentication.
+
+---
+
+## Student Details
+
+**Student Name:** Vusimuzi Khanyile  
+**Student Number:** ST10468302  
+**Module:** Programming 2A  
+**Module Code:** PROG6221/w  
+**Assessment:** Portfolio of Evidence – Part 2  
+**Application Type:** WPF Desktop Application  
+**Application Name:** CyberBot  
+
+---
+
+## Project Overview
+
+CyberBot is a graphical cybersecurity awareness chatbot developed using C# and Windows Presentation Foundation. The application extends the Part 1 console chatbot into a full GUI application while keeping the original Part 1 features such as the voice greeting, ASCII art, and personalised user interaction.
+
+The Part 2 version adds keyword recognition, random responses, memory and recall, sentiment detection, and improved conversation flow.
+
+CyberBot is designed to educate users about cybersecurity in a simple, friendly, and interactive way.
+
+-----------------------------------
+---
+
+## Part 2 Features Implemented
+
+This project implements the required Part 2 chatbot features as follows:
+
+### 1. Graphical User Interface
+
+CyberBot was converted from a console-based chatbot into a WPF desktop application. The GUI includes:
+
+- A welcome page
+- A chatbot name and branding area
+- ASCII art display
+- Name input field
+- Main chat screen
+- Chat history area
+- User and bot message bubbles
+- Text input box
+- Send button
+- Scrollable chat area
+- Help, New Chat, and Logout menu options
+
+---
+
+### 2. Voice Greeting
+
+CyberBot plays a voice greeting when the application starts.
+
+The greeting audio file is stored in:
+
+```text
+Assets/welcome.wav

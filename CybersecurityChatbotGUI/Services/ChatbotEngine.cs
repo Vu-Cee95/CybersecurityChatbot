@@ -1,30 +1,42 @@
-﻿using CybersecurityChatbotGUI.Models;
+﻿// Import the Models namespace for data structures used by the chatbot engine
+using CybersecurityChatbotGUI.Models;
 
 namespace CybersecurityChatbotGUI.Services
 {
+    // Core chatbot engine that processes user messages and generates intelligent responses
+    // Uses a delegation pattern with multiple specialized services for different aspects of conversation
     public class ChatbotEngine
     {
+        // Delegate type for response generation methods
+        // Allows the engine to switch between different response strategies
         private delegate string ResponseHandler(string userInput);
 
-        private readonly ResponseService responseService;
-        private readonly KeywordService keywordService;
-        private readonly SentimentService sentimentService;
-        private readonly PersonalityService personalityService;
-        private readonly InputNormaliserService inputNormaliserService;
-        private readonly ContextChoiceService contextChoiceService;
-        private readonly RiskLevelService riskLevelService;
-        private readonly PlatformExampleService platformExampleService;
-        private readonly ClarifyingQuestionService clarifyingQuestionService;
-        private readonly ChatHistoryService chatHistoryService;
-        private readonly CyberSafetyReportService cyberSafetyReportService;
+        // Service dependencies injected through constructor
+        // Each service handles a specific aspect of the chatbot's intelligence
+        private readonly ResponseService responseService;              // Provides topic-specific and general responses
+        private readonly KeywordService keywordService;                // Detects keywords, topics, and intents in user input
+        private readonly SentimentService sentimentService;            // Analyzes emotional tone of user messages
+        private readonly PersonalityService personalityService;        // Personalizes responses based on user context
+        private readonly InputNormaliserService inputNormaliserService; // Normalizes user input for consistent processing
+        private readonly ContextChoiceService contextChoiceService;    // Detects user choices in follow-up conversations
+        private readonly RiskLevelService riskLevelService;            // Assesses cybersecurity risk levels from user input
+        private readonly PlatformExampleService platformExampleService; // Provides platform-specific security examples
+        private readonly ClarifyingQuestionService clarifyingQuestionService; // Determines when to ask clarifying questions
+        private readonly ChatHistoryService chatHistoryService;        // Tracks conversation history and context
+        private readonly CyberSafetyReportService cyberSafetyReportService; // Generates comprehensive safety reports
 
-        private readonly UserMemory userMemory;
-        private readonly ConversationState conversationState;
+        // State management objects
+        private readonly UserMemory userMemory;                // Stores persistent user information across conversation
+        private readonly ConversationState conversationState;  // Tracks current conversation flow and state
 
+        // Response handler delegate instance
+        // Defaults to GenerateResponse method for processing all user input
         private readonly ResponseHandler responseHandler;
 
+        // Constructor: initializes all services and state objects
         public ChatbotEngine()
         {
+            // Initialize all service dependencies
             responseService = new ResponseService();
             keywordService = new KeywordService();
             sentimentService = new SentimentService();
@@ -37,12 +49,16 @@ namespace CybersecurityChatbotGUI.Services
             chatHistoryService = new ChatHistoryService();
             cyberSafetyReportService = new CyberSafetyReportService();
 
+            // Initialize state objects
             userMemory = new UserMemory();
             conversationState = new ConversationState();
 
+            // Set default response handler to GenerateResponse method
             responseHandler = GenerateResponse;
         }
 
+        // Property: Returns formatted display text for the last topic discussed
+        // Shows "None" if no topic has been set
         public string LastTopicDisplay
         {
             get
@@ -53,6 +69,8 @@ namespace CybersecurityChatbotGUI.Services
             }
         }
 
+        // Property: Returns formatted display text for the last detected sentiment
+        // Shows "Not detected" if no sentiment has been detected
         public string LastSentimentDisplay
         {
             get
@@ -63,11 +81,15 @@ namespace CybersecurityChatbotGUI.Services
             }
         }
 
+        // Main entry point for processing user messages
+        // Delegates to the response handler for generating appropriate responses
         public string ProcessMessage(string userInput)
         {
             return responseHandler(userInput);
         }
 
+        // Sets the user's name in memory for personalized responses
+        // Only sets if the provided name is not empty or whitespace
         public void SetUserName(string name)
         {
             if (!string.IsNullOrWhiteSpace(name))
@@ -76,23 +98,29 @@ namespace CybersecurityChatbotGUI.Services
             }
         }
 
+        // Resets conversation state while preserving the user's name
+        // Clears topics, intents, follow-up counts, pending choices, and history
         public void ResetConversationButKeepUser()
         {
+            // Reset conversation state properties
             conversationState.CurrentTopic = "";
             conversationState.PreviousTopic = "";
             conversationState.LastIntent = "";
             conversationState.FollowUpCount = 0;
             conversationState.TotalMessages = 0;
 
+            // Clear pending choice state (for contextual follow-up questions)
             conversationState.IsWaitingForChoice = false;
             conversationState.PendingTopic = "";
             conversationState.PendingQuestionType = "";
             conversationState.PendingOptions = "";
 
+            // Clear clarification state
             conversationState.IsWaitingForClarification = false;
             conversationState.ClarificationReason = "";
             conversationState.LastBotOffer = "";
 
+            // Reset user memory (except user name which is preserved by caller)
             userMemory.LastTopic = "";
             userMemory.LastSentiment = "";
             userMemory.LastEmergencyType = "";
@@ -103,38 +131,50 @@ namespace CybersecurityChatbotGUI.Services
             userMemory.LastIntentRequested = "";
             userMemory.ReportsGenerated = 0;
 
+            // Clear chat history
             chatHistoryService.Clear();
         }
 
+        // Core response generation logic
+        // Analyzes user input through multiple services and builds an appropriate response
+        // Handles various conversation scenarios: emergencies, topics, intents, clarifications, reports
         private string GenerateResponse(string userInput)
         {
+            // Validate input is not empty
             if (string.IsNullOrWhiteSpace(userInput))
             {
                 return "Please type a message first.";
             }
 
+            // Trim whitespace from input
             userInput = userInput.Trim();
 
+            // Normalize input for consistent processing (lowercase, remove extra spaces, etc.)
             string normalisedInput = inputNormaliserService.Normalise(userInput);
 
+            // Increment total message counter
             conversationState.TotalMessages++;
 
-            string detectedSentiment = sentimentService.DetectSentiment(normalisedInput);
-            string detectedTopic = keywordService.DetectTopic(normalisedInput);
-            string detectedIntent = keywordService.DetectIntent(normalisedInput);
-            string emergencyType = keywordService.DetectEmergencyType(normalisedInput);
-            string riskLevel = riskLevelService.DetectRiskLevel(normalisedInput);
-            string detectedIssue = riskLevelService.DetectIssue(normalisedInput);
-            string detectedPlatform = platformExampleService.DetectPlatform(normalisedInput);
+            // Analyze user input through various detection services
+            string detectedSentiment = sentimentService.DetectSentiment(normalisedInput);      // Detect emotional tone
+            string detectedTopic = keywordService.DetectTopic(normalisedInput);                // Detect cybersecurity topic
+            string detectedIntent = keywordService.DetectIntent(normalisedInput);              // Detect user's intent
+            string emergencyType = keywordService.DetectEmergencyType(normalisedInput);        // Detect emergency scenario
+            string riskLevel = riskLevelService.DetectRiskLevel(normalisedInput);              // Assess risk level
+            string detectedIssue = riskLevelService.DetectIssue(normalisedInput);              // Detect specific issue
+            string detectedPlatform = platformExampleService.DetectPlatform(normalisedInput);  // Detect platform mentioned
 
+            // Check for context-based risk escalation (repeated high-risk mentions)
             riskLevel = chatHistoryService.DetectContextRiskEscalation(normalisedInput, riskLevel);
 
+            // Record user message in chat history for context tracking
             chatHistoryService.AddUserMessage(
                 userInput,
                 detectedTopic,
                 detectedIntent,
                 riskLevel);
 
+            // Update user memory with detected information (only if detected)
             if (!string.IsNullOrWhiteSpace(detectedSentiment))
             {
                 userMemory.LastSentiment = detectedSentiment;
@@ -150,6 +190,7 @@ namespace CybersecurityChatbotGUI.Services
                 userMemory.LastDetectedIssue = detectedIssue;
             }
 
+            // Update risk levels in user memory
             userMemory.CurrentRiskLevel = riskLevel;
             userMemory.HighestRiskLevel = chatHistoryService.GetHighestRiskLevel();
 
@@ -160,6 +201,8 @@ namespace CybersecurityChatbotGUI.Services
 
             conversationState.LastIntent = detectedIntent;
 
+            // CHECK 1: Report generation request
+            // Handles "generate report", "cyber safety report", etc.
             if (IsReportRequest(normalisedInput))
             {
                 userMemory.ReportsGenerated++;
@@ -179,6 +222,8 @@ namespace CybersecurityChatbotGUI.Services
                     report);
             }
 
+            // CHECK 2: Handle pending clarification
+            // If bot is waiting for user to clarify a vague message
             if (conversationState.IsWaitingForClarification)
             {
                 string clarificationResponse = HandleClarificationAnswer(
@@ -196,6 +241,8 @@ namespace CybersecurityChatbotGUI.Services
                 }
             }
 
+            // CHECK 3: Handle contextual choice
+            // If bot offered options and user is responding with a choice
             string contextualChoiceResponse = TryHandleContextualChoice(
                 userInput,
                 normalisedInput,
@@ -208,6 +255,8 @@ namespace CybersecurityChatbotGUI.Services
                 return contextualChoiceResponse;
             }
 
+            // CHECK 4: Needs clarification?
+            // Detects vague inputs like "help" or "I have a problem" without specifics
             if (clarifyingQuestionService.NeedsClarification(
                     normalisedInput,
                     detectedTopic,
@@ -231,10 +280,13 @@ namespace CybersecurityChatbotGUI.Services
 
             string baseResponse;
 
+            // CHECK 5: Help request
+            // User explicitly asks for help or guidance
             if (keywordService.IsHelpRequest(normalisedInput))
             {
                 baseResponse = responseService.GetHelpResponse();
 
+                // Set up pending choice for follow-up options
                 SetPendingChoice(
                     conversationState.CurrentTopic,
                     "help",
@@ -248,6 +300,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 6: Summary request
+            // User asks for session summary or overview
             if (detectedIntent == "summary")
             {
                 baseResponse = responseService.GetSessionSummary(
@@ -269,6 +323,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 7: Recall/memory request
+            // User asks what the bot remembers about them
             if (IsRecallRequest(normalisedInput))
             {
                 baseResponse = GetMemorySummary();
@@ -286,6 +342,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 8: Name introduction
+            // User introduces themselves during conversation
             if (IsNameIntroduction(normalisedInput))
             {
                 baseResponse = SaveUserNameFromConversation(userInput);
@@ -300,6 +358,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 9: High risk or emergency detected
+            // Immediate escalation for dangerous situations
             if (riskLevel == "High" || riskLevel == "Emergency")
             {
                 if (!string.IsNullOrWhiteSpace(detectedTopic))
@@ -309,6 +369,7 @@ namespace CybersecurityChatbotGUI.Services
 
                 userMemory.LastEmergencyType = emergencyType;
 
+                // Build risk warning + emergency response
                 baseResponse =
                     riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) +
                     "\n\n" +
@@ -329,6 +390,7 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 10: Emergency intent (user expressing urgent concern)
             if (detectedIntent == "emergency")
             {
                 userMemory.LastEmergencyType = emergencyType;
@@ -358,6 +420,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 11: Interest statement
+            // User expresses interest in a specific cybersecurity topic
             if (IsInterestStatement(normalisedInput) && !string.IsNullOrWhiteSpace(detectedTopic))
             {
                 baseResponse = SaveFavouriteTopic(detectedTopic, detectedSentiment);
@@ -375,6 +439,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 12: Follow-up intent
+            // User asks for more information on current topic
             if (detectedIntent == "follow-up")
             {
                 baseResponse = HandleFollowUp(detectedSentiment);
@@ -392,6 +458,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 13: Intent without explicit topic
+            // Use current conversation topic if user asks for definition/example/prevention
             if (string.IsNullOrWhiteSpace(detectedTopic) &&
                 !string.IsNullOrWhiteSpace(conversationState.CurrentTopic) &&
                 (detectedIntent == "definition" ||
@@ -401,10 +469,13 @@ namespace CybersecurityChatbotGUI.Services
                 detectedTopic = conversationState.CurrentTopic;
             }
 
+            // CHECK 14: Topic detected
+            // Respond with topic-specific information
             if (!string.IsNullOrWhiteSpace(detectedTopic))
             {
                 baseResponse = HandleTopicResponse(detectedTopic, detectedIntent, detectedSentiment);
 
+                // Add platform-specific example if user asked for examples
                 if (detectedIntent == "example")
                 {
                     string platformExample = platformExampleService.GetPlatformExample(
@@ -419,6 +490,7 @@ namespace CybersecurityChatbotGUI.Services
                     }
                 }
 
+                // Add risk warning for medium risk situations
                 if (riskLevel == "Medium")
                 {
                     baseResponse =
@@ -440,6 +512,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // CHECK 15: Vague follow-up with known topic
+            // User says "tell me more" without specifying topic
             if (contextChoiceService.LooksLikeVagueFollowUp(normalisedInput) &&
                 !string.IsNullOrWhiteSpace(conversationState.CurrentTopic))
             {
@@ -458,6 +532,8 @@ namespace CybersecurityChatbotGUI.Services
                     baseResponse);
             }
 
+            // DEFAULT RESPONSE
+            // Fallback when no specific intent or topic is detected
             baseResponse = BuildSmartDefaultResponse(
                 normalisedInput,
                 detectedSentiment,
@@ -477,6 +553,9 @@ namespace CybersecurityChatbotGUI.Services
                 baseResponse);
         }
 
+        // Handles user's answer to a clarifying question
+        // Attempts to extract topic from the clarification answer
+        // Falls back to keyword detection if topic cannot be inferred
         private string HandleClarificationAnswer(
             string originalInput,
             string normalisedInput,
@@ -486,8 +565,10 @@ namespace CybersecurityChatbotGUI.Services
             string riskLevel,
             string detectedIssue)
         {
+            // Clear clarification flag since user has responded
             conversationState.IsWaitingForClarification = false;
 
+            // If no topic detected, try to infer from keywords in clarification answer
             if (string.IsNullOrWhiteSpace(detectedTopic))
             {
                 if (normalisedInput.Contains("clicked") || normalisedInput.Contains("link"))
@@ -515,6 +596,7 @@ namespace CybersecurityChatbotGUI.Services
                 }
             }
 
+            // If still no topic, ask for more specific detail
             if (string.IsNullOrWhiteSpace(detectedTopic))
             {
                 conversationState.IsWaitingForClarification = true;
@@ -527,6 +609,7 @@ namespace CybersecurityChatbotGUI.Services
                     "I still need one more detail. Was it about a link, password, OTP, file download, suspicious message, or learning a topic?");
             }
 
+            // Topic identified from clarification - provide full response
             UpdateTopic(detectedTopic);
 
             string baseResponse =
@@ -549,6 +632,8 @@ namespace CybersecurityChatbotGUI.Services
                 baseResponse);
         }
 
+        // Attempts to detect and handle when user is responding to a pending choice offer
+        // Returns empty string if no choice is pending or no valid choice is detected
         private string TryHandleContextualChoice(
             string originalInput,
             string normalisedInput,
@@ -556,31 +641,37 @@ namespace CybersecurityChatbotGUI.Services
             string detectedIntent,
             string detectedSentiment)
         {
+            // Only process if bot is waiting for a choice
             if (!conversationState.IsWaitingForChoice)
             {
                 return "";
             }
 
+            // If user changed topic, don't treat as choice response
             if (!string.IsNullOrWhiteSpace(detectedTopic) &&
                 detectedTopic != conversationState.PendingTopic)
             {
                 return "";
             }
 
+            // Detect which choice the user made
             string choice = contextChoiceService.DetectChoice(
                 normalisedInput,
                 conversationState.PendingOptions);
 
+            // If no direct choice, try memory-based intent detection
             if (string.IsNullOrWhiteSpace(choice))
             {
                 choice = DetectIntentMemoryChoice(normalisedInput);
             }
 
+            // If still no choice, cannot handle
             if (string.IsNullOrWhiteSpace(choice))
             {
                 return "";
             }
 
+            // User declined the offer
             if (choice == "no")
             {
                 ClearPendingChoice();
@@ -593,6 +684,7 @@ namespace CybersecurityChatbotGUI.Services
                     "No problem. You can ask me about another cybersecurity topic whenever you are ready.");
             }
 
+            // Determine which topic to respond about
             string topic = !string.IsNullOrWhiteSpace(detectedTopic)
                 ? detectedTopic
                 : conversationState.PendingTopic;
@@ -616,6 +708,7 @@ namespace CybersecurityChatbotGUI.Services
 
             string baseResponse;
 
+            // Build response based on choice type
             if (choice == "yes" || choice == "all")
             {
                 baseResponse = BuildAllDetailsResponse(topic);
@@ -638,6 +731,8 @@ namespace CybersecurityChatbotGUI.Services
                 baseResponse);
         }
 
+        // Detects user intent from memory when explicit choice keywords aren't found
+        // Falls back to common intent patterns like "tips", "examples", "steps"
         private string DetectIntentMemoryChoice(string normalisedInput)
         {
             if (string.IsNullOrWhiteSpace(normalisedInput))
@@ -645,6 +740,7 @@ namespace CybersecurityChatbotGUI.Services
                 return "";
             }
 
+            // User wants more of the same type of content
             if (normalisedInput.Contains("another") || normalisedInput.Contains("more like that"))
             {
                 if (!string.IsNullOrWhiteSpace(userMemory.LastIntentRequested))
@@ -655,6 +751,7 @@ namespace CybersecurityChatbotGUI.Services
                 return "example";
             }
 
+            // Direct intent keyword matching
             if (normalisedInput.Contains("tips") || normalisedInput.Contains("advice"))
             {
                 return "tip";
@@ -673,6 +770,7 @@ namespace CybersecurityChatbotGUI.Services
             return "";
         }
 
+        // Builds response for a specific user choice (tip, example, checklist, definition)
         private string BuildSpecificChoiceResponse(string topic, string choice)
         {
             userMemory.LastIntentRequested = choice;
@@ -683,6 +781,7 @@ namespace CybersecurityChatbotGUI.Services
                     return responseService.GetTopicResponse(topic, "prevention");
 
                 case "example":
+                    // Try platform-specific example first, fall back to generic
                     string platformExample = platformExampleService.GetPlatformExample(topic, userMemory.LastPlatform);
 
                     if (!string.IsNullOrWhiteSpace(platformExample))
@@ -703,6 +802,8 @@ namespace CybersecurityChatbotGUI.Services
             }
         }
 
+        // Builds comprehensive response covering all aspects of a topic
+        // Includes definition, safety tips, examples, platform examples, and checklist
         private string BuildAllDetailsResponse(string topic)
         {
             string definition = responseService.GetTopicResponse(topic, "definition");
@@ -711,6 +812,7 @@ namespace CybersecurityChatbotGUI.Services
             string platformExample = platformExampleService.GetPlatformExample(topic, userMemory.LastPlatform);
             string checklist = BuildChecklistResponse(topic);
 
+            // Append platform example if available
             if (!string.IsNullOrWhiteSpace(platformExample))
             {
                 example += "\n\n" + platformExample;
@@ -723,6 +825,8 @@ namespace CybersecurityChatbotGUI.Services
                    $"4. Quick Checklist\n{checklist}";
         }
 
+        // Builds a topic-specific safety checklist with actionable steps
+        // Each case returns a formatted checklist for the given cybersecurity topic
         private string BuildChecklistResponse(string topic)
         {
             switch (topic)
@@ -793,26 +897,33 @@ namespace CybersecurityChatbotGUI.Services
             }
         }
 
+        // Builds a smart default response when no specific topic or intent is detected
+        // Uses sentiment and risk level to provide contextually appropriate fallback
         private string BuildSmartDefaultResponse(
             string normalisedInput,
             string detectedSentiment,
             string riskLevel,
             string detectedIssue)
         {
+            // If sentiment detected, acknowledge concern and ask for topic
             if (!string.IsNullOrWhiteSpace(detectedSentiment))
             {
                 return "I can tell there may be a concern here, but I need a bit more detail. Are you asking about a password, phishing message, scam, privacy, safe browsing, malware, or 2FA?";
             }
 
+            // Medium risk situations prompt for more details
             if (riskLevel == "Medium")
             {
                 return riskLevelService.BuildRiskResponse(riskLevel, detectedIssue) +
                        "\n\nTell me what happened next: did you click a link, enter details, download a file, or only receive the message?";
             }
 
+            // Generic fallback response
             return responseService.GetDefaultResponse();
         }
 
+        // Builds a summary snapshot of the current conversation intelligence
+        // Shows risk levels, topics, detected issues, platforms, and report count
         private string BuildIntelligenceSnapshot()
         {
             string platform = string.IsNullOrWhiteSpace(userMemory.LastPlatform)
@@ -836,8 +947,11 @@ namespace CybersecurityChatbotGUI.Services
                    $"• Reports generated: {userMemory.ReportsGenerated}";
         }
 
+        // Sets up a pending choice state for contextual follow-up questions
+        // Enables the bot to offer choices like "tip, example, checklist" and wait for user response
         private void SetPendingChoice(string topic, string questionType, string options)
         {
+            // Fallback topic resolution (use current topic or last topic if none provided)
             if (string.IsNullOrWhiteSpace(topic))
             {
                 topic = conversationState.CurrentTopic;
@@ -848,6 +962,7 @@ namespace CybersecurityChatbotGUI.Services
                 topic = userMemory.LastTopic;
             }
 
+            // Only set pending choice if a topic exists
             conversationState.IsWaitingForChoice = !string.IsNullOrWhiteSpace(topic);
             conversationState.PendingTopic = topic;
             conversationState.PendingQuestionType = questionType;
@@ -855,6 +970,8 @@ namespace CybersecurityChatbotGUI.Services
             conversationState.LastBotOffer = options;
         }
 
+        // Clears all pending choice state
+        // Called when user declines offer or choice is processed
         private void ClearPendingChoice()
         {
             conversationState.IsWaitingForChoice = false;
@@ -864,6 +981,8 @@ namespace CybersecurityChatbotGUI.Services
             conversationState.LastBotOffer = "";
         }
 
+        // Builds final response by passing through personality service for personalization
+        // Adds user context, name, preferences, and conversation history to the base response
         private string BuildSmartResponse(
             string userInput,
             string detectedTopic,
@@ -882,6 +1001,7 @@ namespace CybersecurityChatbotGUI.Services
                 userMemory.FavouriteTopic,
                 conversationState.FollowUpCount);
 
+            // Record bot response in chat history
             chatHistoryService.AddBotMessage(
                 smartResponse,
                 detectedTopic,
@@ -891,6 +1011,8 @@ namespace CybersecurityChatbotGUI.Services
             return smartResponse;
         }
 
+        // Handles topic-specific responses with empathy layer
+        // Combines sentiment-based empathy with topic-specific information
         private string HandleTopicResponse(
             string detectedTopic,
             string detectedIntent,
@@ -901,6 +1023,7 @@ namespace CybersecurityChatbotGUI.Services
             string empathy = sentimentService.GetEmpathyResponse(detectedSentiment);
             string response = responseService.GetTopicResponse(detectedTopic, detectedIntent);
 
+            // Prepend empathy if detected
             if (!string.IsNullOrWhiteSpace(empathy))
             {
                 return $"{empathy}\n\n{response}";
@@ -909,6 +1032,8 @@ namespace CybersecurityChatbotGUI.Services
             return response;
         }
 
+        // Updates current conversation topic and tracks topic transitions
+        // Saves previous topic and resets follow-up count for new topic
         private void UpdateTopic(string topic)
         {
             if (!string.IsNullOrWhiteSpace(conversationState.CurrentTopic))
@@ -922,6 +1047,8 @@ namespace CybersecurityChatbotGUI.Services
             userMemory.LastTopic = topic;
         }
 
+        // Saves user's favourite topic when they express interest
+        // Returns acknowledgment with empathy and topic introduction
         private string SaveFavouriteTopic(string detectedTopic, string detectedSentiment)
         {
             userMemory.FavouriteTopic = detectedTopic;
@@ -938,8 +1065,11 @@ namespace CybersecurityChatbotGUI.Services
             return $"Great, {userMemory.UserName}. I will remember that you are interested in {detectedTopic}.\n\n{tip}";
         }
 
+        // Handles follow-up requests for more information on current topic
+        // Increments follow-up counter and provides additional information
         private string HandleFollowUp(string detectedSentiment)
         {
+            // No current topic to follow up on
             if (string.IsNullOrWhiteSpace(conversationState.CurrentTopic))
             {
                 return "I can explain more, but first tell me which topic you want to learn about: passwords, phishing, scams, privacy, safe browsing, malware, or 2FA.";
@@ -958,6 +1088,8 @@ namespace CybersecurityChatbotGUI.Services
             return $"Here is more about {conversationState.CurrentTopic}:\n\n{followUpTip}";
         }
 
+        // Detects if user is introducing themselves with their name
+        // Matches patterns like "My name is...", "Call me...", "You can call me..."
         private bool IsNameIntroduction(string userInput)
         {
             string lowerInput = userInput.ToLower();
@@ -967,20 +1099,25 @@ namespace CybersecurityChatbotGUI.Services
                    lowerInput.StartsWith("you can call me ");
         }
 
+        // Extracts and saves user name from a name introduction message
+        // Validates the extracted name has sufficient length and contains letters
         private string SaveUserNameFromConversation(string userInput)
         {
             string name = userInput;
 
+            // Remove known name introduction prefixes
             name = name.Replace("My name is", "", System.StringComparison.OrdinalIgnoreCase);
             name = name.Replace("Call me", "", System.StringComparison.OrdinalIgnoreCase);
             name = name.Replace("You can call me", "", System.StringComparison.OrdinalIgnoreCase);
             name = name.Trim();
 
+            // Validate name length
             if (string.IsNullOrWhiteSpace(name) || name.Length < 3)
             {
                 return "I could not clearly detect your name. Try typing something like: My name is Vusi.";
             }
 
+            // Validate name contains at least one letter
             bool hasLetter = false;
 
             foreach (char character in name)
@@ -997,11 +1134,14 @@ namespace CybersecurityChatbotGUI.Services
                 return "That name does not look valid. Please use a name with at least one letter.";
             }
 
+            // Save valid name
             userMemory.UserName = name;
 
             return $"Nice to meet you, {userMemory.UserName}. I will remember your name during this chat.";
         }
 
+        // Detects if user is expressing interest in a cybersecurity topic
+        // Matches patterns like "interested in", "I like", "teach me about"
         private bool IsInterestStatement(string userInput)
         {
             string lowerInput = userInput.ToLower();
@@ -1014,6 +1154,8 @@ namespace CybersecurityChatbotGUI.Services
                    lowerInput.Contains("i care about");
         }
 
+        // Detects if user is asking what the bot remembers about them
+        // Matches patterns like "what do you remember", "my favourite topic"
         private bool IsRecallRequest(string userInput)
         {
             string lowerInput = userInput.ToLower();
@@ -1028,6 +1170,8 @@ namespace CybersecurityChatbotGUI.Services
                    lowerInput.Contains("what was my last topic");
         }
 
+        // Detects if user is requesting a cyber safety report
+        // Matches patterns like "generate report", "cyber safety report"
         private bool IsReportRequest(string normalisedInput)
         {
             return normalisedInput.Contains("generate report") ||
@@ -1039,6 +1183,8 @@ namespace CybersecurityChatbotGUI.Services
                    normalisedInput.Contains("report of this chat");
         }
 
+        // Builds comprehensive memory summary of everything the bot remembers
+        // Includes user name, favourite topic, risk levels, detected issues, and more
         private string GetMemorySummary()
         {
             string favouriteTopic = string.IsNullOrWhiteSpace(userMemory.FavouriteTopic)
@@ -1077,6 +1223,7 @@ namespace CybersecurityChatbotGUI.Services
                 $"• Last platform detected: {platform}\n" +
                 $"• Reports generated: {userMemory.ReportsGenerated}";
 
+            // Add encouragement related to favourite topic
             if (favouriteTopic != "not set yet")
             {
                 response += $"\n\nSince you are interested in {favouriteTopic}, I can keep giving you useful tips about that topic.";
