@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using CybersecurityChatbotGUI.Services;
 
@@ -50,16 +51,31 @@ namespace CybersecurityChatbotGUI
 
             typingDotsTimer.Interval = TimeSpan.FromMilliseconds(420);
             typingDotsTimer.Tick += TypingDotsTimer_Tick;
+
+            WelcomeNameTextBox.GotFocus += WelcomeNameTextBox_GotFocus;
+            WelcomeNameTextBox.LostFocus += WelcomeNameTextBox_LostFocus;
         }
 
         private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            UseLayoutRounding = true;
+            SnapsToDevicePixels = true;
+
+            TextOptions.SetTextFormattingMode(this, TextFormattingMode.Display);
+            TextOptions.SetTextRenderingMode(this, TextRenderingMode.ClearType);
+            TextOptions.SetTextHintingMode(this, TextHintingMode.Fixed);
+            RenderOptions.SetClearTypeHint(this, ClearTypeHint.Enabled);
+
             ShowWelcomePage();
+
+            StartOnlineStatusPulse();
+            StartBotAvatarBreathing();
 
             await Task.Run(() => audioPlayer.PlayWelcomeSound());
 
             UpdateWelcomePlaceholderState();
             UpdateStartChatButtonState();
+            UpdateAllTextBarGlowStates();
 
             WelcomeNameTextBox.Focus();
         }
@@ -83,6 +99,7 @@ namespace CybersecurityChatbotGUI
 
             await FadeSlideElementAsync(WelcomePage, 0, 1, 18, 0, 360);
 
+            UpdateAllTextBarGlowStates();
             WelcomeNameTextBox.Focus();
         }
 
@@ -96,6 +113,7 @@ namespace CybersecurityChatbotGUI
 
             await FadeSlideElementAsync(ChatPage, 0, 1, 20, 0, 360);
 
+            UpdateAllTextBarGlowStates();
             UserInputTextBox.Focus();
             ScrollChatToTop();
         }
@@ -396,6 +414,292 @@ namespace CybersecurityChatbotGUI
             scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, pulseAnimation);
         }
 
+        private void StartOnlineStatusPulse()
+        {
+            AnimateOnlineDot(WelcomeOnlineDot);
+            AnimateOnlineDot(ChatOnlineDot);
+        }
+
+        private void AnimateOnlineDot(Ellipse dot)
+        {
+            if (dot == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = dot.RenderTransform as ScaleTransform;
+
+            if (scaleTransform == null || scaleTransform.IsFrozen)
+            {
+                scaleTransform = new ScaleTransform(1, 1);
+                dot.RenderTransform = scaleTransform;
+                dot.RenderTransformOrigin = new Point(0.5, 0.5);
+            }
+
+            DoubleAnimation scaleAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 1.55,
+                Duration = TimeSpan.FromMilliseconds(1100),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 0.45,
+                Duration = TimeSpan.FromMilliseconds(1100),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+            dot.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+        }
+
+        private void StartBotAvatarBreathing()
+        {
+            if (HeaderBotAvatarBorder == null)
+            {
+                return;
+            }
+
+            ScaleTransform scaleTransform = HeaderBotAvatarBorder.RenderTransform as ScaleTransform;
+
+            if (scaleTransform == null || scaleTransform.IsFrozen)
+            {
+                scaleTransform = new ScaleTransform(1, 1);
+                HeaderBotAvatarBorder.RenderTransform = scaleTransform;
+                HeaderBotAvatarBorder.RenderTransformOrigin = new Point(0.5, 0.5);
+            }
+
+            DoubleAnimation breathingAnimation = new DoubleAnimation
+            {
+                From = 1,
+                To = 1.045,
+                Duration = TimeSpan.FromMilliseconds(1600),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, breathingAnimation);
+            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, breathingAnimation);
+        }
+
+        private void AnimateInputFocusGlow(bool shouldGlow)
+        {
+            if (InputOuterBorder == null)
+            {
+                return;
+            }
+
+            AnimateTextBarGlow(InputOuterBorder, shouldGlow);
+        }
+
+        private void AnimateWelcomeNameTextBarGlow(bool shouldGlow)
+        {
+            Border welcomeNameBorder = FindParentBorder(WelcomeNameTextBox);
+
+            if (welcomeNameBorder == null)
+            {
+                return;
+            }
+
+            AnimateTextBarGlow(welcomeNameBorder, shouldGlow);
+        }
+
+        private void AnimateTextBarGlow(Border targetBorder, bool shouldGlow)
+        {
+            if (targetBorder == null)
+            {
+                return;
+            }
+
+            Color activeBorderColor = Color.FromRgb(249, 115, 22);
+            Color inactiveBorderColor = Color.FromRgb(221, 221, 221);
+
+            SolidColorBrush borderBrush = new SolidColorBrush(shouldGlow
+                ? activeBorderColor
+                : inactiveBorderColor);
+
+            targetBorder.BorderBrush = borderBrush;
+
+            DropShadowEffect glowEffect = new DropShadowEffect
+            {
+                BlurRadius = shouldGlow ? 5 : 0,
+                ShadowDepth = 0,
+                Opacity = shouldGlow ? 0.18 : 0,
+                Color = activeBorderColor
+            };
+
+            targetBorder.Effect = glowEffect;
+
+            DoubleAnimation blurAnimation = new DoubleAnimation
+            {
+                To = shouldGlow ? 5 : 0,
+                Duration = TimeSpan.FromMilliseconds(160),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                To = shouldGlow ? 0.18 : 0,
+                Duration = TimeSpan.FromMilliseconds(160),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            glowEffect.BeginAnimation(DropShadowEffect.BlurRadiusProperty, blurAnimation);
+            glowEffect.BeginAnimation(DropShadowEffect.OpacityProperty, opacityAnimation);
+        }
+
+        private Border FindParentBorder(DependencyObject child)
+        {
+            DependencyObject current = child;
+
+            while (current != null)
+            {
+                current = VisualTreeHelper.GetParent(current);
+
+                if (current is Border border)
+                {
+                    return border;
+                }
+            }
+
+            return null;
+        }
+
+        private void UpdateAllTextBarGlowStates()
+        {
+            UpdateWelcomeNameGlowState();
+            UpdateInputGlowState();
+        }
+
+        private void UpdateWelcomeNameGlowState()
+        {
+            if (WelcomeNameTextBox == null)
+            {
+                return;
+            }
+
+            bool hasText = !string.IsNullOrWhiteSpace(WelcomeNameTextBox.Text);
+            bool isFocused = WelcomeNameTextBox.IsKeyboardFocusWithin;
+
+            AnimateWelcomeNameTextBarGlow(hasText || isFocused);
+        }
+
+        private void UpdateInputGlowState()
+        {
+            if (UserInputTextBox == null)
+            {
+                return;
+            }
+
+            bool hasText = !string.IsNullOrWhiteSpace(UserInputTextBox.Text);
+            bool isFocused = UserInputTextBox.IsKeyboardFocusWithin;
+
+            AnimateInputFocusGlow(hasText || isFocused);
+        }
+
+        private void AnimateSidebarUpdateFlash()
+        {
+            if (SessionInfoBorder == null)
+            {
+                return;
+            }
+
+            SolidColorBrush flashBrush = new SolidColorBrush(Color.FromRgb(249, 115, 22));
+            SessionInfoBorder.BorderBrush = flashBrush;
+
+            ColorAnimation flashAnimation = new ColorAnimation
+            {
+                From = Color.FromRgb(249, 115, 22),
+                To = Color.FromRgb(34, 197, 94),
+                Duration = TimeSpan.FromMilliseconds(650),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            flashBrush.BeginAnimation(SolidColorBrush.ColorProperty, flashAnimation);
+        }
+
+        private void StartBouncingTypingDots()
+        {
+            AnimateTypingDot(TypingDot1, 0);
+            AnimateTypingDot(TypingDot2, 140);
+            AnimateTypingDot(TypingDot3, 280);
+        }
+
+        private void AnimateTypingDot(Ellipse dot, int beginDelay)
+        {
+            if (dot == null)
+            {
+                return;
+            }
+
+            TranslateTransform translateTransform = dot.RenderTransform as TranslateTransform;
+
+            if (translateTransform == null || translateTransform.IsFrozen)
+            {
+                translateTransform = new TranslateTransform(0, 0);
+                dot.RenderTransform = translateTransform;
+                dot.RenderTransformOrigin = new Point(0.5, 0.5);
+            }
+
+            DoubleAnimation bounceAnimation = new DoubleAnimation
+            {
+                From = 0,
+                To = -5,
+                BeginTime = TimeSpan.FromMilliseconds(beginDelay),
+                Duration = TimeSpan.FromMilliseconds(360),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            DoubleAnimation opacityAnimation = new DoubleAnimation
+            {
+                From = 0.45,
+                To = 1,
+                BeginTime = TimeSpan.FromMilliseconds(beginDelay),
+                Duration = TimeSpan.FromMilliseconds(360),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            translateTransform.BeginAnimation(TranslateTransform.YProperty, bounceAnimation);
+            dot.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
+        }
+
+        private void StopBouncingTypingDots()
+        {
+            StopTypingDot(TypingDot1);
+            StopTypingDot(TypingDot2);
+            StopTypingDot(TypingDot3);
+        }
+
+        private void StopTypingDot(Ellipse dot)
+        {
+            if (dot == null)
+            {
+                return;
+            }
+
+            if (dot.RenderTransform is TranslateTransform translateTransform)
+            {
+                translateTransform.BeginAnimation(TranslateTransform.YProperty, null);
+                translateTransform.Y = 0;
+            }
+
+            dot.BeginAnimation(UIElement.OpacityProperty, null);
+            dot.Opacity = 1;
+        }
+
         private async void StartChatButton_Click(object sender, RoutedEventArgs e)
         {
             AnimateButtonPress(sender as Button);
@@ -412,6 +716,21 @@ namespace CybersecurityChatbotGUI
 
         private void WelcomeNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            UpdateWelcomePlaceholderState();
+            UpdateStartChatButtonState();
+            UpdateWelcomeNameGlowState();
+        }
+
+        private void WelcomeNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateWelcomeNameGlowState();
+            UpdateWelcomePlaceholderState();
+            UpdateStartChatButtonState();
+        }
+
+        private void WelcomeNameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            UpdateWelcomeNameGlowState();
             UpdateWelcomePlaceholderState();
             UpdateStartChatButtonState();
         }
@@ -459,6 +778,7 @@ namespace CybersecurityChatbotGUI
                 WelcomeNameTextBox.Clear();
                 UpdateWelcomePlaceholderState();
                 UpdateStartChatButtonState();
+                UpdateWelcomeNameGlowState();
                 WelcomeNameTextBox.Focus();
             }
             else
@@ -468,6 +788,7 @@ namespace CybersecurityChatbotGUI
 
                 WelcomeNameTextBox.IsEnabled = false;
                 StartChatButton.IsEnabled = false;
+                UpdateWelcomeNameGlowState();
             }
         }
 
@@ -486,6 +807,7 @@ namespace CybersecurityChatbotGUI
 
             UpdatePlaceholderState();
             UpdateSendButtonState();
+            UpdateAllTextBarGlowStates();
         }
 
         private void ResetWelcomePage()
@@ -519,6 +841,7 @@ namespace CybersecurityChatbotGUI
             UpdateWelcomePlaceholderState();
             UpdateStartChatButtonState();
             UpdatePlaceholderState();
+            UpdateAllTextBarGlowStates();
         }
 
         private void UpdateWelcomePlaceholderState()
@@ -592,16 +915,19 @@ namespace CybersecurityChatbotGUI
         {
             UpdatePlaceholderState();
             UpdateSendButtonState();
+            UpdateInputGlowState();
         }
 
         private void UserInputTextBox_GotFocus(object sender, RoutedEventArgs e)
         {
+            UpdateInputGlowState();
             UpdatePlaceholderState();
             UpdateSendButtonState();
         }
 
         private void UserInputTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
+            UpdateInputGlowState();
             UpdatePlaceholderState();
             UpdateSendButtonState();
         }
@@ -638,7 +964,8 @@ namespace CybersecurityChatbotGUI
 
             keepChatAtTop = false;
 
-            await ShowBotReplyAsync("You can type naturally. Try asking:\n\n• What is phishing?\n• How do I create a strong password?\n• I clicked a suspicious link\n• How do I protect my privacy?\n• Give me an example of a scam\n• Generate report");
+            await ShowBotReplyAsync(
+                "You can type naturally. Try asking:\n\n• What is phishing?\n• How do I create a strong password?\n• I clicked a suspicious link\n• How do I protect my privacy?\n• Give me an example of a scam\n• Generate report");
 
             UserInputTextBox.Focus();
         }
@@ -667,6 +994,7 @@ namespace CybersecurityChatbotGUI
             UpdateSessionPanel();
             UpdatePlaceholderState();
             UpdateSendButtonState();
+            UpdateInputGlowState();
 
             ScrollChatToTop();
         }
@@ -716,6 +1044,7 @@ namespace CybersecurityChatbotGUI
                 await ShowBotReplyAsync("Please type a message first.");
                 UpdatePlaceholderState();
                 UpdateSendButtonState();
+                UpdateInputGlowState();
                 UserInputTextBox.Focus();
                 return;
             }
@@ -725,6 +1054,7 @@ namespace CybersecurityChatbotGUI
             UserInputTextBox.Clear();
             UpdatePlaceholderState();
             UpdateSendButtonState();
+            UpdateInputGlowState();
 
             if (!validator.IsMeaningfulInput(userInput))
             {
@@ -741,6 +1071,7 @@ namespace CybersecurityChatbotGUI
             UpdateSessionPanel();
             UpdatePlaceholderState();
             UpdateSendButtonState();
+            UpdateInputGlowState();
 
             UserInputTextBox.Focus();
         }
@@ -749,6 +1080,7 @@ namespace CybersecurityChatbotGUI
         {
             isBotTyping = true;
             UpdateSendButtonState();
+            UpdateInputGlowState();
 
             StartTypingAnimation();
 
@@ -761,6 +1093,7 @@ namespace CybersecurityChatbotGUI
 
             isBotTyping = false;
             UpdateSendButtonState();
+            UpdateInputGlowState();
         }
 
         private void StartTypingAnimation()
@@ -775,12 +1108,15 @@ namespace CybersecurityChatbotGUI
 
             _ = FadeElementAsync(TypingIndicatorBorder, 0, 1, 180);
 
+            StartBouncingTypingDots();
+
             typingDotsTimer.Start();
         }
 
         private void StopTypingAnimation()
         {
             typingDotsTimer.Stop();
+            StopBouncingTypingDots();
 
             TypingIndicatorTextBlock.Text = "";
             TypingIndicatorBorder.Opacity = 0;
@@ -831,6 +1167,8 @@ namespace CybersecurityChatbotGUI
             SessionUserTextBlock.Text = $"User: {userName}";
             SessionLastTopicTextBlock.Text = $"Last topic: {chatbotEngine.LastTopicDisplay}";
             SessionMoodTextBlock.Text = $"Mood: {chatbotEngine.LastSentimentDisplay}";
+
+            AnimateSidebarUpdateFlash();
         }
 
         private void EndChatSession()
@@ -846,6 +1184,8 @@ namespace CybersecurityChatbotGUI
 
             UserInputTextBox.Clear();
             UpdatePlaceholderState();
+            UpdateSendButtonState();
+            UpdateInputGlowState();
         }
 
         private void UpdatePlaceholderState()
@@ -893,7 +1233,7 @@ namespace CybersecurityChatbotGUI
         {
             string riskLevel = DetectRiskLevelFromMessage(message);
 
-            Color backgroundColor = Color.FromRgb(237, 237, 237);
+            Color backgroundColor = Color.FromRgb(245, 245, 245);
             Color foregroundColor = Color.FromRgb(17, 17, 17);
 
             if (riskLevel == "Emergency")
@@ -946,28 +1286,34 @@ namespace CybersecurityChatbotGUI
                 MinWidth = 175,
                 MaxWidth = maxBubbleWidth,
                 Opacity = 0,
-                RenderTransformOrigin = new Point(0.5, 0.5)
+                UseLayoutRounding = true,
+                SnapsToDevicePixels = true,
+                RenderTransform = new TranslateTransform(0, 12)
             };
 
-            TransformGroup transformGroup = new TransformGroup();
-            transformGroup.Children.Add(new ScaleTransform(0.96, 0.96));
-            transformGroup.Children.Add(new TranslateTransform(0, 14));
-            bubble.RenderTransform = transformGroup;
-
-            bubble.Effect = new DropShadowEffect
+            if (isUserMessage)
             {
-                BlurRadius = isUserMessage ? 10 : 12,
-                ShadowDepth = 1,
-                Opacity = isUserMessage ? 0.13 : 0.11
-            };
-
-            if (!isUserMessage && riskLevel != "")
+                bubble.BorderThickness = new Thickness(1);
+                bubble.BorderBrush = new SolidColorBrush(Color.FromRgb(234, 88, 12));
+            }
+            else if (!string.IsNullOrWhiteSpace(riskLevel))
             {
                 bubble.BorderThickness = new Thickness(2);
                 bubble.BorderBrush = GetRiskBrush(riskLevel);
             }
+            else
+            {
+                bubble.BorderThickness = new Thickness(1);
+                bubble.BorderBrush = new SolidColorBrush(Color.FromRgb(229, 231, 235));
+            }
 
-            StackPanel messageStack = new StackPanel();
+            bubble.Effect = BuildCleanBubbleShadow(isUserMessage);
+
+            StackPanel messageStack = new StackPanel
+            {
+                UseLayoutRounding = true,
+                SnapsToDevicePixels = true
+            };
 
             if (!isUserMessage && riskLevel != "")
             {
@@ -981,7 +1327,6 @@ namespace CybersecurityChatbotGUI
                 Foreground = new SolidColorBrush(foregroundColor),
                 FontSize = 10.5,
                 FontWeight = FontWeights.Bold,
-                Opacity = 0.9,
                 Margin = new Thickness(0, 0, 0, 3)
             };
 
@@ -1002,10 +1347,14 @@ namespace CybersecurityChatbotGUI
                 Foreground = new SolidColorBrush(foregroundColor),
                 FontSize = 9.5,
                 FontWeight = FontWeights.SemiBold,
-                Opacity = 0.65,
+                Opacity = 0.70,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Margin = new Thickness(0, 6, 0, 0)
             };
+
+            ApplyCrispTextRendering(senderTextBlock);
+            ApplyCrispTextRendering(messageTextBlock);
+            ApplyCrispTextRendering(timeTextBlock);
 
             messageStack.Children.Add(senderTextBlock);
             messageStack.Children.Add(messageTextBlock);
@@ -1017,11 +1366,6 @@ namespace CybersecurityChatbotGUI
 
             AnimateMessageBubble(bubble);
 
-            if (riskLevel == "Emergency")
-            {
-                AnimateEmergencyPulse(bubble);
-            }
-
             if (keepChatAtTop)
             {
                 ScrollChatToTop();
@@ -1030,6 +1374,34 @@ namespace CybersecurityChatbotGUI
             {
                 ScrollChatToBottom();
             }
+        }
+
+        private DropShadowEffect BuildCleanBubbleShadow(bool isUserMessage)
+        {
+            return new DropShadowEffect
+            {
+                BlurRadius = isUserMessage ? 3 : 2,
+                ShadowDepth = 1,
+                Direction = 270,
+                Opacity = isUserMessage ? 0.12 : 0.08,
+                Color = Colors.Black
+            };
+        }
+
+        private void ApplyCrispTextRendering(TextBlock textBlock)
+        {
+            if (textBlock == null)
+            {
+                return;
+            }
+
+            textBlock.UseLayoutRounding = true;
+            textBlock.SnapsToDevicePixels = true;
+
+            TextOptions.SetTextFormattingMode(textBlock, TextFormattingMode.Display);
+            TextOptions.SetTextRenderingMode(textBlock, TextRenderingMode.ClearType);
+            TextOptions.SetTextHintingMode(textBlock, TextHintingMode.Fixed);
+            RenderOptions.SetClearTypeHint(textBlock, ClearTypeHint.Enabled);
         }
 
         private Border BuildRiskBanner(string riskLevel)
@@ -1069,6 +1441,8 @@ namespace CybersecurityChatbotGUI
                 FontSize = 10,
                 FontWeight = FontWeights.Bold
             };
+
+            ApplyCrispTextRendering(textBlock);
 
             banner.Child = textBlock;
 
@@ -1131,81 +1505,37 @@ namespace CybersecurityChatbotGUI
 
         private void AnimateMessageBubble(Border bubble)
         {
-            TransformGroup transformGroup = bubble.RenderTransform as TransformGroup;
-
-            if (transformGroup == null || transformGroup.IsFrozen)
+            if (bubble == null)
             {
-                transformGroup = new TransformGroup();
-                transformGroup.Children.Add(new ScaleTransform(0.96, 0.96));
-                transformGroup.Children.Add(new TranslateTransform(0, 14));
-                bubble.RenderTransform = transformGroup;
+                return;
             }
 
-            ScaleTransform scaleTransform = transformGroup.Children[0] as ScaleTransform;
-            TranslateTransform translateTransform = transformGroup.Children[1] as TranslateTransform;
-
-            if (scaleTransform == null || scaleTransform.IsFrozen)
-            {
-                scaleTransform = new ScaleTransform(0.96, 0.96);
-                transformGroup.Children[0] = scaleTransform;
-            }
+            TranslateTransform translateTransform = bubble.RenderTransform as TranslateTransform;
 
             if (translateTransform == null || translateTransform.IsFrozen)
             {
-                translateTransform = new TranslateTransform(0, 14);
-                transformGroup.Children[1] = translateTransform;
+                translateTransform = new TranslateTransform(0, 12);
+                bubble.RenderTransform = translateTransform;
             }
 
             DoubleAnimation opacityAnimation = new DoubleAnimation
             {
                 From = 0,
                 To = 1,
-                Duration = TimeSpan.FromMilliseconds(260),
+                Duration = TimeSpan.FromMilliseconds(180),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-            };
-
-            DoubleAnimation scaleAnimation = new DoubleAnimation
-            {
-                From = 0.96,
-                To = 1,
-                Duration = TimeSpan.FromMilliseconds(260),
-                EasingFunction = new BackEase
-                {
-                    EasingMode = EasingMode.EaseOut,
-                    Amplitude = 0.20
-                }
             };
 
             DoubleAnimation slideAnimation = new DoubleAnimation
             {
-                From = 14,
+                From = 12,
                 To = 0,
-                Duration = TimeSpan.FromMilliseconds(280),
+                Duration = TimeSpan.FromMilliseconds(200),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
             bubble.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
-            scaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
-            scaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
             translateTransform.BeginAnimation(TranslateTransform.YProperty, slideAnimation);
-        }
-
-        private void AnimateEmergencyPulse(Border bubble)
-        {
-            if (bubble.BorderBrush is SolidColorBrush borderBrush && !borderBrush.IsFrozen)
-            {
-                DoubleAnimation pulseAnimation = new DoubleAnimation
-                {
-                    From = 1,
-                    To = 0.72,
-                    Duration = TimeSpan.FromMilliseconds(520),
-                    AutoReverse = true,
-                    RepeatBehavior = new RepeatBehavior(2),
-                    EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
-                };
-
-                borderBrush.BeginAnimation(SolidColorBrush.OpacityProperty, pulseAnimation);
-            }
         }
 
         private void AnimateButtonPress(Button button)
@@ -1227,7 +1557,7 @@ namespace CybersecurityChatbotGUI
             DoubleAnimation shrinkAnimation = new DoubleAnimation
             {
                 From = 1,
-                To = 0.94,
+                To = 0.96,
                 Duration = TimeSpan.FromMilliseconds(80),
                 AutoReverse = true,
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
@@ -1257,20 +1587,12 @@ namespace CybersecurityChatbotGUI
 
             DoubleAnimation liftAnimation = new DoubleAnimation
             {
-                To = -3,
-                Duration = TimeSpan.FromMilliseconds(180),
-                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-            };
-
-            DoubleAnimation opacityAnimation = new DoubleAnimation
-            {
-                To = 0.96,
-                Duration = TimeSpan.FromMilliseconds(180),
+                To = -2,
+                Duration = TimeSpan.FromMilliseconds(160),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
 
             translateTransform.BeginAnimation(TranslateTransform.YProperty, liftAnimation);
-            card.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
         }
 
         private void PremiumHoverCard_MouseLeave(object sender, MouseEventArgs e)
@@ -1286,7 +1608,7 @@ namespace CybersecurityChatbotGUI
 
             if (translateTransform == null || translateTransform.IsFrozen)
             {
-                translateTransform = new TranslateTransform(0, -3);
+                translateTransform = new TranslateTransform(0, -2);
                 card.RenderTransform = translateTransform;
                 card.RenderTransformOrigin = new Point(0.5, 0.5);
             }
@@ -1294,19 +1616,11 @@ namespace CybersecurityChatbotGUI
             DoubleAnimation dropAnimation = new DoubleAnimation
             {
                 To = 0,
-                Duration = TimeSpan.FromMilliseconds(180),
-                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
-            };
-
-            DoubleAnimation opacityAnimation = new DoubleAnimation
-            {
-                To = 1,
-                Duration = TimeSpan.FromMilliseconds(180),
+                Duration = TimeSpan.FromMilliseconds(160),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
 
             translateTransform.BeginAnimation(TranslateTransform.YProperty, dropAnimation);
-            card.BeginAnimation(UIElement.OpacityProperty, opacityAnimation);
         }
 
         private double GetResponsiveBubbleMaxWidth()

@@ -7,12 +7,16 @@
         MinHeight="650"
         MinWidth="980"
         WindowStartupLocation="CenterScreen"
-        Background="#F5F5F5">
+        Background="#F5F5F5"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed">
 
     <Window.Resources>
 
         <!-- PREMIUM ANIMATED BUTTON BASE -->
-        <!-- IMPORTANT: No RenderTransform here because transforms inside styles can become frozen in WPF -->
         <Style x:Key="PremiumAnimatedButtonBaseStyle" TargetType="Button">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
@@ -36,12 +40,6 @@
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="22">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="12"
-                                                  ShadowDepth="2"
-                                                  Opacity="0.20"/>
-                            </Border.Effect>
 
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
@@ -88,12 +86,6 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="21">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="12"
-                                                  ShadowDepth="2"
-                                                  Opacity="0.18"/>
-                            </Border.Effect>
 
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
@@ -143,7 +135,7 @@
             <Setter Property="BorderBrush" Value="#F97316"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="8"/>
-            <Setter Property="HasDropShadow" Value="True"/>
+            <Setter Property="HasDropShadow" Value="False"/>
             <Setter Property="MinWidth" Value="210"/>
 
             <Setter Property="Template">
@@ -154,12 +146,6 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="16"
                                 Padding="{TemplateBinding Padding}">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="18"
-                                                  ShadowDepth="3"
-                                                  Opacity="0.22"/>
-                            </Border.Effect>
 
                             <StackPanel IsItemsHost="True"/>
                         </Border>
@@ -246,12 +232,6 @@
                                 CornerRadius="23"
                                 Padding="{TemplateBinding Padding}">
 
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="14"
-                                                  ShadowDepth="2"
-                                                  Opacity="0.20"/>
-                            </Border.Effect>
-
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
@@ -300,12 +280,6 @@
                                 CornerRadius="17"
                                 Padding="{TemplateBinding Padding}">
 
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="10"
-                                                  ShadowDepth="1"
-                                                  Opacity="0.18"/>
-                            </Border.Effect>
-
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
@@ -332,16 +306,8 @@
         </Style>
 
         <!-- PREMIUM HOVER CARD EFFECT -->
-        <!-- IMPORTANT: Hover animation is handled in MainWindow.xaml.cs to avoid frozen transforms -->
         <Style x:Key="PremiumHoverCardStyle" TargetType="Border">
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="8"
-                                      ShadowDepth="1"
-                                      Opacity="0.08"/>
-                </Setter.Value>
-            </Setter>
 
             <EventSetter Event="MouseEnter" Handler="PremiumHoverCard_MouseEnter"/>
             <EventSetter Event="MouseLeave" Handler="PremiumHoverCard_MouseLeave"/>
@@ -460,12 +426,6 @@
                                                             Width="9"
                                                             MinHeight="34"
                                                             Opacity="0.95">
-
-                                                        <Border.Effect>
-                                                            <DropShadowEffect BlurRadius="5"
-                                                                              ShadowDepth="0"
-                                                                              Opacity="0.18"/>
-                                                        </Border.Effect>
                                                     </Border>
 
                                                     <ControlTemplate.Triggers>
@@ -529,12 +489,6 @@
                         BorderBrush="#F97316"
                         BorderThickness="1">
 
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="26"
-                                          ShadowDepth="2"
-                                          Opacity="0.2"/>
-                    </Border.Effect>
-
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -572,11 +526,13 @@
                                         VerticalAlignment="Top">
 
                                     <StackPanel Orientation="Horizontal">
-                                        <Ellipse Width="8"
+                                        <Ellipse x:Name="WelcomeOnlineDot"
+                                                 Width="8"
                                                  Height="8"
                                                  Fill="#22C55E"
                                                  Margin="0,0,7,0"
-                                                 VerticalAlignment="Center"/>
+                                                 VerticalAlignment="Center"
+                                                 RenderTransformOrigin="0.5,0.5"/>
 
                                         <TextBlock Text="Secure Assistant Online"
                                                    Foreground="#FFFFFF"
@@ -665,13 +621,11 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                                 <StackPanel>
                                     <TextBlock Text="🔑" FontSize="18" Margin="0,0,0,4"/>
-
                                     <TextBlock Text="Password Safety"
                                                Foreground="#111111"
                                                FontSize="11.5"
                                                FontWeight="Bold"
                                                Margin="0,0,0,3"/>
-
                                     <TextBlock Text="Create stronger passwords."
                                                Foreground="#525252"
                                                FontSize="10"
@@ -690,13 +644,11 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                                 <StackPanel>
                                     <TextBlock Text="🎣" FontSize="18" Margin="0,0,0,4"/>
-
                                     <TextBlock Text="Phishing Awareness"
                                                Foreground="#111111"
                                                FontSize="11.5"
                                                FontWeight="Bold"
                                                Margin="0,0,0,3"/>
-
                                     <TextBlock Text="Spot fake links and scams."
                                                Foreground="#525252"
                                                FontSize="10"
@@ -715,13 +667,11 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                                 <StackPanel>
                                     <TextBlock Text="🛡" FontSize="18" Margin="0,0,0,4"/>
-
                                     <TextBlock Text="Privacy Protection"
                                                Foreground="#111111"
                                                FontSize="11.5"
                                                FontWeight="Bold"
                                                Margin="0,0,0,3"/>
-
                                     <TextBlock Text="Keep your data private."
                                                Foreground="#525252"
                                                FontSize="10"
@@ -772,12 +722,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         Padding="34"
                         BorderBrush="#DDDDDD"
                         BorderThickness="1">
-
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="24"
-                                          ShadowDepth="2"
-                                          Opacity="0.13"/>
-                    </Border.Effect>
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -927,12 +871,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                     BorderBrush="#F97316"
                     BorderThickness="1">
 
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="16"
-                                      ShadowDepth="2"
-                                      Opacity="0.16"/>
-                </Border.Effect>
-
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -971,7 +909,8 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                    Margin="0,0,0,14"/>
                     </StackPanel>
 
-                    <Border Grid.Row="1"
+                    <Border x:Name="SessionInfoBorder"
+                            Grid.Row="1"
                             Background="#1F1F1F"
                             CornerRadius="16"
                             Padding="12"
@@ -1131,17 +1070,11 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                     BorderBrush="#DDDDDD"
                     BorderThickness="1">
 
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20"
-                                      ShadowDepth="2"
-                                      Opacity="0.12"/>
-                </Border.Effect>
-
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="72"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="34"/>
+                        <RowDefinition Height="40"/>
                         <RowDefinition Height="76"/>
                     </Grid.RowDefinitions>
 
@@ -1162,11 +1095,13 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0"
+                            <Border x:Name="HeaderBotAvatarBorder"
+                                    Grid.Column="0"
                                     Width="42"
                                     Height="42"
                                     Background="#F97316"
-                                    CornerRadius="21">
+                                    CornerRadius="21"
+                                    RenderTransformOrigin="0.5,0.5">
 
                                 <TextBlock Text="🤖"
                                            FontSize="22"
@@ -1184,10 +1119,12 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                            FontWeight="Bold"/>
 
                                 <StackPanel Orientation="Horizontal">
-                                    <Ellipse Width="7"
+                                    <Ellipse x:Name="ChatOnlineDot"
+                                             Width="7"
                                              Height="7"
                                              Fill="#22C55E"
-                                             Margin="0,0,6,0"/>
+                                             Margin="0,0,6,0"
+                                             RenderTransformOrigin="0.5,0.5"/>
 
                                     <TextBlock Text="Online • Professional cybersecurity assistant"
                                                Foreground="#6B7280"
@@ -1254,24 +1191,54 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         </ScrollViewer>
                     </Border>
 
-                    <!-- TYPING INDICATOR -->
+                    <!-- TYPING INDICATOR WITH BOUNCING DOTS -->
                     <Border Grid.Row="2"
                             Background="#FFFFFF"
-                            Padding="18,0">
+                            Padding="18,3">
 
                         <Border x:Name="TypingIndicatorBorder"
                                 Background="#FFF3E8"
-                                CornerRadius="13"
-                                Padding="12,6"
+                                CornerRadius="15"
+                                Padding="12,7"
                                 HorizontalAlignment="Left"
                                 Visibility="Collapsed"
                                 Opacity="0">
 
-                            <TextBlock x:Name="TypingIndicatorTextBlock"
-                                       Text=""
-                                       Foreground="#9A3412"
-                                       FontSize="12"
-                                       FontWeight="Bold"/>
+                            <StackPanel Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+
+                                <TextBlock x:Name="TypingIndicatorTextBlock"
+                                           Text=""
+                                           Foreground="#9A3412"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center">
+
+                                    <Ellipse x:Name="TypingDot1"
+                                             Width="6"
+                                             Height="6"
+                                             Fill="#F97316"
+                                             Margin="0,0,4,0"
+                                             RenderTransformOrigin="0.5,0.5"/>
+
+                                    <Ellipse x:Name="TypingDot2"
+                                             Width="6"
+                                             Height="6"
+                                             Fill="#F97316"
+                                             Margin="0,0,4,0"
+                                             RenderTransformOrigin="0.5,0.5"/>
+
+                                    <Ellipse x:Name="TypingDot3"
+                                             Width="6"
+                                             Height="6"
+                                             Fill="#F97316"
+                                             RenderTransformOrigin="0.5,0.5"/>
+                                </StackPanel>
+                            </StackPanel>
                         </Border>
                     </Border>
 
@@ -1287,7 +1254,8 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0"
+                            <Border x:Name="InputOuterBorder"
+                                    Grid.Column="0"
                                     Background="#F5F5F5"
                                     CornerRadius="24"
                                     BorderBrush="#DDDDDD"
@@ -1361,12 +1329,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         <TranslateTransform Y="18"/>
                     </TransformGroup>
                 </Border.RenderTransform>
-
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="32"
-                                      ShadowDepth="4"
-                                      Opacity="0.28"/>
-                </Border.Effect>
 
                 <StackPanel>
                     <Border x:Name="LoadingShieldIconBorder"
