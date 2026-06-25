@@ -26,34 +26,28 @@
         <Style x:Key="SendIconButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
-
             <Setter Property="Width" Value="44"/>
             <Setter Property="Height" Value="44"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="#F97316"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="0"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="22">
-
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#EA580C"/>
                             </Trigger>
-
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#C2410C"/>
                             </Trigger>
-
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#D1D5DB"/>
                                 <Setter Property="Opacity" Value="0.75"/>
@@ -69,7 +63,6 @@
         <Style x:Key="PremiumDotsButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
-
             <Setter Property="Width" Value="42"/>
             <Setter Property="Height" Value="42"/>
             <Setter Property="Background" Value="#3F3F46"/>
@@ -77,7 +70,6 @@
             <Setter Property="BorderBrush" Value="#F97316"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="0"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -86,38 +78,23 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="21">
-
                             <StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center">
-
-                                <Ellipse Width="4.5"
-                                         Height="4.5"
-                                         Fill="#FFFFFF"
-                                         Margin="0,0,3.5,0"/>
-
-                                <Ellipse Width="4.5"
-                                         Height="4.5"
-                                         Fill="#FFFFFF"
-                                         Margin="0,0,3.5,0"/>
-
-                                <Ellipse Width="4.5"
-                                         Height="4.5"
-                                         Fill="#FFFFFF"/>
+                                <Ellipse Width="4.5" Height="4.5" Fill="#FFFFFF" Margin="0,0,3.5,0"/>
+                                <Ellipse Width="4.5" Height="4.5" Fill="#FFFFFF" Margin="0,0,3.5,0"/>
+                                <Ellipse Width="4.5" Height="4.5" Fill="#FFFFFF"/>
                             </StackPanel>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#52525B"/>
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#EA580C"/>
                             </Trigger>
-
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#F97316"/>
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#F97316"/>
                             </Trigger>
-
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#D1D5DB"/>
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#D1D5DB"/>
@@ -137,7 +114,6 @@
             <Setter Property="Padding" Value="8"/>
             <Setter Property="HasDropShadow" Value="False"/>
             <Setter Property="MinWidth" Value="210"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContextMenu">
@@ -146,7 +122,6 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="16"
                                 Padding="{TemplateBinding Padding}">
-
                             <StackPanel IsItemsHost="True"/>
                         </Border>
                     </ControlTemplate>
@@ -161,7 +136,6 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Padding" Value="14,10"/>
             <Setter Property="Cursor" Value="Hand"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="MenuItem">
@@ -170,18 +144,15 @@
                                 CornerRadius="12"
                                 Padding="{TemplateBinding Padding}"
                                 Margin="0,2">
-
                             <ContentPresenter ContentSource="Header"
                                               RecognizesAccessKey="True"
                                               VerticalAlignment="Center"/>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsHighlighted" Value="True">
                                 <Setter TargetName="MenuItemBorder" Property="Background" Value="#F97316"/>
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
-
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Foreground" Value="#A1A1AA"/>
                             </Trigger>
@@ -215,7 +186,6 @@
         <Style x:Key="WelcomePrimaryButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
-
             <Setter Property="Height" Value="46"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Background" Value="#F97316"/>
@@ -223,7 +193,6 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="18,0"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -231,20 +200,54 @@
                                 Background="{TemplateBinding Background}"
                                 CornerRadius="23"
                                 Padding="{TemplateBinding Padding}">
-
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#EA580C"/>
                             </Trigger>
-
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#C2410C"/>
                             </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#D1D5DB"/>
+                                <Setter Property="Opacity" Value="0.75"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
+        <!-- SMALL PRIMARY BUTTON -->
+        <Style x:Key="SmallPrimaryButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#F97316"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="17"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#EA580C"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#C2410C"/>
+                            </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#D1D5DB"/>
                                 <Setter Property="Opacity" Value="0.75"/>
@@ -259,7 +262,6 @@
         <Style x:Key="HomeExitButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
-
             <Setter Property="Width" Value="86"/>
             <Setter Property="Height" Value="34"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
@@ -269,7 +271,6 @@
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Padding" Value="12,0"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -279,21 +280,17 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="17"
                                 Padding="{TemplateBinding Padding}">
-
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#EA580C"/>
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#C2410C"/>
                             </Trigger>
-
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#C2410C"/>
                             </Trigger>
-
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#D1D5DB"/>
                                 <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#D1D5DB"/>
@@ -309,7 +306,6 @@
         <Style x:Key="SidebarFeatureButtonStyle"
                TargetType="Button"
                BasedOn="{StaticResource PremiumAnimatedButtonBaseStyle}">
-
             <Setter Property="Height" Value="38"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
             <Setter Property="Background" Value="#3F3F46"/>
@@ -318,7 +314,6 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#F97316"/>
             <Setter Property="Padding" Value="14,0"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -328,16 +323,13 @@
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="14"
                                 Padding="{TemplateBinding Padding}">
-
                             <ContentPresenter HorizontalAlignment="Left"
                                               VerticalAlignment="Center"/>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#52525B"/>
                             </Trigger>
-
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#F97316"/>
                             </Trigger>
@@ -350,7 +342,6 @@
         <!-- PREMIUM HOVER CARD EFFECT -->
         <Style x:Key="PremiumHoverCardStyle" TargetType="Border">
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-
             <EventSetter Event="MouseEnter" Handler="PremiumHoverCard_MouseEnter"/>
             <EventSetter Event="MouseLeave" Handler="PremiumHoverCard_MouseLeave"/>
         </Style>
@@ -365,7 +356,6 @@
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="IsTabStop" Value="False"/>
             <Setter Property="Focusable" Value="False"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type RepeatButton}">
@@ -375,16 +365,13 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
-
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#EA580C"/>
                             </Trigger>
-
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#C2410C"/>
                             </Trigger>
-
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#D1D5DB"/>
                                 <Setter Property="Opacity" Value="0.55"/>
@@ -415,49 +402,28 @@
             <Setter Property="MinWidth" Value="22"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#F97316"/>
-
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ScrollBar}">
-                        <Grid Width="22"
-                              Background="Transparent"
-                              Margin="2,0,0,0">
-
+                        <Grid Width="22" Background="Transparent" Margin="2,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="22"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="22"/>
                             </Grid.RowDefinitions>
-
                             <RepeatButton Grid.Row="0"
                                           Style="{StaticResource ScrollNavigationButtonStyle}"
                                           Command="ScrollBar.LineUpCommand">
-
-                                <Path Fill="White"
-                                      Width="8"
-                                      Height="8"
-                                      Stretch="Uniform"
+                                <Path Fill="White" Width="8" Height="8" Stretch="Uniform"
                                       Data="M 0 6 L 4 0 L 8 6 Z"/>
                             </RepeatButton>
-
-                            <Grid Grid.Row="1"
-                                  Width="9"
-                                  HorizontalAlignment="Center"
-                                  Margin="0,5,0,5">
-
-                                <Border Background="#E5E5E5"
-                                        CornerRadius="9"
-                                        Width="9"
-                                        Opacity="0.8"/>
-
-                                <Track x:Name="PART_Track"
-                                       IsDirectionReversed="True">
-
+                            <Grid Grid.Row="1" Width="9" HorizontalAlignment="Center" Margin="0,5,0,5">
+                                <Border Background="#E5E5E5" CornerRadius="9" Width="9" Opacity="0.8"/>
+                                <Track x:Name="PART_Track" IsDirectionReversed="True">
                                     <Track.DecreaseRepeatButton>
                                         <RepeatButton Command="ScrollBar.PageUpCommand"
                                                       Style="{StaticResource InvisibleTrackButtonStyle}"/>
                                     </Track.DecreaseRepeatButton>
-
                                     <Track.Thumb>
                                         <Thumb>
                                             <Thumb.Template>
@@ -467,14 +433,11 @@
                                                             CornerRadius="9"
                                                             Width="9"
                                                             MinHeight="34"
-                                                            Opacity="0.95">
-                                                    </Border>
-
+                                                            Opacity="0.95"/>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter TargetName="ThumbBorder" Property="Background" Value="#EA580C"/>
                                                         </Trigger>
-
                                                         <Trigger Property="IsDragging" Value="True">
                                                             <Setter TargetName="ThumbBorder" Property="Background" Value="#C2410C"/>
                                                         </Trigger>
@@ -483,22 +446,16 @@
                                             </Thumb.Template>
                                         </Thumb>
                                     </Track.Thumb>
-
                                     <Track.IncreaseRepeatButton>
                                         <RepeatButton Command="ScrollBar.PageDownCommand"
                                                       Style="{StaticResource InvisibleTrackButtonStyle}"/>
                                     </Track.IncreaseRepeatButton>
                                 </Track>
                             </Grid>
-
                             <RepeatButton Grid.Row="2"
                                           Style="{StaticResource ScrollNavigationButtonStyle}"
                                           Command="ScrollBar.LineDownCommand">
-
-                                <Path Fill="White"
-                                      Width="8"
-                                      Height="8"
-                                      Stretch="Uniform"
+                                <Path Fill="White" Width="8" Height="8" Stretch="Uniform"
                                       Data="M 0 0 L 4 6 L 8 0 Z"/>
                             </RepeatButton>
                         </Grid>
@@ -552,7 +509,6 @@
                                         Height="56"
                                         Background="#F97316"
                                         CornerRadius="28">
-
                                     <TextBlock Text="&#x1F6E1;"
                                                FontSize="28"
                                                HorizontalAlignment="Center"
@@ -566,16 +522,13 @@
                                         BorderThickness="2"
                                         Padding="10,7"
                                         VerticalAlignment="Top">
-
                                     <StackPanel Orientation="Horizontal">
                                         <Ellipse x:Name="WelcomeOnlineDot"
-                                                 Width="8"
-                                                 Height="8"
+                                                 Width="8" Height="8"
                                                  Fill="#22C55E"
                                                  Margin="0,0,7,0"
                                                  VerticalAlignment="Center"
                                                  RenderTransformOrigin="0.5,0.5"/>
-
                                         <TextBlock Text="Secure Assistant Online"
                                                    Foreground="#FFFFFF"
                                                    FontSize="11"
@@ -615,13 +568,11 @@
                                 BorderThickness="2"
                                 Height="162"
                                 Margin="0,0,0,12">
-
                             <Grid ClipToBounds="True">
                                 <Viewbox Stretch="Uniform"
                                          StretchDirection="DownOnly"
                                          HorizontalAlignment="Center"
                                          VerticalAlignment="Center">
-
                                     <TextBlock x:Name="WelcomeAsciiTextBlock"
                                                Foreground="#F97316"
                                                FontFamily="Consolas"
@@ -660,7 +611,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     CornerRadius="15"
                                     Padding="10"
                                     MinHeight="76">
-
                                 <StackPanel>
                                     <TextBlock Text="&#x1F511;" FontSize="18" Margin="0,0,0,4"/>
                                     <TextBlock Text="Password Safety"
@@ -683,7 +633,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     CornerRadius="15"
                                     Padding="10"
                                     MinHeight="76">
-
                                 <StackPanel>
                                     <TextBlock Text="&#x1F3A3;" FontSize="18" Margin="0,0,0,4"/>
                                     <TextBlock Text="Phishing Awareness"
@@ -706,7 +655,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     CornerRadius="15"
                                     Padding="10"
                                     MinHeight="76">
-
                                 <StackPanel>
                                     <TextBlock Text="&#x1F6E1;" FontSize="18" Margin="0,0,0,4"/>
                                     <TextBlock Text="Privacy Protection"
@@ -725,27 +673,22 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         </Grid>
 
                         <!-- EXIT AND NOTE -->
-                        <Grid Grid.Row="3"
-                              Margin="0,14,0,0">
-
+                        <Grid Grid.Row="3" Margin="0,14,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="16"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-
                             <Border Grid.Row="0"
                                     Background="#FFF3E8"
                                     CornerRadius="15"
                                     Padding="10">
-
                                 <TextBlock Text="Built for cybersecurity awareness and safer online behaviour."
                                            Foreground="#9A3412"
                                            FontSize="11.5"
                                            FontWeight="Bold"
                                            TextWrapping="Wrap"/>
                             </Border>
-
                             <Button x:Name="ExitApplicationButton"
                                     Grid.Row="2"
                                     Content="EXIT"
@@ -764,7 +707,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         Padding="34"
                         BorderBrush="#DDDDDD"
                         BorderThickness="1">
-
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -778,7 +720,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     Padding="12,8"
                                     HorizontalAlignment="Left"
                                     Margin="0,0,0,16">
-
                                 <TextBlock Text="&#x1F512; Protected Learning Session"
                                            Foreground="#9A3412"
                                            FontSize="12"
@@ -801,9 +742,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                        LineHeight="21"/>
                         </StackPanel>
 
-                        <StackPanel Grid.Row="1"
-                                    VerticalAlignment="Center">
-
+                        <StackPanel Grid.Row="1" VerticalAlignment="Center">
                             <TextBlock Text="Your name"
                                        Foreground="#111111"
                                        FontSize="13"
@@ -816,7 +755,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     BorderThickness="1"
                                     Padding="4"
                                     Margin="0,0,0,10">
-
                                 <Grid>
                                     <TextBlock x:Name="WelcomeNamePlaceholderTextBlock"
                                                Text="Enter your name here..."
@@ -826,7 +764,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                Margin="15,0,0,0"
                                                VerticalAlignment="Center"
                                                IsHitTestVisible="False"/>
-
                                     <TextBox x:Name="WelcomeNameTextBox"
                                              Height="46"
                                              FontSize="15"
@@ -871,14 +808,12 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 BorderBrush="#E5E5E5"
                                 BorderThickness="1"
                                 Margin="0,24,0,0">
-
                             <StackPanel>
                                 <TextBlock Text="&#x1F4CB; Session Note"
                                            Foreground="#111111"
                                            FontSize="12.5"
                                            FontWeight="Bold"
                                            Margin="0,0,0,5"/>
-
                                 <TextBlock Text="CyberBot will only use your name to make this chat feel more personal and easier to follow."
                                            Foreground="#6B7280"
                                            FontSize="12"
@@ -910,7 +845,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- SIDEBAR -->
+                <!-- SIDEBAR WITH SCROLL -->
                 <Border Grid.Column="0"
                         Background="#111111"
                         CornerRadius="24"
@@ -919,23 +854,27 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         BorderBrush="#F97316"
                         BorderThickness="1">
 
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ScrollViewer.Resources>
+                            <Style TargetType="{x:Type ScrollBar}"
+                                   BasedOn="{StaticResource PremiumScrollBarStyle}"/>
+                        </ScrollViewer.Resources>
 
-                        <StackPanel Grid.Row="0">
-                            <Border Width="56"
-                                    Height="56"
+                        <StackPanel>
+                            <Border x:Name="SidebarLogoBorder"
+                                    Width="56" Height="56"
                                     Background="#F97316"
                                     CornerRadius="28"
                                     HorizontalAlignment="Left"
-                                    Margin="0,0,0,10">
-
+                                    Margin="0,0,0,10"
+                                    RenderTransformOrigin="0.5,0.5">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#F97316"
+                                                      BlurRadius="12"
+                                                      ShadowDepth="0"
+                                                      Opacity="0.6"/>
+                                </Border.Effect>
                                 <TextBlock Text="&#x1F6E1;"
                                            FontSize="27"
                                            HorizontalAlignment="Center"
@@ -944,77 +883,56 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                             <TextBlock Text="CyberBot"
                                        Foreground="#FFFFFF"
-                                       FontSize="25"
-                                       FontWeight="Bold"
+                                       FontSize="25" FontWeight="Bold"
                                        Margin="0,0,0,2"/>
 
                             <TextBlock Text="Cybersecurity Assistant"
                                        Foreground="#D4D4D4"
-                                       FontSize="12"
-                                       FontWeight="SemiBold"
-                                       TextWrapping="Wrap"
-                                       LineHeight="16"
+                                       FontSize="12" FontWeight="SemiBold"
+                                       TextWrapping="Wrap" LineHeight="16"
                                        Margin="0,0,0,14"/>
-                        </StackPanel>
 
-                        <Border x:Name="SessionInfoBorder"
-                                Grid.Row="1"
-                                Background="#1F1F1F"
-                                CornerRadius="16"
-                                Padding="12"
-                                BorderBrush="#22C55E"
-                                BorderThickness="1"
-                                Margin="0,0,0,12">
-
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal"
-                                            Margin="0,0,0,8">
-
-                                    <Ellipse Width="8"
-                                             Height="8"
-                                             Fill="#22C55E"
-                                             Margin="0,0,7,0"
-                                             VerticalAlignment="Center"/>
-
-                                    <TextBlock Text="Session Active"
-                                               Foreground="#FFFFFF"
-                                               FontSize="13"
-                                               FontWeight="Bold"/>
-                                </StackPanel>
-
-                                <TextBlock x:Name="SessionUserTextBlock"
-                                           Text="&#x1F464; User: Not set"
-                                           Foreground="#E5E5E5"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           TextWrapping="Wrap"
-                                           Margin="0,0,0,4"/>
-
-                                <TextBlock x:Name="SessionLastTopicTextBlock"
-                                           Text="&#x1F4CC; Last topic: None"
-                                           Foreground="#E5E5E5"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           TextWrapping="Wrap"
-                                           Margin="0,0,0,4"/>
-
-                                <TextBlock x:Name="SessionMoodTextBlock"
-                                           Text="&#x1F3AD; Mood: Not detected"
-                                           Foreground="#E5E5E5"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           TextWrapping="Wrap"/>
-                            </StackPanel>
-                        </Border>
-
-                        <!-- PART 3 FEATURE BUTTONS -->
-                        <StackPanel Grid.Row="2"
+                            <!-- SESSION INFO -->
+                            <Border x:Name="SessionInfoBorder"
+                                    Background="#1F1F1F"
+                                    CornerRadius="16" Padding="12"
+                                    BorderBrush="#22C55E" BorderThickness="1"
                                     Margin="0,0,0,12">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Ellipse Width="8" Height="8" Fill="#22C55E"
+                                                 Margin="0,0,7,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Session Active"
+                                                   Foreground="#FFFFFF"
+                                                   FontSize="13" FontWeight="Bold"/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="SessionUserTextBlock"
+                                               Text="User: Not set"
+                                               Foreground="#E5E5E5"
+                                               FontSize="12" FontWeight="Bold"
+                                               TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                    <TextBlock x:Name="SessionLastTopicTextBlock"
+                                               Text="Last topic: None"
+                                               Foreground="#E5E5E5"
+                                               FontSize="12" FontWeight="Bold"
+                                               TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                    <TextBlock x:Name="SessionMoodTextBlock"
+                                               Text="Mood: Not detected"
+                                               Foreground="#E5E5E5"
+                                               FontSize="12" FontWeight="Bold"
+                                               TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- PART 3 FEATURE BUTTONS -->
+                            <TextBlock Text="Features"
+                                       Foreground="#FFFFFF"
+                                       FontSize="13.5" FontWeight="Bold"
+                                       Margin="0,0,0,8"/>
 
                             <Button x:Name="TasksButton"
                                     Style="{StaticResource SidebarFeatureButtonStyle}"
-                                    Click="TasksButton_Click"
-                                    Margin="0,0,0,6">
+                                    Click="TasksButton_Click" Margin="0,0,0,6">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#x1F4CB;" Margin="0,0,8,0"/>
@@ -1025,8 +943,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                             <Button x:Name="QuizButton"
                                     Style="{StaticResource SidebarFeatureButtonStyle}"
-                                    Click="QuizButton_Click"
-                                    Margin="0,0,0,6">
+                                    Click="QuizButton_Click" Margin="0,0,0,6">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#x1F3AE;" Margin="0,0,8,0"/>
@@ -1037,7 +954,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                             <Button x:Name="ActivityLogButton"
                                     Style="{StaticResource SidebarFeatureButtonStyle}"
-                                    Click="ActivityLogButton_Click">
+                                    Click="ActivityLogButton_Click" Margin="0,0,0,12">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="&#x1F4CA;" Margin="0,0,8,0"/>
@@ -1046,74 +963,57 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 </Button.Content>
                             </Button>
 
-                        <StackPanel Grid.Row="3"
-                                    VerticalAlignment="Top">
-
+                            <!-- ASK ABOUT TOPICS -->
                             <TextBlock Text="Ask about:"
                                        Foreground="#FFFFFF"
-                                       FontSize="13.5"
-                                       FontWeight="Bold"
+                                       FontSize="13.5" FontWeight="Bold"
                                        Margin="0,0,0,8"/>
 
                             <Border Style="{StaticResource PremiumHoverCardStyle}"
-                                    Background="#FFFFFF"
-                                    CornerRadius="14"
-                                    Padding="9"
-                                    Margin="0,0,0,6">
+                                    Background="#FFFFFF" CornerRadius="14"
+                                    Padding="9" Margin="0,0,0,6">
                                 <TextBlock Text="&#x1F511; Password safety"
                                            Foreground="#111111"
-                                           FontSize="12.5"
-                                           FontWeight="SemiBold"/>
+                                           FontSize="12.5" FontWeight="SemiBold"/>
                             </Border>
-
                             <Border Style="{StaticResource PremiumHoverCardStyle}"
-                                    Background="#FFFFFF"
-                                    CornerRadius="14"
-                                    Padding="9"
-                                    Margin="0,0,0,6">
+                                    Background="#FFFFFF" CornerRadius="14"
+                                    Padding="9" Margin="0,0,0,6">
                                 <TextBlock Text="&#x1F3A3; Phishing scams"
                                            Foreground="#111111"
-                                           FontSize="12.5"
-                                           FontWeight="SemiBold"/>
+                                           FontSize="12.5" FontWeight="SemiBold"/>
                             </Border>
-
                             <Border Style="{StaticResource PremiumHoverCardStyle}"
-                                    Background="#FFFFFF"
-                                    CornerRadius="14"
-                                    Padding="9"
-                                    Margin="0,0,0,6">
+                                    Background="#FFFFFF" CornerRadius="14"
+                                    Padding="9" Margin="0,0,0,6">
                                 <TextBlock Text="&#x1F6E1; Privacy protection"
                                            Foreground="#111111"
-                                           FontSize="12.5"
-                                           FontWeight="SemiBold"/>
+                                           FontSize="12.5" FontWeight="SemiBold"/>
                             </Border>
-
                             <Border Style="{StaticResource PremiumHoverCardStyle}"
-                                    Background="#FFFFFF"
-                                    CornerRadius="14"
-                                    Padding="9"
-                                    Margin="0,0,0,6">
+                                    Background="#FFFFFF" CornerRadius="14"
+                                    Padding="9" Margin="0,0,0,6">
                                 <TextBlock Text="&#x1F310; Safe browsing"
                                            Foreground="#111111"
-                                           FontSize="12.5"
-                                           FontWeight="SemiBold"/>
+                                           FontSize="12.5" FontWeight="SemiBold"/>
+                            </Border>
+                            <Border Style="{StaticResource PremiumHoverCardStyle}"
+                                    Background="#FFFFFF" CornerRadius="14"
+                                    Padding="9" Margin="0,0,0,12">
+                                <TextBlock Text="&#x1F4F1; 2FA and malware"
+                                           Foreground="#111111"
+                                           FontSize="12.5" FontWeight="SemiBold"/>
+                            </Border>
+
+                            <!-- TIP -->
+                            <Border Background="#FFF3E8" CornerRadius="15" Padding="11">
+                                <TextBlock Text="Try: Add task or Start quiz."
+                                           Foreground="#9A3412"
+                                           FontSize="11.5" FontWeight="SemiBold"
+                                           TextWrapping="Wrap" LineHeight="16"/>
                             </Border>
                         </StackPanel>
-
-                        <Border Grid.Row="4"
-                                Background="#FFF3E8"
-                                CornerRadius="15"
-                                Padding="11"
-                                Margin="0,14,0,0">
-
-                            <TextBlock Text="Try: 'Add task' or 'Start quiz'."
-                                       Foreground="#9A3412"
-                                       FontSize="11.5"
-                                       FontWeight="SemiBold"
-                                       TextWrapping="Wrap"
-                                       LineHeight="16"/>
-                        </Border>
-                    </Grid>
+                    </ScrollViewer>
                 </Border>
 
                 <!-- MAIN CONTENT AREA WITH TABS -->
@@ -1125,9 +1025,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
 
                     <Grid>
                         <!-- ==================== CHAT TAB ==================== -->
-                        <Grid x:Name="ChatTab"
-                              Visibility="Visible">
-
+                        <Grid x:Name="ChatTab" Visibility="Visible">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="72"/>
                                 <RowDefinition Height="*"/>
@@ -1135,14 +1033,10 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 <RowDefinition Height="76"/>
                             </Grid.RowDefinitions>
 
-                            <!-- CHAT HEADER -->
-                            <Border Grid.Row="0"
-                                    Background="#FFFFFF"
+                            <Border Grid.Row="0" Background="#FFFFFF"
                                     CornerRadius="24,24,0,0"
-                                    BorderBrush="#E5E5E5"
-                                    BorderThickness="0,0,0,1"
+                                    BorderBrush="#E5E5E5" BorderThickness="0,0,0,1"
                                     Padding="18,12">
-
                                 <Grid VerticalAlignment="Top">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="48"/>
@@ -1153,72 +1047,44 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     </Grid.ColumnDefinitions>
 
                                     <Border x:Name="HeaderBotAvatarBorder"
-                                            Grid.Column="0"
-                                            Width="42"
-                                            Height="42"
-                                            Background="#F97316"
-                                            CornerRadius="21"
+                                            Grid.Column="0" Width="42" Height="42"
+                                            Background="#F97316" CornerRadius="21"
                                             RenderTransformOrigin="0.5,0.5">
-
-                                        <TextBlock Text="&#x1F916;"
-                                                   FontSize="22"
+                                        <TextBlock Text="&#x1F916;" FontSize="22"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"/>
                                     </Border>
 
-                                    <StackPanel Grid.Column="1"
-                                                VerticalAlignment="Center"
-                                                Margin="10,0,0,0">
-
-                                        <TextBlock Text="CyberBot"
-                                                   Foreground="#111111"
-                                                   FontSize="18"
-                                                   FontWeight="Bold"/>
-
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+                                        <TextBlock Text="CyberBot" Foreground="#111111"
+                                                   FontSize="18" FontWeight="Bold"/>
                                         <StackPanel Orientation="Horizontal">
-                                            <Ellipse x:Name="ChatOnlineDot"
-                                                     Width="7"
-                                                     Height="7"
-                                                     Fill="#22C55E"
-                                                     Margin="0,0,6,0"
+                                            <Ellipse x:Name="ChatOnlineDot" Width="7" Height="7"
+                                                     Fill="#22C55E" Margin="0,0,6,0"
                                                      RenderTransformOrigin="0.5,0.5"/>
-
-                                            <TextBlock Text="Online"
-                                                       Foreground="#6B7280"
-                                                       FontSize="12"
-                                                       FontWeight="SemiBold"/>
+                                            <TextBlock Text="Online" Foreground="#6B7280"
+                                                       FontSize="12" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <TextBlock Grid.Column="2"
-                                               Text="&#x1F512; Secure Chat"
-                                               Foreground="#F97316"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="&#x1F512; Secure Chat"
+                                               Foreground="#F97316" FontSize="12"
+                                               FontWeight="Bold" VerticalAlignment="Center"/>
 
-                                    <Button x:Name="MenuDotsButton"
-                                            Grid.Column="4"
+                                    <Button x:Name="MenuDotsButton" Grid.Column="4"
                                             Style="{StaticResource PremiumDotsButtonStyle}"
-                                            Click="MenuDotsButton_Click"
-                                            ToolTip="Chat options">
-
+                                            Click="MenuDotsButton_Click" ToolTip="Chat options">
                                         <Button.ContextMenu>
                                             <ContextMenu x:Name="ChatOptionsContextMenu"
                                                          Style="{StaticResource PremiumContextMenuStyle}">
-
                                                 <MenuItem Header="&#x2753; Help"
                                                           Style="{StaticResource PremiumMenuItemStyle}"
                                                           Click="HelpMenuItem_Click"/>
-
                                                 <Separator Style="{StaticResource PremiumMenuSeparatorStyle}"/>
-
                                                 <MenuItem Header="&#x1F504; Start New Chat"
                                                           Style="{StaticResource PremiumMenuItemStyle}"
                                                           Click="NewChatMenuItem_Click"/>
-
                                                 <Separator Style="{StaticResource PremiumMenuSeparatorStyle}"/>
-
                                                 <MenuItem Header="&#x1F6AA; Log Out"
                                                           Style="{StaticResource PremiumLogoutMenuItemStyle}"
                                                           Click="LogoutMenuItem_Click"/>
@@ -1228,115 +1094,63 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 </Grid>
                             </Border>
 
-                            <!-- CHAT AREA -->
-                            <Border Grid.Row="1"
-                                    Background="#FAFAFA"
-                                    BorderBrush="#E5E5E5"
-                                    BorderThickness="0,0,0,1">
-
+                            <Border Grid.Row="1" Background="#FAFAFA"
+                                    BorderBrush="#E5E5E5" BorderThickness="0,0,0,1">
                                 <ScrollViewer x:Name="ChatScrollViewer"
                                               VerticalScrollBarVisibility="Auto"
-                                              HorizontalScrollBarVisibility="Disabled"
-                                              Padding="18">
-
+                                              HorizontalScrollBarVisibility="Disabled" Padding="18">
                                     <ScrollViewer.Resources>
                                         <Style TargetType="{x:Type ScrollBar}"
                                                BasedOn="{StaticResource PremiumScrollBarStyle}"/>
                                     </ScrollViewer.Resources>
-
                                     <StackPanel x:Name="ChatPanel"/>
                                 </ScrollViewer>
                             </Border>
 
-                            <!-- TYPING INDICATOR -->
-                            <Border Grid.Row="2"
-                                    Background="#FFFFFF"
-                                    Padding="18,3">
-
-                                <Border x:Name="TypingIndicatorBorder"
-                                        Background="#FFF3E8"
-                                        CornerRadius="15"
-                                        Padding="12,7"
+                            <Border Grid.Row="2" Background="#FFFFFF" Padding="18,3">
+                                <Border x:Name="TypingIndicatorBorder" Background="#FFF3E8"
+                                        CornerRadius="15" Padding="12,7"
                                         HorizontalAlignment="Left"
-                                        Visibility="Collapsed"
-                                        Opacity="0">
-
-                                    <StackPanel Orientation="Horizontal"
-                                                VerticalAlignment="Center">
-
-                                        <TextBlock x:Name="TypingIndicatorTextBlock"
-                                                   Text=""
-                                                   Foreground="#9A3412"
-                                                   FontSize="12"
-                                                   FontWeight="Bold"
-                                                   VerticalAlignment="Center"
+                                        Visibility="Collapsed" Opacity="0">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock x:Name="TypingIndicatorTextBlock" Text=""
+                                                   Foreground="#9A3412" FontSize="12"
+                                                   FontWeight="Bold" VerticalAlignment="Center"
                                                    Margin="0,0,8,0"/>
-
-                                        <StackPanel Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
-
-                                            <Ellipse x:Name="TypingDot1"
-                                                     Width="6"
-                                                     Height="6"
-                                                     Fill="#F97316"
-                                                     Margin="0,0,4,0"
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse x:Name="TypingDot1" Width="6" Height="6"
+                                                     Fill="#F97316" Margin="0,0,4,0"
                                                      RenderTransformOrigin="0.5,0.5"/>
-
-                                            <Ellipse x:Name="TypingDot2"
-                                                     Width="6"
-                                                     Height="6"
-                                                     Fill="#F97316"
-                                                     Margin="0,0,4,0"
+                                            <Ellipse x:Name="TypingDot2" Width="6" Height="6"
+                                                     Fill="#F97316" Margin="0,0,4,0"
                                                      RenderTransformOrigin="0.5,0.5"/>
-
-                                            <Ellipse x:Name="TypingDot3"
-                                                     Width="6"
-                                                     Height="6"
-                                                     Fill="#F97316"
-                                                     RenderTransformOrigin="0.5,0.5"/>
+                                            <Ellipse x:Name="TypingDot3" Width="6" Height="6"
+                                                     Fill="#F97316" RenderTransformOrigin="0.5,0.5"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </Border>
 
-                            <!-- INPUT AREA -->
-                            <Border Grid.Row="3"
-                                    Background="#FFFFFF"
-                                    CornerRadius="0,0,24,24"
-                                    Padding="16,12">
-
+                            <Border Grid.Row="3" Background="#FFFFFF"
+                                    CornerRadius="0,0,24,24" Padding="16,12">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <Border x:Name="InputOuterBorder"
-                                            Grid.Column="0"
-                                            Background="#F5F5F5"
-                                            CornerRadius="24"
-                                            BorderBrush="#DDDDDD"
-                                            BorderThickness="1"
-                                            Padding="4">
-
+                                    <Border x:Name="InputOuterBorder" Grid.Column="0"
+                                            Background="#F5F5F5" CornerRadius="24"
+                                            BorderBrush="#DDDDDD" BorderThickness="1" Padding="4">
                                         <Grid>
                                             <TextBlock x:Name="PlaceholderTextBlock"
                                                        Text="&#x1F4AC; Type your cybersecurity question here..."
-                                                       Foreground="#6B7280"
-                                                       FontSize="14"
-                                                       FontWeight="SemiBold"
-                                                       Margin="15,0,0,0"
-                                                       VerticalAlignment="Center"
-                                                       IsHitTestVisible="False"/>
-
-                                            <TextBox x:Name="UserInputTextBox"
-                                                     Height="44"
-                                                     FontSize="14"
-                                                     FontWeight="SemiBold"
-                                                     Padding="15,0"
-                                                     VerticalContentAlignment="Center"
-                                                     Background="Transparent"
-                                                     Foreground="#111111"
+                                                       Foreground="#6B7280" FontSize="14"
+                                                       FontWeight="SemiBold" Margin="15,0,0,0"
+                                                       VerticalAlignment="Center" IsHitTestVisible="False"/>
+                                            <TextBox x:Name="UserInputTextBox" Height="44"
+                                                     FontSize="14" FontWeight="SemiBold"
+                                                     Padding="15,0" VerticalContentAlignment="Center"
+                                                     Background="Transparent" Foreground="#111111"
                                                      BorderThickness="0"
                                                      KeyDown="UserInputTextBox_KeyDown"
                                                      GotFocus="UserInputTextBox_GotFocus"
@@ -1344,18 +1158,12 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                      TextChanged="UserInputTextBox_TextChanged"/>
                                         </Grid>
                                     </Border>
-
-                                    <Button x:Name="SendButton"
-                                            Grid.Column="1"
-                                            Margin="8,0,0,0"
+                                    <Button x:Name="SendButton" Grid.Column="1" Margin="8,0,0,0"
                                             Style="{StaticResource SendIconButtonStyle}"
-                                            Click="SendButton_Click"
-                                            IsEnabled="False"
+                                            Click="SendButton_Click" IsEnabled="False"
                                             ToolTip="Send message">
-
                                         <Viewbox Width="20" Height="20">
-                                            <Path Fill="White"
-                                                  Stretch="Uniform"
+                                            <Path Fill="White" Stretch="Uniform"
                                                   Data="M2,21 L23,12 L2,3 L2,10 L17,12 L2,14 Z"/>
                                         </Viewbox>
                                     </Button>
@@ -1364,410 +1172,269 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         </Grid>
 
                         <!-- ==================== TASK ASSISTANT TAB ==================== -->
-                        <Grid x:Name="TaskTab"
-                              Visibility="Collapsed">
-
+                        <Grid x:Name="TaskTab" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="72"/>
-                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- TASK HEADER -->
-                            <Border Grid.Row="0"
-                                    Background="#FFFFFF"
+                            <Border Grid.Row="0" Background="#FFFFFF"
                                     CornerRadius="24,24,0,0"
-                                    BorderBrush="#E5E5E5"
-                                    BorderThickness="0,0,0,1"
+                                    BorderBrush="#E5E5E5" BorderThickness="0,0,0,1"
                                     Padding="18,12">
-
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="&#x1F4CB; Task Assistant"
-                                                   Foreground="#111111"
-                                                   FontSize="20"
-                                                   FontWeight="Bold"/>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="Task Assistant"
+                                                   Foreground="#111111" FontSize="20" FontWeight="Bold"/>
                                         <TextBlock Text="Manage your cybersecurity tasks"
-                                                   Foreground="#6B7280"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"/>
+                                                   Foreground="#6B7280" FontSize="12" FontWeight="SemiBold"/>
                                     </StackPanel>
-
-                                    <Button Grid.Column="1"
-                                            Content="&#x1F4AC; Back to Chat"
-                                            Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                            Click="BackToChatButton_Click"
-                                            Width="140"
-                                            Height="36"
-                                            FontSize="12"/>
+                                    <Button Grid.Column="1" Content="Back to Chat"
+                                            Style="{StaticResource SmallPrimaryButtonStyle}"
+                                            Click="BackToChatButton_Click" Width="120"/>
                                 </Grid>
                             </Border>
 
-                            <!-- ADD TASK SECTION -->
-                            <Border Grid.Row="1"
-                                    Background="#FAFAFA"
-                                    Padding="16">
+                            <!-- SCROLLABLE CONTENT -->
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <ScrollViewer.Resources>
+                                    <Style TargetType="{x:Type ScrollBar}"
+                                           BasedOn="{StaticResource PremiumScrollBarStyle}"/>
+                                </ScrollViewer.Resources>
 
                                 <StackPanel>
-                                    <TextBlock Text="&#x2795; Add New Task"
-                                               Foreground="#111111"
-                                               FontSize="16"
-                                               FontWeight="Bold"
-                                               Margin="0,0,0,10"/>
+                                    <!-- ADD TASK SECTION -->
+                                    <Border Background="#FAFAFA" Padding="16">
+                                        <StackPanel>
+                                            <TextBlock Text="Add New Task"
+                                                       Foreground="#111111" FontSize="16"
+                                                       FontWeight="Bold" Margin="0,0,0,10"/>
+                                            <TextBlock Text="Task Title"
+                                                       Foreground="#111111" FontSize="12"
+                                                       FontWeight="Bold" Margin="0,0,0,4"/>
+                                            <Border Background="#F5F5F5" CornerRadius="24"
+                                                    BorderBrush="#DDDDDD" BorderThickness="1"
+                                                    Padding="4" Margin="0,0,0,8">
+                                                <TextBox x:Name="TaskTitleTextBox"
+                                                         Height="44" FontSize="14"
+                                                         FontWeight="SemiBold" Padding="15,0"
+                                                         VerticalContentAlignment="Center"
+                                                         Background="Transparent" Foreground="#111111"
+                                                         BorderThickness="0"/>
+                                            </Border>
+                                            <TextBlock Text="Description (optional)"
+                                                       Foreground="#111111" FontSize="12"
+                                                       FontWeight="Bold" Margin="0,0,0,4"/>
+                                            <Border Background="#F5F5F5" CornerRadius="24"
+                                                    BorderBrush="#DDDDDD" BorderThickness="1"
+                                                    Padding="4" Margin="0,0,0,8">
+                                                <TextBox x:Name="TaskDescriptionTextBox"
+                                                         Height="60" FontSize="14"
+                                                         FontWeight="SemiBold" Padding="15,8"
+                                                         VerticalContentAlignment="Top"
+                                                         TextWrapping="Wrap" AcceptsReturn="True"
+                                                         Background="Transparent" Foreground="#111111"
+                                                         BorderThickness="0"/>
+                                            </Border>
+                                            <TextBlock Text="Reminder (optional: in 3 days, in 2 weeks, tomorrow)"
+                                                       Foreground="#111111" FontSize="12"
+                                                       FontWeight="Bold" Margin="0,0,0,4"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" Background="#F5F5F5"
+                                                        CornerRadius="24" BorderBrush="#DDDDDD"
+                                                        BorderThickness="1" Padding="4"
+                                                        Margin="0,0,8,0">
+                                                    <TextBox x:Name="TaskReminderTextBox"
+                                                             Height="44" FontSize="14"
+                                                             FontWeight="SemiBold" Padding="15,0"
+                                                             VerticalContentAlignment="Center"
+                                                             Background="Transparent" Foreground="#111111"
+                                                             BorderThickness="0"/>
+                                                </Border>
+                                                <Button x:Name="AddTaskButton" Grid.Column="1"
+                                                        Content="Add Task"
+                                                        Style="{StaticResource SmallPrimaryButtonStyle}"
+                                                        Click="AddTaskButton_Click" Width="100"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
 
-                                    <TextBlock Text="&#x1F4DD; Task Title"
-                                               Foreground="#111111"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               Margin="0,0,0,4"/>
-
-                                    <TextBox x:Name="TaskTitleTextBox"
-                                             Height="36"
-                                             FontSize="13"
-                                             Padding="10,0"
-                                             Margin="0,0,0,8"
-                                             Background="White"
-                                             BorderBrush="#DDDDDD"
-                                             BorderThickness="1"/>
-
-                                    <TextBlock Text="&#x1F4C4; Description (optional)"
-                                               Foreground="#111111"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               Margin="0,0,0,4"/>
-
-                                    <TextBox x:Name="TaskDescriptionTextBox"
-                                             Height="60"
-                                             FontSize="13"
-                                             Padding="10,8"
-                                             TextWrapping="Wrap"
-                                             AcceptsReturn="True"
-                                             Margin="0,0,0,8"
-                                             Background="White"
-                                             BorderBrush="#DDDDDD"
-                                             BorderThickness="1"/>
-
-                                    <TextBlock Text="&#x23F0; Reminder (optional: 'in 3 days', 'in 2 weeks', 'tomorrow')"
-                                               Foreground="#111111"
-                                               FontSize="12"
-                                               FontWeight="Bold"
-                                               Margin="0,0,0,4"/>
-
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBox x:Name="TaskReminderTextBox"
-                                                 Grid.Column="0"
-                                                 Height="36"
-                                                 FontSize="13"
-                                                 Padding="10,0"
-                                                 Margin="0,0,8,0"
-                                                 Background="White"
-                                                 BorderBrush="#DDDDDD"
-                                                 BorderThickness="1"/>
-
-                                        <Button x:Name="AddTaskButton"
-                                                Grid.Column="1"
-                                                Content="&#x2795; Add Task"
-                                                Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                                Click="AddTaskButton_Click"
-                                                Width="110"
-                                                Height="36"
-                                                FontSize="12"/>
-                                    </Grid>
-
-                                    <TextBlock x:Name="TaskStatusTextBlock"
-                                               Text=""
-                                               Foreground="#6B7280"
-                                               FontSize="12"
-                                               FontWeight="SemiBold"
-                                               Margin="0,8,0,0"/>
+                                    <!-- TASK LIST SECTION -->
+                                    <Border Background="White" Padding="16">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Your Tasks"
+                                                           Foreground="#111111" FontSize="16" FontWeight="Bold"/>
+                                                <Button x:Name="RefreshTasksButton" Grid.Column="1"
+                                                        Content="Refresh"
+                                                        Style="{StaticResource SmallPrimaryButtonStyle}"
+                                                        Click="RefreshTasksButton_Click" Width="80"/>
+                                            </Grid>
+                                            <StackPanel x:Name="TaskListPanel"/>
+                                        </StackPanel>
+                                    </Border>
                                 </StackPanel>
-                            </Border>
-
-                            <!-- TASK LIST SECTION -->
-                            <Border Grid.Row="2"
-                                    Background="White"
-                                    Padding="16">
-
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <Grid Grid.Row="0"
-                                          Margin="0,0,0,10">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="&#x1F4CB; Your Tasks"
-                                                   Foreground="#111111"
-                                                   FontSize="16"
-                                                   FontWeight="Bold"/>
-
-                                        <Button x:Name="RefreshTasksButton"
-                                                Grid.Column="1"
-                                                Content="&#x1F504; Refresh"
-                                                Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                                Click="RefreshTasksButton_Click"
-                                                Width="90"
-                                                Height="30"
-                                                FontSize="11"/>
-                                    </Grid>
-
-                                    <ScrollViewer Grid.Row="1"
-                                                  VerticalScrollBarVisibility="Auto">
-                                        <StackPanel x:Name="TaskListPanel"/>
-                                    </ScrollViewer>
-                                </Grid>
-                            </Border>
+                            </ScrollViewer>
                         </Grid>
 
                         <!-- ==================== QUIZ TAB ==================== -->
-                        <Grid x:Name="QuizTab"
-                              Visibility="Collapsed">
-
+                        <Grid x:Name="QuizTab" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="72"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- QUIZ HEADER -->
-                            <Border Grid.Row="0"
-                                    Background="#FFFFFF"
+                            <Border Grid.Row="0" Background="#FFFFFF"
                                     CornerRadius="24,24,0,0"
-                                    BorderBrush="#E5E5E5"
-                                    BorderThickness="0,0,0,1"
+                                    BorderBrush="#E5E5E5" BorderThickness="0,0,0,1"
                                     Padding="18,12">
-
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="&#x1F3AE; Cybersecurity Quiz"
-                                                   Foreground="#111111"
-                                                   FontSize="20"
-                                                   FontWeight="Bold"/>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="Cybersecurity Quiz"
+                                                   Foreground="#111111" FontSize="20" FontWeight="Bold"/>
                                         <TextBlock x:Name="QuizProgressTextBlock"
                                                    Text="Test your knowledge"
-                                                   Foreground="#6B7280"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"/>
+                                                   Foreground="#6B7280" FontSize="12" FontWeight="SemiBold"/>
                                     </StackPanel>
-
-                                    <Button Grid.Column="1"
-                                            Content="&#x1F4AC; Back to Chat"
-                                            Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                            Click="BackToChatButton_Click"
-                                            Width="140"
-                                            Height="36"
-                                            FontSize="12"/>
+                                    <Button Grid.Column="1" Content="Back to Chat"
+                                            Style="{StaticResource SmallPrimaryButtonStyle}"
+                                            Click="BackToChatButton_Click" Width="120"/>
                                 </Grid>
                             </Border>
 
-                            <!-- QUIZ CONTENT -->
-                            <Border Grid.Row="1"
-                                    Background="White"
-                                    Padding="24">
+                            <Border Grid.Row="1" Background="White" Padding="24">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled">
+                                    <ScrollViewer.Resources>
+                                        <Style TargetType="{x:Type ScrollBar}"
+                                               BasedOn="{StaticResource PremiumScrollBarStyle}"/>
+                                    </ScrollViewer.Resources>
+                                    <Grid>
+                                        <StackPanel x:Name="QuizStartPanel"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center" MinHeight="350">
+                                            <TextBlock Text="Test Your Cybersecurity Knowledge"
+                                                       Foreground="#111111" FontSize="24"
+                                                       FontWeight="Bold" TextAlignment="Center"
+                                                       Margin="0,0,0,10"/>
+                                            <TextBlock Text="10 questions covering phishing, passwords, safe browsing, and more."
+                                                       Foreground="#6B7280" FontSize="14"
+                                                       TextAlignment="Center" TextWrapping="Wrap"
+                                                       Margin="0,0,0,20"/>
+                                            <Button x:Name="StartQuizButton" Content="Start Quiz"
+                                                    Style="{StaticResource WelcomePrimaryButtonStyle}"
+                                                    Click="StartQuizButton_Click"
+                                                    Width="160" Height="44" HorizontalAlignment="Center"/>
+                                        </StackPanel>
 
-                                <Grid>
-                                    <!-- QUIZ START SCREEN -->
-                                    <StackPanel x:Name="QuizStartPanel"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Center">
+                                        <StackPanel x:Name="QuizActivePanel" Visibility="Collapsed">
+                                            <TextBlock x:Name="QuizQuestionTextBlock"
+                                                       Foreground="#111111" FontSize="18"
+                                                       FontWeight="Bold" TextWrapping="Wrap"
+                                                       Margin="0,0,0,16"/>
+                                            <StackPanel x:Name="QuizOptionsPanel" Margin="0,0,0,16"/>
+                                            <TextBlock x:Name="QuizFeedbackTextBlock" Text=""
+                                                       Foreground="#6B7280" FontSize="14"
+                                                       FontWeight="SemiBold" TextWrapping="Wrap"
+                                                       Margin="0,0,0,12" Visibility="Collapsed"/>
+                                            <Button x:Name="QuizNextButton" Content="Next Question"
+                                                    Style="{StaticResource SmallPrimaryButtonStyle}"
+                                                    Click="QuizNextButton_Click"
+                                                    Width="140" HorizontalAlignment="Center"
+                                                    Visibility="Collapsed" Margin="0,20,0,0"/>
+                                        </StackPanel>
 
-                                        <TextBlock Text="&#x1F3AF; Test Your Cybersecurity Knowledge"
-                                                   Foreground="#111111"
-                                                   FontSize="24"
-                                                   FontWeight="Bold"
-                                                   TextAlignment="Center"
-                                                   Margin="0,0,0,10"/>
-
-                                        <TextBlock Text="10 questions covering phishing, passwords, safe browsing, and more."
-                                                   Foreground="#6B7280"
-                                                   FontSize="14"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,0,0,20"/>
-
-                                        <Button x:Name="StartQuizButton"
-                                                Content="&#x25B6; Start Quiz"
-                                                Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                                Click="StartQuizButton_Click"
-                                                Width="160"
-                                                Height="44"
-                                                HorizontalAlignment="Center"/>
-                                    </StackPanel>
-
-                                    <!-- QUIZ ACTIVE SCREEN -->
-                                    <StackPanel x:Name="QuizActivePanel"
-                                                Visibility="Collapsed">
-
-                                        <TextBlock x:Name="QuizQuestionTextBlock"
-                                                   Foreground="#111111"
-                                                   FontSize="18"
-                                                   FontWeight="Bold"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,0,0,16"/>
-
-                                        <StackPanel x:Name="QuizOptionsPanel"
-                                                    Margin="0,0,0,16"/>
-
-                                        <TextBlock x:Name="QuizFeedbackTextBlock"
-                                                   Text=""
-                                                   Foreground="#6B7280"
-                                                   FontSize="14"
-                                                   FontWeight="SemiBold"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,0,0,12"
-                                                   Visibility="Collapsed"/>
-
-                                        <Button x:Name="QuizNextButton"
-                                                Content="&#x27A1; Next Question"
-                                                Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                                Click="QuizNextButton_Click"
-                                                Width="150"
-                                                Height="36"
-                                                HorizontalAlignment="Center"
-                                                Visibility="Collapsed"/>
-                                    </StackPanel>
-
-                                    <!-- QUIZ RESULTS SCREEN -->
-                                    <StackPanel x:Name="QuizResultsPanel"
-                                                VerticalAlignment="Center"
-                                                HorizontalAlignment="Center"
-                                                Visibility="Collapsed">
-
-                                        <TextBlock x:Name="QuizResultsTitleTextBlock"
-                                                   Foreground="#111111"
-                                                   FontSize="24"
-                                                   FontWeight="Bold"
-                                                   TextAlignment="Center"
-                                                   Margin="0,0,0,10"/>
-
-                                        <TextBlock x:Name="QuizResultsScoreTextBlock"
-                                                   Foreground="#F97316"
-                                                   FontSize="36"
-                                                   FontWeight="Bold"
-                                                   TextAlignment="Center"
-                                                   Margin="0,0,0,8"/>
-
-                                        <TextBlock x:Name="QuizResultsFeedbackTextBlock"
-                                                   Foreground="#6B7280"
-                                                   FontSize="14"
-                                                   TextAlignment="Center"
-                                                   TextWrapping="Wrap"
-                                                   Margin="0,0,0,20"/>
-
-                                        <Button x:Name="QuizRetryButton"
-                                                Content="&#x1F504; Try Again"
-                                                Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                                Click="StartQuizButton_Click"
-                                                Width="140"
-                                                Height="40"
-                                                HorizontalAlignment="Center"/>
-                                    </StackPanel>
-                                </Grid>
+                                        <StackPanel x:Name="QuizResultsPanel"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Visibility="Collapsed" MinHeight="350">
+                                            <TextBlock x:Name="QuizResultsTitleTextBlock"
+                                                       Foreground="#111111" FontSize="24"
+                                                       FontWeight="Bold" TextAlignment="Center"
+                                                       Margin="0,0,0,10"/>
+                                            <TextBlock x:Name="QuizResultsScoreTextBlock"
+                                                       Foreground="#F97316" FontSize="36"
+                                                       FontWeight="Bold" TextAlignment="Center"
+                                                       Margin="0,0,0,8"/>
+                                            <TextBlock x:Name="QuizResultsFeedbackTextBlock"
+                                                       Foreground="#6B7280" FontSize="14"
+                                                       TextAlignment="Center" TextWrapping="Wrap"
+                                                       Margin="0,0,0,20"/>
+                                            <Button x:Name="QuizRetryButton" Content="Try Again"
+                                                    Style="{StaticResource WelcomePrimaryButtonStyle}"
+                                                    Click="StartQuizButton_Click"
+                                                    Width="140" Height="40" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </ScrollViewer>
                             </Border>
                         </Grid>
 
                         <!-- ==================== ACTIVITY LOG TAB ==================== -->
-                        <Grid x:Name="ActivityLogTab"
-                              Visibility="Collapsed">
-
+                        <Grid x:Name="ActivityLogTab" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="72"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <!-- ACTIVITY LOG HEADER -->
-                            <Border Grid.Row="0"
-                                    Background="#FFFFFF"
+                            <Border Grid.Row="0" Background="#FFFFFF"
                                     CornerRadius="24,24,0,0"
-                                    BorderBrush="#E5E5E5"
-                                    BorderThickness="0,0,0,1"
+                                    BorderBrush="#E5E5E5" BorderThickness="0,0,0,1"
                                     Padding="18,12">
-
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="&#x1F4CA; Activity Log"
-                                                   Foreground="#111111"
-                                                   FontSize="20"
-                                                   FontWeight="Bold"/>
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="Activity Log"
+                                                   Foreground="#111111" FontSize="20" FontWeight="Bold"/>
                                         <TextBlock x:Name="ActivityCountTextBlock"
                                                    Text="Tracked actions in this session"
-                                                   Foreground="#6B7280"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"/>
+                                                   Foreground="#6B7280" FontSize="12" FontWeight="SemiBold"/>
                                     </StackPanel>
-
-                                    <Button Grid.Column="1"
-                                            Content="&#x1F4AC; Back to Chat"
-                                            Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                            Click="BackToChatButton_Click"
-                                            Width="140"
-                                            Height="36"
-                                            FontSize="12"/>
+                                    <Button Grid.Column="1" Content="Back to Chat"
+                                            Style="{StaticResource SmallPrimaryButtonStyle}"
+                                            Click="BackToChatButton_Click" Width="120"/>
                                 </Grid>
                             </Border>
 
-                            <!-- ACTIVITY LOG CONTENT -->
-                            <Border Grid.Row="1"
-                                    Background="White"
-                                    Padding="16">
-
+                            <Border Grid.Row="1" Background="White" Padding="16">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-
-                                    <Grid Grid.Row="0"
-                                          Margin="0,0,0,10">
+                                    <Grid Grid.Row="0" Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
-                                        <TextBlock Text="&#x1F4CB; Recent Actions"
-                                                   Foreground="#111111"
-                                                   FontSize="16"
-                                                   FontWeight="Bold"/>
-
-                                        <Button x:Name="RefreshLogButton"
-                                                Grid.Column="1"
-                                                Content="&#x1F504; Refresh"
-                                                Style="{StaticResource WelcomePrimaryButtonStyle}"
-                                                Click="RefreshLogButton_Click"
-                                                Width="90"
-                                                Height="30"
-                                                FontSize="11"/>
+                                        <TextBlock Text="Recent Actions"
+                                                   Foreground="#111111" FontSize="16" FontWeight="Bold"/>
+                                        <Button x:Name="RefreshLogButton" Grid.Column="1"
+                                                Content="Refresh"
+                                                Style="{StaticResource SmallPrimaryButtonStyle}"
+                                                Click="RefreshLogButton_Click" Width="80"/>
                                     </Grid>
-
-                                    <ScrollViewer Grid.Row="1"
-                                                  VerticalScrollBarVisibility="Auto">
+                                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                                         <StackPanel x:Name="ActivityLogPanel"/>
                                     </ScrollViewer>
                                 </Grid>
@@ -1778,24 +1445,18 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                 </Border>
             </Grid>
 
+            <!-- CONFETTI OVERLAY -->
+            <Canvas x:Name="ConfettiCanvas"
+                    Grid.Row="0" Grid.RowSpan="2"
+                    IsHitTestVisible="False" Visibility="Collapsed"/>
+
             <!-- BOTTOM TAB NAVIGATION BAR -->
-            <Border Grid.Row="1"
-                    Background="#FFFFFF"
-                    CornerRadius="16"
-                    Padding="8"
-                    Margin="0,10,0,0"
-                    BorderBrush="#E5E5E5"
-                    BorderThickness="1">
-
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-
-                    <Button x:Name="NavChatButton"
-                            Width="110"
-                            Height="34"
-                            Margin="0,0,6,0"
-                            FontSize="12"
-                            FontWeight="Bold"
+            <Border Grid.Row="1" Background="#FFFFFF" CornerRadius="16"
+                    Padding="8" Margin="0,10,0,0"
+                    BorderBrush="#E5E5E5" BorderThickness="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="NavChatButton" Width="110" Height="34"
+                            Margin="0,0,6,0" FontSize="12" FontWeight="Bold"
                             Click="NavChatButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -1813,8 +1474,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="12"
-                                                    Padding="12,6">
+                                                    CornerRadius="12" Padding="12,6">
                                                 <ContentPresenter HorizontalAlignment="Center"
                                                                   VerticalAlignment="Center"/>
                                             </Border>
@@ -1825,12 +1485,8 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         </Button.Style>
                     </Button>
 
-                    <Button x:Name="NavTasksButton"
-                            Width="110"
-                            Height="34"
-                            Margin="0,0,6,0"
-                            FontSize="12"
-                            FontWeight="Bold"
+                    <Button x:Name="NavTasksButton" Width="110" Height="34"
+                            Margin="0,0,6,0" FontSize="12" FontWeight="Bold"
                             Click="NavTasksButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -1848,8 +1504,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="12"
-                                                    Padding="12,6">
+                                                    CornerRadius="12" Padding="12,6">
                                                 <ContentPresenter HorizontalAlignment="Center"
                                                                   VerticalAlignment="Center"/>
                                             </Border>
@@ -1860,12 +1515,8 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         </Button.Style>
                     </Button>
 
-                    <Button x:Name="NavQuizButton"
-                            Width="110"
-                            Height="34"
-                            Margin="0,0,6,0"
-                            FontSize="12"
-                            FontWeight="Bold"
+                    <Button x:Name="NavQuizButton" Width="110" Height="34"
+                            Margin="0,0,6,0" FontSize="12" FontWeight="Bold"
                             Click="NavQuizButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -1883,8 +1534,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="12"
-                                                    Padding="12,6">
+                                                    CornerRadius="12" Padding="12,6">
                                                 <ContentPresenter HorizontalAlignment="Center"
                                                                   VerticalAlignment="Center"/>
                                             </Border>
@@ -1895,11 +1545,8 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                         </Button.Style>
                     </Button>
 
-                    <Button x:Name="NavLogButton"
-                            Width="110"
-                            Height="34"
-                            FontSize="12"
-                            FontWeight="Bold"
+                    <Button x:Name="NavLogButton" Width="110" Height="34"
+                            FontSize="12" FontWeight="Bold"
                             Click="NavLogButton_Click">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -1917,8 +1564,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
                                             <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="12"
-                                                    Padding="12,6">
+                                                    CornerRadius="12" Padding="12,6">
                                                 <ContentPresenter HorizontalAlignment="Center"
                                                                   VerticalAlignment="Center"/>
                                             </Border>
@@ -1928,7 +1574,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                             </Style>
                         </Button.Style>
                     </Button>
-
                 </StackPanel>
             </Border>
         </Grid>
@@ -1936,88 +1581,55 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
         <!-- PREMIUM LOADING OVERLAY -->
         <Grid x:Name="LoadingOverlay"
               Background="#99000000"
-              Visibility="Collapsed"
-              Opacity="0">
-
-            <Border x:Name="LoadingCardBorder"
-                    Width="380"
-                    Background="#FFFFFF"
-                    CornerRadius="28"
-                    Padding="30"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+              Visibility="Collapsed" Opacity="0">
+            <Border x:Name="LoadingCardBorder" Width="380"
+                    Background="#FFFFFF" CornerRadius="28" Padding="30"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
                     RenderTransformOrigin="0.5,0.5">
-
                 <Border.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform ScaleX="0.96" ScaleY="0.96"/>
                         <TranslateTransform Y="18"/>
                     </TransformGroup>
                 </Border.RenderTransform>
-
                 <StackPanel>
                     <Border x:Name="LoadingShieldIconBorder"
-                            Width="66"
-                            Height="66"
-                            Background="#F97316"
-                            CornerRadius="33"
-                            HorizontalAlignment="Center"
-                            Margin="0,0,0,16"
-                            RenderTransformOrigin="0.5,0.5">
-
+                            Width="66" Height="66" Background="#F97316"
+                            CornerRadius="33" HorizontalAlignment="Center"
+                            Margin="0,0,0,16" RenderTransformOrigin="0.5,0.5">
                         <Border.RenderTransform>
                             <ScaleTransform ScaleX="1" ScaleY="1"/>
                         </Border.RenderTransform>
-
-                        <TextBlock Text="&#x1F6E1;"
-                                   FontSize="31"
+                        <TextBlock Text="&#x1F6E1;" FontSize="31"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </Border>
-
                     <TextBlock Text="Preparing your secure session"
-                               Foreground="#111111"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               TextAlignment="Center"
+                               Foreground="#111111" FontSize="22"
+                               FontWeight="Bold" TextAlignment="Center"
                                Margin="0,0,0,8"/>
-
                     <TextBlock x:Name="LoadingStatusTextBlock"
                                Text="Setting up CyberBot."
-                               Foreground="#6B7280"
-                               FontSize="13"
-                               FontWeight="SemiBold"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap"
-                               LineHeight="20"
+                               Foreground="#6B7280" FontSize="13"
+                               FontWeight="SemiBold" TextAlignment="Center"
+                               TextWrapping="Wrap" LineHeight="20"
                                Margin="0,0,0,16"/>
-
-                    <Border Height="9"
-                            Background="#E5E5E5"
-                            CornerRadius="5"
-                            ClipToBounds="True">
-
+                    <Border Height="9" Background="#E5E5E5"
+                            CornerRadius="5" ClipToBounds="True">
                         <Grid>
                             <Border x:Name="LoadingProgressBar"
-                                    Width="90"
-                                    Height="9"
-                                    Background="#F97316"
-                                    CornerRadius="5"
-                                    HorizontalAlignment="Left"
+                                    Width="90" Height="9" Background="#F97316"
+                                    CornerRadius="5" HorizontalAlignment="Left"
                                     RenderTransformOrigin="0.5,0.5">
-
                                 <Border.RenderTransform>
                                     <TranslateTransform X="-100"/>
                                 </Border.RenderTransform>
                             </Border>
                         </Grid>
                     </Border>
-
                     <TextBlock Text="&#x1F6E1; Smart risk detection &#x2022; Secure awareness &#x2022; Professional guidance"
-                               Foreground="#9A3412"
-                               FontSize="11.5"
-                               FontWeight="Bold"
-                               TextAlignment="Center"
+                               Foreground="#9A3412" FontSize="11.5"
+                               FontWeight="Bold" TextAlignment="Center"
                                Margin="0,14,0,0"/>
                 </StackPanel>
             </Border>
