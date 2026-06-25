@@ -1199,7 +1199,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 </Grid>
                             </Border>
 
-                            <!-- SCROLLABLE CONTENT -->
                             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                                           HorizontalScrollBarVisibility="Disabled">
                                 <ScrollViewer.Resources>
@@ -1208,7 +1207,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                 </ScrollViewer.Resources>
 
                                 <StackPanel>
-                                    <!-- ADD TASK SECTION -->
                                     <Border Background="#FAFAFA" Padding="16">
                                         <StackPanel>
                                             <TextBlock Text="Add New Task"
@@ -1268,7 +1266,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                         </StackPanel>
                                     </Border>
 
-                                    <!-- TASK LIST SECTION -->
                                     <Border Background="White" Padding="16">
                                         <StackPanel>
                                             <Grid Margin="0,0,0,10">
@@ -1327,6 +1324,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                BasedOn="{StaticResource PremiumScrollBarStyle}"/>
                                     </ScrollViewer.Resources>
                                     <Grid>
+                                        <!-- QUIZ START SCREEN -->
                                         <StackPanel x:Name="QuizStartPanel"
                                                     VerticalAlignment="Center"
                                                     HorizontalAlignment="Center" MinHeight="350">
@@ -1342,8 +1340,16 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                     Style="{StaticResource WelcomePrimaryButtonStyle}"
                                                     Click="StartQuizButton_Click"
                                                     Width="160" Height="44" HorizontalAlignment="Center"/>
+                                            <Button x:Name="ViewLeaderboardFromStartButton"
+                                                    Content="View Leaderboard"
+                                                    Style="{StaticResource WelcomePrimaryButtonStyle}"
+                                                    Click="ViewLeaderboardFromStartButton_Click"
+                                                    Width="160" Height="44"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="0,10,0,0"/>
                                         </StackPanel>
 
+                                        <!-- QUIZ ACTIVE SCREEN -->
                                         <StackPanel x:Name="QuizActivePanel" Visibility="Collapsed">
                                             <TextBlock x:Name="QuizQuestionTextBlock"
                                                        Foreground="#111111" FontSize="18"
@@ -1361,6 +1367,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                     Visibility="Collapsed" Margin="0,20,0,0"/>
                                         </StackPanel>
 
+                                        <!-- QUIZ RESULTS SCREEN -->
                                         <StackPanel x:Name="QuizResultsPanel"
                                                     VerticalAlignment="Center"
                                                     HorizontalAlignment="Center"
@@ -1381,6 +1388,73 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                     Style="{StaticResource WelcomePrimaryButtonStyle}"
                                                     Click="StartQuizButton_Click"
                                                     Width="140" Height="40" HorizontalAlignment="Center"/>
+                                            <Button x:Name="ShowLeaderboardButton"
+                                                    Content="View Leaderboard"
+                                                    Style="{StaticResource WelcomePrimaryButtonStyle}"
+                                                    Click="ShowLeaderboardButton_Click"
+                                                    Width="160" Height="40"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="0,10,0,0"/>
+                                        </StackPanel>
+
+                                        <!-- LEADERBOARD PANEL -->
+                                        <StackPanel x:Name="LeaderboardPanel"
+                                                    Visibility="Collapsed"
+                                                    VerticalAlignment="Top"
+                                                    HorizontalAlignment="Stretch">
+
+                                            <Border Background="#F97316" CornerRadius="12,12,0,0"
+                                                    Padding="16,12">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Leaderboard"
+                                                               Foreground="White"
+                                                               FontSize="20" FontWeight="Bold"/>
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                        <Button Content="Results"
+                                                                Style="{StaticResource SmallPrimaryButtonStyle}"
+                                                                Click="BackToResultsButton_Click"
+                                                                Width="90" Margin="0,0,8,0"/>
+                                                        <Button Content="Quiz"
+                                                                Style="{StaticResource SmallPrimaryButtonStyle}"
+                                                                Click="BackToQuizFromLeaderboardButton_Click"
+                                                                Width="70"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+
+                                            <Border Background="#111111" Padding="12,10">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="50"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="70"/>
+                                                        <ColumnDefinition Width="70"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="Rank" Foreground="#F97316"
+                                                               FontSize="12" FontWeight="Bold"/>
+                                                    <TextBlock Text="Player" Foreground="#F97316"
+                                                               Grid.Column="1" FontSize="12" FontWeight="Bold"/>
+                                                    <TextBlock Text="Score" Foreground="#F97316"
+                                                               Grid.Column="2" FontSize="12" FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
+                                                    <TextBlock Text="%" Foreground="#F97316"
+                                                               Grid.Column="3" FontSize="12" FontWeight="Bold"
+                                                               HorizontalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+
+                                            <Border Background="White" CornerRadius="0,0,12,12"
+                                                    BorderBrush="#E5E5E5" BorderThickness="1,0,1,1"
+                                                    Padding="0">
+                                                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                              MaxHeight="300">
+                                                    <StackPanel x:Name="LeaderboardEntriesPanel"/>
+                                                </ScrollViewer>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </ScrollViewer>
