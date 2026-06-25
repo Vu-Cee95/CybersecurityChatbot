@@ -118,33 +118,47 @@ namespace CybersecurityChatbotGUI.Services
             if (string.IsNullOrWhiteSpace(userInput))
                 return null;
 
-            // Match "Remind me in X days"
-            var daysMatch = Regex.Match(userInput, @"remind me in (\d+)\s*days?", RegexOptions.IgnoreCase);
+            string input = userInput.ToLower().Trim();
+
+            // Remove "remind me " prefix if present
+            if (input.StartsWith("remind me "))
+                input = input.Substring(10).Trim();
+
+            // Match "in X days" or just "X days"
+            var daysMatch = System.Text.RegularExpressions.Regex.Match(input, @"(?:in\s+)?(\d+)\s*days?");
             if (daysMatch.Success)
             {
                 int days = int.Parse(daysMatch.Groups[1].Value);
                 return DateTime.Now.AddDays(days);
             }
 
-            // Match "Remind me in X weeks"
-            var weeksMatch = Regex.Match(userInput, @"remind me in (\d+)\s*weeks?", RegexOptions.IgnoreCase);
+            // Match "in X weeks" or just "X weeks"
+            var weeksMatch = System.Text.RegularExpressions.Regex.Match(input, @"(?:in\s+)?(\d+)\s*weeks?");
             if (weeksMatch.Success)
             {
                 int weeks = int.Parse(weeksMatch.Groups[1].Value);
                 return DateTime.Now.AddDays(weeks * 7);
             }
 
-            // Match "Remind me tomorrow"
-            if (Regex.IsMatch(userInput, @"remind me tomorrow", RegexOptions.IgnoreCase))
+            // Match "tomorrow"
+            if (input.Contains("tomorrow"))
                 return DateTime.Now.AddDays(1);
 
-            // Match "Remind me on [date]"
-            var dateMatch = Regex.Match(userInput, @"remind me on (\d{4}-\d{2}-\d{2})", RegexOptions.IgnoreCase);
+            // Match "today"
+            if (input.Contains("today"))
+                return DateTime.Now;
+
+            // Match specific date format yyyy-MM-dd
+            var dateMatch = System.Text.RegularExpressions.Regex.Match(input, @"(\d{4}-\d{2}-\d{2})");
             if (dateMatch.Success)
             {
                 if (DateTime.TryParse(dateMatch.Groups[1].Value, out DateTime parsedDate))
                     return parsedDate;
             }
+
+            // If just a number, treat as days
+            if (int.TryParse(input, out int numDays) && numDays > 0)
+                return DateTime.Now.AddDays(numDays);
 
             return null;
         }
