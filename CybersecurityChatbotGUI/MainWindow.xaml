@@ -1045,7 +1045,6 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
-                        </StackPanel>
 
                         <StackPanel Grid.Row="3"
                                     VerticalAlignment="Top">
