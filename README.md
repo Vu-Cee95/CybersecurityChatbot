@@ -1358,3 +1358,526 @@ Before submitting, confirm that every item below is complete.
 * Updated README for Part 2 submission
 * Added tagged releases for Part 2
 * Added Part 2 YouTube video presentation
+# 🔐 CyberBot – Cybersecurity Awareness Chatbot (Part 3)
+
+## 📌 Project Overview
+
+**CyberBot** is a WPF desktop application developed for the **PROG6221 Portfolio of Evidence (Part 3)**. It combines a conversational cybersecurity chatbot with a task management system, interactive quiz, natural language processing simulation, and comprehensive activity logging — all backed by a MySQL database.
+
+The application helps users learn about cybersecurity topics such as password safety, phishing awareness, online scams, privacy protection, safe browsing, malware, and two-factor authentication, while also providing practical tools to manage their cybersecurity learning tasks.
+
+---
+
+## 👨‍💻 Student Details
+
+| Field | Detail |
+|-------|--------|
+| **Student Name** | Vusimuzi Khanyile |
+| **Student Number** | ST10468302 |
+| **Module** | Programming 2A |
+| **Module Code** | PROG6221/w |
+| **Assessment** | Portfolio of Evidence – Part 3 |
+| **Application Name** | CyberBot |
+| **Application Type** | WPF Desktop Application |
+| **Development Environment** | Visual Studio 2022 |
+
+---
+
+## 🎯 Part 3 Objectives
+
+The objectives of Part 3 were to:
+
+- Extend the existing WPF chatbot with advanced features
+- Integrate a MySQL database for persistent task storage
+- Implement a full-featured task assistant with reminders
+- Create an interactive cybersecurity quiz mini-game
+- Simulate natural language processing for command detection
+- Build a comprehensive activity logging system
+- Maintain a professional, premium GUI with tabbed navigation
+- Use GitHub version control with meaningful commits
+- Create tagged releases for Part 3
+- Show a successful GitHub Actions CI build
+
+---
+
+## 🚀 Features
+
+### ✅ Parts 1 & 2 Features Retained
+
+| Feature | Description |
+|---------|-------------|
+| 🔊 Voice Greeting | Plays WAV audio on application launch |
+| 🎨 ASCII Art Display | Cybersecurity-themed ASCII logo on welcome page |
+| 👤 Personalised Interaction | User name captured and used throughout |
+| 💬 Keyword Recognition | Detects cybersecurity topics in user messages |
+| 🎲 Random Responses | Multiple responses per topic for natural conversation |
+| 🧠 Memory & Recall | Remembers user preferences and conversation context |
+| 😊 Sentiment Detection | Detects user emotion and responds with empathy |
+| ✅ Input Validation | Handles empty, invalid, and unclear input gracefully |
+| 🖥️ Professional GUI | Premium WPF interface with animations and styling |
+
+### 🆕 Part 3 Features
+
+| Feature | Description |
+|---------|-------------|
+| 📋 Task Assistant | Add, edit, complete, and delete cybersecurity tasks |
+| ⏰ Reminders | Set reminders for tasks (days, weeks, specific dates) |
+| 🗄️ MySQL Database | Persistent storage for all tasks |
+| 🎮 Cybersecurity Quiz | 14 interactive questions with instant feedback |
+| 🏆 Leaderboard | Top 10 rankings with medal colors and tie handling |
+| 🧠 NLP Simulation | Natural language command detection with regex |
+| 📊 Activity Log | Tracks all user actions with timestamps |
+| 🔄 Tabbed Interface | Chat, Tasks, Quiz, and Activity Log tabs |
+| 🎨 Premium UI | Orange-themed design with animations and glow effects |
+| 🏷️ GitHub Releases | 3 tagged releases (v1.0.0, v1.1.0, v2.0.0) |
+
+---
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|------------|---------|
+| C# | Primary programming language |
+| WPF / XAML | Graphical user interface |
+| .NET 8.0 | Application framework |
+| MySQL | Database storage |
+| MySql.Data (NuGet) | MySQL connector for .NET |
+| Regular Expressions | NLP pattern matching |
+| Git & GitHub | Version control |
+| GitHub Actions | Continuous integration |
+| Visual Studio 2022 | Development environment |
+
+---
+
+## 📂 Project Structure
+
+```text
+CybersecurityChatbot/
+│
+├── README.md
+├── .gitignore
+├── .gitattributes
+├── GitCIWorkflow.png
+├── CybersecurityChatbot.sln
+│
+├── Screenshots/
+│   ├── Part3_Tasks.png
+│   ├── Part3_Quiz.png
+│   ├── Part3_Leaderboard.png
+│   ├── Part3_ActivityLog.png
+│   └── Part3_Chat.png
+│
+├── .github/
+│   └── workflows/
+│       └── build.yml
+│
+├── CybersecurityChatbot/
+│   └── Part 1 console chatbot files
+│
+└── CybersecurityChatbotGUI/
+    │
+    ├── App.xaml
+    ├── App.xaml.cs
+    ├── App.config
+    ├── MainWindow.xaml
+    ├── MainWindow.xaml.cs
+    ├── CyberDialog.xaml
+    ├── CyberDialog.xaml.cs
+    ├── CybersecurityChatbotGUI.csproj
+    │
+    ├── Assets/
+    │   └── welcome.wav
+    │
+    ├── Models/
+    │   ├── ChatHistoryItem.cs
+    │   ├── ConversationState.cs
+    │   └── UserMemory.cs
+    │
+    └── Services/
+        ├── AudioPlayer.cs
+        ├── ChatbotEngine.cs
+        ├── ChatHistoryService.cs
+        ├── ClarifyingQuestionService.cs
+        ├── ContextChoiceService.cs
+        ├── CyberSafetyReportService.cs
+        ├── DatabaseHelper.cs          ← Part 3
+        ├── TaskAssistant.cs           ← Part 3
+        ├── QuizManager.cs             ← Part 3
+        ├── NLPSimulator.cs            ← Part 3
+        ├── ActivityLogger.cs          ← Part 3
+        ├── LeaderboardService.cs      ← Part 3
+        ├── InputNormaliserService.cs
+        ├── KeywordService.cs
+        ├── PersonalityService.cs
+        ├── PlatformExampleService.cs
+        ├── ResponseService.cs
+        ├── RiskLevelService.cs
+        ├── SentimentService.cs
+        └── Validator.cs
+## 🗄️ Database Setup
+Prerequisites
+MySQL Server 8.0 or later
+
+MySQL Workbench (optional, for running SQL scripts)
+
+Step 1: Create the Database
+Run the following SQL script in MySQL Workbench or any MySQL client:
+
+sql
+CREATE DATABASE IF NOT EXISTS cybersecurity_chatbot;
+USE cybersecurity_chatbot;
+
+CREATE TABLE IF NOT EXISTS Tasks (
+    TaskID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Description TEXT,
+    ReminderDate DATETIME NULL,
+    IsCompleted BOOLEAN DEFAULT FALSE,
+    CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS Leaderboard (
+    ScoreID INT AUTO_INCREMENT PRIMARY KEY,
+    PlayerName VARCHAR(50) NOT NULL,
+    Score INT NOT NULL,
+    TotalQuestions INT NOT NULL,
+    Percentage DECIMAL(5,2) NOT NULL,
+    PlayedDate DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+Step 2: Configure Connection String
+The connection string is stored in CybersecurityChatbotGUI/App.config:
+
+xml
+<connectionStrings>
+    <add name="ChatbotDB"
+         connectionString="Server=localhost;Database=cybersecurity_chatbot;Uid=root;Pwd=@Khanyile95;"
+         providerName="MySql.Data.MySqlClient" />
+</connectionStrings>
+Step 3: Install NuGet Package
+In Visual Studio Package Manager Console:
+
+text
+Install-Package MySql.Data
+## ▶️ How to Run the Application
+Prerequisites
+Windows operating system
+
+Visual Studio 2022
+
+.NET Desktop Development workload installed
+
+.NET 8.0 SDK
+
+MySQL Server 8.0+ running locally
+
+Steps
+Step 1: Clone the Repository
+bash
+git clone https://github.com/Vu-Cee95/CybersecurityChatbot.git
+Step 2: Open the Project
+bash
+cd CybersecurityChatbot
+Open CybersecurityChatbot.sln in Visual Studio 2022.
+
+Step 3: Set Startup Project
+In Solution Explorer, right-click on CybersecurityChatbotGUI and select "Set as Startup Project".
+
+Step 4: Configure Database
+Ensure MySQL is running
+
+Run the SQL script above to create the database and tables
+
+Update the connection string in App.config with your MySQL password
+
+Step 5: Build the Project
+text
+Ctrl + Shift + B
+Step 6: Run the Application
+text
+F5
+Step 7: Verify Launch
+The application should:
+
+Play the voice greeting
+
+Display the welcome page with ASCII art
+
+Prompt for your name
+
+Open the main chat interface with all Part 3 features
+
+## 💡 Example Usage
+Chat with Cybersecurity Topics
+text
+User: What is phishing?
+CyberBot: Phishing is a type of cyber attack where attackers send fraudulent
+          messages designed to trick you into revealing sensitive information.
+
+User: Tell me more
+CyberBot: Since we are talking about phishing, let us go deeper...
+Task Management
+text
+User: Add task to enable two-factor authentication
+CyberBot: Task added successfully.
+
+User: Add task to review privacy settings remind me in 3 days
+CyberBot: Task added with reminder set for 2026-06-29.
+
+User: View tasks
+CyberBot: Your Tasks:
+          Task 1: Enable two-factor authentication
+          Task 2: Review privacy settings | Reminder: 2026-06-29
+
+User: Complete task 1
+CyberBot: Task marked as complete.
+
+User: Delete task 2
+CyberBot: Task deleted successfully.
+Quiz
+text
+User: Start quiz
+
+Question 1 of 10:
+What should you do if you receive an email asking for your password?
+A) Reply with your password
+B) Click the link to verify
+C) Report it as phishing and delete it
+D) Forward it to friends
+
+Answer: C
+Feedback: Correct! Final Score: 8/10 (80%)
+Leaderboard
+text
+User clicks "View Leaderboard"
+
+Rank  Player        Score   %
+1     Vusimuzi      10/10   100%
+2     John          8/10    80%
+3     Jane          7/10    70%
+Activity Log
+text
+User: Show activity log
+
+Activity Log (Last 10 actions):
+1. [14:30] [Task] Task added: 'Enable two-factor authentication'
+2. [14:25] [Quiz] Quiz started
+3. [14:20] [NLP] Detected intent 'add_task'
+4. [14:15] [System] User 'Vusimuzi' logged in
+
+## 🧠 Code Structure Explanation
+DatabaseHelper.cs
+Handles all MySQL database operations:
+
+AddTask() - Insert new task
+
+GetAllTasks() - Retrieve all tasks
+
+GetPendingTasks() - Retrieve incomplete tasks
+
+MarkTaskAsComplete() - Update task status
+
+DeleteTask() - Remove task
+
+TestConnection() - Verify database connectivity
+
+TaskAssistant.cs
+Manages task operations:
+
+AddTask() - Creates task with optional reminder
+
+ViewAllTasks() - Returns formatted task list
+
+CompleteTask() - Marks task as done
+
+DeleteTask() - Removes task
+
+ParseReminderDate() - Extracts reminder dates from natural language
+
+QuizManager.cs
+Manages quiz logic with 14 questions across 6 cybersecurity topics:
+
+Phishing (3 questions)
+
+Password Safety (3 questions)
+
+Safe Browsing (2 questions)
+
+Social Engineering (2 questions)
+
+General Cybersecurity (2 questions)
+
+Malware (2 questions)
+
+NLPSimulator.cs
+Simulates natural language processing for command detection:
+
+Pattern matching with keyword dictionaries
+
+Regular expression fallback detection
+
+Intent mapping for 8 command types
+
+ActivityLogger.cs
+Tracks all user actions with timestamps and action type labels.
+
+LeaderboardService.cs
+Manages quiz leaderboard:
+
+Stores scores in MySQL
+
+Keeps top 10 entries
+
+Handles tie rankings (shared positions)
+
+Auto-cleanup of old scores
+
+## 🧩 Use of Generic Collections
+The application uses generic collections throughout:
+
+csharp
+List<TaskItem>              // Task storage
+List<QuizQuestion>          // Quiz question bank
+List<ActivityEntry>         // Activity log entries
+List<LeaderboardEntry>      // Leaderboard entries
+List<string>                // Response options, intent patterns
+Dictionary<string, List<string>>  // Intent-to-keyword mapping
+
+## 🔁 Use of Delegates
+The chatbot engine uses a delegate for response handling:
+
+csharp
+private delegate string ResponseHandler(string userInput);
+This separates input processing from response generation.
+
+## 🖼️ Part 3 Screenshots
+Welcome Page
+https://Screenshots/Cyber1.png
+
+Chat Interface
+https://Screenshots/Part3_Chat.png
+
+Task Assistant
+https://Screenshots/Part3_Tasks.png
+
+Cybersecurity Quiz
+https://Screenshots/Part3_Quiz.png
+
+Leaderboard
+https://Screenshots/Part3_Leaderboard.png
+
+Activity Log
+https://Screenshots/Part3_ActivityLog.png
+
+## ⚙️ Continuous Integration (CI)
+GitHub Actions is configured to build the project automatically on every push and pull request.
+
+Workflow File
+Location: .github/workflows/build.yml
+
+What It Does
+Checks out the repository
+
+Sets up .NET 8.0
+
+Restores NuGet dependencies
+
+Builds the solution in Release configuration
+
+Checks for syntax errors
+
+CI Status
+https://GitCIWorkflow.png
+
+## 🔁 GitHub Version Control
+Part 3 Commit History
+#	Commit Message
+1	Initial commit: Project structure and base files
+2	Added Task Assistant with MySQL database integration
+3	Implemented Quiz Mini-Game with 10+ cybersecurity questions
+4	Added NLP simulation with keyword detection and phrase handling
+5	Implemented Activity Log feature tracking all user actions
+6	Final integration: Combined Parts 1, 2, and 3 with full GUI
+
+## 🏷️ Part 3 Releases
+Tag	Title	Description
+v1.0.0	Initial Part 3 Release	Database integration and task CRUD operations
+v1.1.0	Quiz and NLP Features	Quiz mini-game and NLP command detection
+v2.0.0	Final Release	Complete application with all Part 3 features
+
+## 🎥 Part 3 Video Presentation
+text
+https://youtu.be/YOUR_PART3_VIDEO_LINK
+What the Video Covers
+Introduction to CyberBot
+
+Code structure walkthrough
+
+Task Assistant demo (add, edit, complete, delete tasks)
+
+Quiz mini-game demo (questions, feedback, scoring)
+
+Leaderboard demo
+
+NLP simulation demo (varied phrasing detection)
+
+Activity Log demo
+
+Database integration explanation
+
+GitHub commits and releases overview
+
+CI workflow green tick verification
+
+## ✅ Part 3 Requirement Mapping
+Requirement	Implementation
+GUI Application	WPF application in MainWindow.xaml
+Working Code	Build verified with zero errors
+GitHub Used	Repository with 6+ commits
+MySQL Database	cybersecurity_chatbot with Tasks and Leaderboard tables
+Task Assistant	Add, edit, complete, delete tasks with reminders
+Database CRUD	Full Create, Read, Update, Delete operations
+Cybersecurity Quiz	14 questions with feedback, scoring, and leaderboard
+NLP Simulation	Keyword detection and intent mapping
+Activity Log	Tracks all user actions with timestamps
+Parts 1, 2, 3 Combined	All features integrated in single GUI
+6+ Meaningful Commits	Documented commit history
+3+ Tagged Releases	v1.0.0, v1.1.0, v2.0.0
+CI Workflow	GitHub Actions with green check
+Video Presentation	YouTube video with own voice
+##📋 Submission Checklist
+text
+[x] Source code pushed to GitHub
+[x] README.md complete with all sections
+[x] App.config with connection string
+[x] MySQL database created and tested
+[x] All Part 3 services implemented
+[x] MainWindow.xaml updated with tabs
+[x] MainWindow.xaml.cs integrated
+[x] 6+ meaningful commits
+[x] 3 tagged releases created
+[x] CI workflow passing (green check)
+[x] WAV audio file included
+[x] ASCII art displayed
+[x] GitHub link works
+[x] YouTube video recorded
+[x] Application compiles without errors
+[x] Application runs without crashing
+
+##👨‍💻 Author
+Vusimuzi Khanyile
+Student Number: ST10468302
+Diploma in Information Technology (Systems Development)
+Rosebank College
+
+## 📌 Notes
+This project is for academic purposes as part of the PROG6221 Portfolio of Evidence
+
+All work follows academic integrity policies
+
+The application requires MySQL Server to be running locally for database features
+
+## 📌 Update Log
+Part	Update
+Part 1	Console chatbot with voice greeting, ASCII art, basic responses
+Part 2	WPF GUI with keyword recognition, sentiment detection, memory
+Part 3	MySQL database, task assistant, quiz, NLP, leaderboard, activity log
