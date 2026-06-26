@@ -1324,6 +1324,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                BasedOn="{StaticResource PremiumScrollBarStyle}"/>
                                     </ScrollViewer.Resources>
                                     <Grid>
+                                        <!-- QUIZ START SCREEN -->
                                         <StackPanel x:Name="QuizStartPanel"
                                                     VerticalAlignment="Center"
                                                     HorizontalAlignment="Center" MinHeight="350">
@@ -1348,6 +1349,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                     Margin="0,10,0,0"/>
                                         </StackPanel>
 
+                                        <!-- QUIZ ACTIVE SCREEN -->
                                         <StackPanel x:Name="QuizActivePanel" Visibility="Collapsed">
                                             <TextBlock x:Name="QuizQuestionTextBlock"
                                                        Foreground="#111111" FontSize="18"
@@ -1374,6 +1376,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                             </Button>
                                         </StackPanel>
 
+                                        <!-- QUIZ RESULTS SCREEN -->
                                         <StackPanel x:Name="QuizResultsPanel"
                                                     VerticalAlignment="Center"
                                                     HorizontalAlignment="Center"
@@ -1403,6 +1406,7 @@ Your friendly cybersecurity awareness chatbot</TextBlock>
                                                     Margin="0,10,0,0"/>
                                         </StackPanel>
 
+                                        <!-- LEADERBOARD PANEL -->
                                         <StackPanel x:Name="LeaderboardPanel"
                                                     Visibility="Collapsed"
                                                     VerticalAlignment="Top"
