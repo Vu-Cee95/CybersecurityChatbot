@@ -1514,7 +1514,7 @@ CybersecurityChatbot/
         ├── RiskLevelService.cs
         ├── SentimentService.cs
         └── Validator.cs
-## 🗄️ Database Setup
+🗄️ Database Setup
 Prerequisites
 MySQL Server 8.0 or later
 
@@ -1558,7 +1558,7 @@ In Visual Studio Package Manager Console:
 
 text
 Install-Package MySql.Data
-## ▶️ How to Run the Application
+▶️ How to Run the Application
 Prerequisites
 Windows operating system
 
@@ -1606,7 +1606,7 @@ Prompt for your name
 
 Open the main chat interface with all Part 3 features
 
-## 💡 Example Usage
+💡 Example Usage
 Chat with Cybersecurity Topics
 text
 User: What is phishing?
@@ -1663,8 +1663,7 @@ Activity Log (Last 10 actions):
 2. [14:25] [Quiz] Quiz started
 3. [14:20] [NLP] Detected intent 'add_task'
 4. [14:15] [System] User 'Vusimuzi' logged in
-
-## 🧠 Code Structure Explanation
+🧠 Code Structure Explanation
 DatabaseHelper.cs
 Handles all MySQL database operations:
 
@@ -1731,7 +1730,7 @@ Handles tie rankings (shared positions)
 
 Auto-cleanup of old scores
 
-## 🧩 Use of Generic Collections
+🧩 Use of Generic Collections
 The application uses generic collections throughout:
 
 csharp
@@ -1741,15 +1740,14 @@ List<ActivityEntry>         // Activity log entries
 List<LeaderboardEntry>      // Leaderboard entries
 List<string>                // Response options, intent patterns
 Dictionary<string, List<string>>  // Intent-to-keyword mapping
-
-## 🔁 Use of Delegates
+🔁 Use of Delegates
 The chatbot engine uses a delegate for response handling:
 
 csharp
 private delegate string ResponseHandler(string userInput);
 This separates input processing from response generation.
 
-## 🖼️ Part 3 Screenshots
+🖼️ Part 3 Screenshots
 Welcome Page
 https://Screenshots/Cyber1.png
 
@@ -1768,7 +1766,7 @@ https://Screenshots/Part3_Leaderboard.png
 Activity Log
 https://Screenshots/Part3_ActivityLog.png
 
-## ⚙️ Continuous Integration (CI)
+⚙️ Continuous Integration (CI)
 GitHub Actions is configured to build the project automatically on every push and pull request.
 
 Workflow File
@@ -1788,7 +1786,7 @@ Checks for syntax errors
 CI Status
 https://GitCIWorkflow.png
 
-## 🔁 GitHub Version Control
+🔁 GitHub Version Control
 Part 3 Commit History
 #	Commit Message
 1	Initial commit: Project structure and base files
@@ -1797,14 +1795,12 @@ Part 3 Commit History
 4	Added NLP simulation with keyword detection and phrase handling
 5	Implemented Activity Log feature tracking all user actions
 6	Final integration: Combined Parts 1, 2, and 3 with full GUI
-
-## 🏷️ Part 3 Releases
+🏷️ Part 3 Releases
 Tag	Title	Description
 v1.0.0	Initial Part 3 Release	Database integration and task CRUD operations
 v1.1.0	Quiz and NLP Features	Quiz mini-game and NLP command detection
 v2.0.0	Final Release	Complete application with all Part 3 features
-
-## 🎥 Part 3 Video Presentation
+🎥 Part 3 Video Presentation
 text
 https://youtu.be/YOUR_PART3_VIDEO_LINK
 What the Video Covers
@@ -1828,7 +1824,7 @@ GitHub commits and releases overview
 
 CI workflow green tick verification
 
-## ✅ Part 3 Requirement Mapping
+✅ Part 3 Requirement Mapping
 Requirement	Implementation
 GUI Application	WPF application in MainWindow.xaml
 Working Code	Build verified with zero errors
@@ -1844,7 +1840,7 @@ Parts 1, 2, 3 Combined	All features integrated in single GUI
 3+ Tagged Releases	v1.0.0, v1.1.0, v2.0.0
 CI Workflow	GitHub Actions with green check
 Video Presentation	YouTube video with own voice
-##📋 Submission Checklist
+📋 Submission Checklist
 text
 [x] Source code pushed to GitHub
 [x] README.md complete with all sections
@@ -1862,21 +1858,20 @@ text
 [x] YouTube video recorded
 [x] Application compiles without errors
 [x] Application runs without crashing
-
-##👨‍💻 Author
+👨‍💻 Author
 Vusimuzi Khanyile
 Student Number: ST10468302
 Diploma in Information Technology (Systems Development)
 Rosebank College
 
-## 📌 Notes
+📌 Notes
 This project is for academic purposes as part of the PROG6221 Portfolio of Evidence
 
 All work follows academic integrity policies
 
 The application requires MySQL Server to be running locally for database features
 
-## 📌 Update Log
+📌 Update Log
 Part	Update
 Part 1	Console chatbot with voice greeting, ASCII art, basic responses
 Part 2	WPF GUI with keyword recognition, sentiment detection, memory
