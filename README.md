@@ -1802,7 +1802,7 @@ v1.1.0	Quiz and NLP Features	Quiz mini-game and NLP command detection
 v2.0.0	Final Release	Complete application with all Part 3 features
 🎥 Part 3 Video Presentation
 text
-https://youtu.be/YOUR_PART3_VIDEO_LINK
+https://youtu.be/6-0_gaDgjJc
 What the Video Covers
 Introduction to CyberBot
 
