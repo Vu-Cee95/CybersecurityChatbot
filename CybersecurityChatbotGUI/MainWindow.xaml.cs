@@ -197,44 +197,19 @@ namespace CybersecurityChatbotGUI
 
         private void AddTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            string title = TaskTitleTextBox.Text.Trim();
-            string description = TaskDescriptionTextBox.Text.Trim();
-            string reminderText = TaskReminderTextBox.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                ShowTaskFeedback("Please enter a task title.", false);
-                return;
-            }
-
-            bool confirmSave = CyberDialog.ShowConfirmation(
-                this,
-                "Save Task",
-                $"Are you sure you want to save this task?\n\nTitle: {title}");
-
+            string title = TaskTitleTextBox.Text.Trim(); string description = TaskDescriptionTextBox.Text.Trim(); string reminderText = TaskReminderTextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(title)) { ShowTaskFeedback("Please enter a task title.", false); return; }
+            bool confirmSave = CyberDialog.ShowConfirmation(this, "Save Task", $"Are you sure you want to save this task?\n\nTitle: {title}");
             if (!confirmSave) return;
-
             DateTime? reminderDate = null;
-            if (!string.IsNullOrWhiteSpace(reminderText))
-            {
-                reminderDate = taskAssistant.ParseReminderDate(reminderText);
-
-                
-            }
-
+            if (!string.IsNullOrWhiteSpace(reminderText)) reminderDate = taskAssistant.ParseReminderDate(reminderText);
             string result = taskAssistant.AddTask(title, description, reminderDate);
             bool isSuccess = result.Contains("successfully");
             ShowTaskFeedback(result, isSuccess);
-
-            if (isSuccess)
-            {
-                TaskTitleTextBox.Clear();
-                TaskDescriptionTextBox.Clear();
-                TaskReminderTextBox.Clear();
-            }
-
+            if (isSuccess) { TaskTitleTextBox.Clear(); TaskDescriptionTextBox.Clear(); TaskReminderTextBox.Clear(); }
             RefreshTaskList();
         }
+
         private async void ShowTaskFeedback(string message, bool isSuccess)
         {
             StackPanel parentStack = null; DependencyObject current = AddTaskButton.Parent; while (current != null) { if (current is StackPanel sp) { parentStack = sp; break; } current = VisualTreeHelper.GetParent(current); }
@@ -286,30 +261,8 @@ namespace CybersecurityChatbotGUI
                 editBtn.Style = es;
                 editBtn.Content = new Viewbox { Width = 14, Height = 14, Child = new Path { Fill = new SolidColorBrush(Colors.White), Stretch = Stretch.Uniform, Data = Geometry.Parse("M3,17.25V21H6.75L17.81,9.94L14.06,6.19L3,17.25M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04Z") } };
                 editBtn.SetValue(Grid.ColumnProperty, 2);
-                int eid = task.TaskID; string et = task.Title; string ed = task.Description; string er = task.ReminderDate.HasValue ? task.ReminderDate.Value.ToString("yyyy-MM-dd HH:mm") : "";
-                editBtn.Click += (s, ev) => {
-                    TaskTitleTextBox.Text = et;
-                    TaskDescriptionTextBox.Text = ed;
-                    if (task.ReminderDate.HasValue)
-                    {
-                        TimeSpan diff = task.ReminderDate.Value - DateTime.Now;
-                        if (diff.Days > 1)
-                            TaskReminderTextBox.Text = $"in {diff.Days} days";
-                        else if (diff.Days == 1 || (diff.Days == 0 && diff.Hours > 0))
-                            TaskReminderTextBox.Text = "tomorrow";
-                        else if (diff.Days == 0 && diff.Hours <= 0)
-                            TaskReminderTextBox.Text = "today";
-                        else
-                            TaskReminderTextBox.Text = task.ReminderDate.Value.ToString("yyyy-MM-dd HH:mm");
-                    }
-                    else
-                    {
-                        TaskReminderTextBox.Text = "";
-                    }
-                    taskAssistant.DeleteTask(eid);
-                    RefreshTaskList();
-                    ShowTab(TaskTab);
-                };
+                int eid = task.TaskID; string et = task.Title; string ed = task.Description;
+                editBtn.Click += (s, ev) => { TaskTitleTextBox.Text = et; TaskDescriptionTextBox.Text = ed; if (task.ReminderDate.HasValue) { TimeSpan diff = task.ReminderDate.Value - DateTime.Now; if (diff.Days > 1) TaskReminderTextBox.Text = $"in {diff.Days} days"; else if (diff.Days == 1 || (diff.Days == 0 && diff.Hours > 0)) TaskReminderTextBox.Text = "tomorrow"; else TaskReminderTextBox.Text = task.ReminderDate.Value.ToString("yyyy-MM-dd HH:mm"); } else { TaskReminderTextBox.Text = ""; } taskAssistant.DeleteTask(eid); RefreshTaskList(); ShowTab(TaskTab); };
                 cg.Children.Add(editBtn);
             }
 
@@ -321,13 +274,7 @@ namespace CybersecurityChatbotGUI
             deleteBtn.Content = new Viewbox { Width = 14, Height = 14, Child = new Path { Fill = new SolidColorBrush(Colors.White), Stretch = Stretch.Uniform, Data = Geometry.Parse("M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M7,6H17V19H7V6M9,8V17H11V8H9M13,8V17H15V8H13Z") } };
             deleteBtn.SetValue(Grid.ColumnProperty, 3);
             int did = task.TaskID;
-            deleteBtn.Click += (s, ev) => {
-                if (CyberDialog.ShowConfirmation(this, "Confirm Delete", $"Are you sure you want to delete task '{task.Title}'?"))
-                {
-                    taskAssistant.DeleteTask(did);
-                    RefreshTaskList();
-                }
-            };
+            deleteBtn.Click += (s, ev) => { if (CyberDialog.ShowConfirmation(this, "Confirm Delete", $"Are you sure you want to delete task '{task.Title}'?")) { taskAssistant.DeleteTask(did); RefreshTaskList(); } };
             cg.Children.Add(deleteBtn);
 
             card.Child = cg; return card;
@@ -339,7 +286,19 @@ namespace CybersecurityChatbotGUI
         private void ProcessQuizAnswer(int si) { foreach (Border ob in QuizOptionsPanel.Children) { ob.IsEnabled = false; ob.Cursor = Cursors.Arrow; int ti = (int)ob.Tag; bool ico = ti == quizManager.GetCurrentQuestion().CorrectAnswerIndex; bool isSel = ti == si; Grid og = ob.Child as Grid; Border lb = og?.Children[0] as Border; if (ico) { ob.Background = new SolidColorBrush(Color.FromRgb(240, 253, 244)); ob.BorderBrush = new SolidColorBrush(Color.FromRgb(34, 197, 94)); if (lb != null) { lb.Background = new SolidColorBrush(Color.FromRgb(34, 197, 94)); ScaleTransform st2 = new ScaleTransform(1, 1); lb.RenderTransform = st2; lb.RenderTransformOrigin = new Point(0.5, 0.5); DoubleAnimation p2 = new DoubleAnimation(1, 1.3, TimeSpan.FromMilliseconds(300)) { AutoReverse = true, EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } }; st2.BeginAnimation(ScaleTransform.ScaleXProperty, p2); st2.BeginAnimation(ScaleTransform.ScaleYProperty, p2); } } else if (isSel && !ico) { ob.Background = new SolidColorBrush(Color.FromRgb(254, 242, 242)); ob.BorderBrush = new SolidColorBrush(Color.FromRgb(239, 68, 68)); if (lb != null) { lb.Background = new SolidColorBrush(Color.FromRgb(239, 68, 68)); TranslateTransform tt3 = new TranslateTransform(0, 0); lb.RenderTransform = tt3; DoubleAnimation sh = new DoubleAnimation(-5, 5, TimeSpan.FromMilliseconds(50)) { RepeatBehavior = new RepeatBehavior(4), AutoReverse = true }; tt3.BeginAnimation(TranslateTransform.XProperty, sh); } } else ob.Opacity = 0.5; } bool ic = quizManager.SubmitAnswer(si); Border fbb = new Border { Background = ic ? new SolidColorBrush(Color.FromRgb(240, 253, 244)) : new SolidColorBrush(Color.FromRgb(254, 242, 242)), BorderBrush = ic ? new SolidColorBrush(Color.FromRgb(34, 197, 94)) : new SolidColorBrush(Color.FromRgb(239, 68, 68)), BorderThickness = new Thickness(2), CornerRadius = new CornerRadius(16), Padding = new Thickness(16, 12, 16, 12), Margin = new Thickness(0, 8, 0, 8), Opacity = 0 }; StackPanel fs = new StackPanel(); StackPanel hs = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) }; TextBlock ttt = new TextBlock { Text = ic ? "Correct!" : "Incorrect", Foreground = ic ? new SolidColorBrush(Color.FromRgb(22, 101, 52)) : new SolidColorBrush(Color.FromRgb(185, 28, 28)), FontSize = 16, FontWeight = FontWeights.Bold, VerticalAlignment = VerticalAlignment.Center }; hs.Children.Add(ttt); TextBlock et = new TextBlock { Text = ic ? quizManager.GetCurrentExplanation() : $"The correct answer is: {quizManager.GetCorrectAnswerText()}. {quizManager.GetCurrentExplanation()}", Foreground = new SolidColorBrush(Color.FromRgb(75, 85, 99)), FontSize = 13, FontWeight = FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap, LineHeight = 20 }; fs.Children.Add(hs); fs.Children.Add(et); fbb.Child = fs; QuizActivePanel.Children.Insert(QuizActivePanel.Children.IndexOf(QuizNextButton), fbb); fbb.RenderTransform = new TranslateTransform(0, 10); DoubleAnimation bfi = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } }; DoubleAnimation bsu = new DoubleAnimation(10, 0, TimeSpan.FromMilliseconds(300)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut } }; fbb.BeginAnimation(UIElement.OpacityProperty, bfi); (fbb.RenderTransform as TranslateTransform).BeginAnimation(TranslateTransform.YProperty, bsu); QuizNextButton.Visibility = Visibility.Visible; activityLogger.LogActivity($"Quiz Q{quizManager.CurrentQuestionNumber} answered", "Quiz"); }
         private void QuizNextButton_Click(object sender, RoutedEventArgs e) { List<UIElement> tr = new List<UIElement>(); foreach (UIElement c in QuizActivePanel.Children) { if (c is Border bc && bc.Tag == null) tr.Add(c); } foreach (var item in tr) QuizActivePanel.Children.Remove(item); if (quizManager.MoveToNextQuestion()) DisplayCurrentQuestion(); else ShowQuizResults(); }
         private void ShowQuizResults() { QuizActivePanel.Visibility = Visibility.Collapsed; QuizStartPanel.Visibility = Visibility.Collapsed; QuizResultsPanel.Visibility = Visibility.Visible; LeaderboardPanel.Visibility = Visibility.Collapsed; int score = quizManager.GetScore(); int total = quizManager.GetTotalQuestions(); QuizResultsTitleTextBlock.Text = "Quiz Complete!"; QuizResultsScoreTextBlock.Text = $"{score} / {total}"; QuizResultsFeedbackTextBlock.Text = quizManager.GetFinalFeedback(); activityLogger.LogActivity($"Quiz done - {score}/{total}", "Quiz"); leaderboardService.AddScore(userName, score, total); if (score == total) { Dispatcher.BeginInvoke(new Action(() => ShowConfettiBurst()), DispatcherPriority.Render); } }
-        private void QuitQuizButton_Click(object sender, RoutedEventArgs e) { if (MessageBox.Show("Are you sure you want to quit the quiz? Your progress will be lost and you will not appear on the leaderboard.", "Quit Quiz", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes) { QuizActivePanel.Visibility = Visibility.Collapsed; QuizResultsPanel.Visibility = Visibility.Collapsed; LeaderboardPanel.Visibility = Visibility.Collapsed; QuizStartPanel.Visibility = Visibility.Visible; activityLogger.LogActivity("Quiz quit by user", "Quiz"); } }
+
+        private void QuitQuizButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CyberDialog.ShowConfirmation(this, "Quit Quiz", "Are you sure you want to quit the quiz? Your progress will be lost and you will not appear on the leaderboard."))
+            {
+                QuizActivePanel.Visibility = Visibility.Collapsed;
+                QuizResultsPanel.Visibility = Visibility.Collapsed;
+                LeaderboardPanel.Visibility = Visibility.Collapsed;
+                QuizStartPanel.Visibility = Visibility.Visible;
+                activityLogger.LogActivity("Quiz quit by user", "Quiz");
+            }
+        }
+
         private void ShowLeaderboardButton_Click(object sender, RoutedEventArgs e) { QuizResultsPanel.Visibility = Visibility.Collapsed; LeaderboardPanel.Visibility = Visibility.Visible; RefreshLeaderboard(); }
         private void BackToResultsButton_Click(object sender, RoutedEventArgs e) { LeaderboardPanel.Visibility = Visibility.Collapsed; QuizResultsPanel.Visibility = Visibility.Visible; }
         private void BackToQuizFromLeaderboardButton_Click(object sender, RoutedEventArgs e) { LeaderboardPanel.Visibility = Visibility.Collapsed; QuizResultsPanel.Visibility = Visibility.Collapsed; QuizStartPanel.Visibility = Visibility.Visible; QuizActivePanel.Visibility = Visibility.Collapsed; }
@@ -366,7 +325,7 @@ namespace CybersecurityChatbotGUI
         private void UpdateStartChatButtonState() { if (StartChatButton != null && WelcomeNameTextBox != null) StartChatButton.IsEnabled = !string.IsNullOrWhiteSpace(WelcomeNameTextBox.Text) && nameAttempts < 3; }
 
         private async void ExitApplicationButton_Click(object sender, RoutedEventArgs e) { AnimateButtonPress(sender as Button); await ExitApplicationAsync(); }
-        private async Task ExitApplicationAsync() { if (MessageBox.Show("Are you sure you want to exit CyberBot?", "Confirm Exit", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) { WelcomeNameTextBox.Focus(); return; } CyberDialog.ShowMessage(this, "Signing Off", "Stay safe!"); await Task.Delay(150); Application.Current.Shutdown(); }
+        private async Task ExitApplicationAsync() { if (!CyberDialog.ShowConfirmation(this, "Confirm Exit", "Are you sure you want to exit CyberBot?")) { WelcomeNameTextBox.Focus(); return; } CyberDialog.ShowMessage(this, "Signing Off", "Stay safe!"); await Task.Delay(150); Application.Current.Shutdown(); }
 
         private async void SendButton_Click(object sender, RoutedEventArgs e) { AnimateButtonPress(sender as Button); await SendUserMessageAsync(); }
         private async void UserInputTextBox_KeyDown(object sender, KeyEventArgs e) { if (e.Key == Key.Enter && SendButton.IsEnabled) await SendUserMessageAsync(); }
@@ -380,7 +339,7 @@ namespace CybersecurityChatbotGUI
         private async void LogoutMenuItem_Click(object sender, RoutedEventArgs e) { await LogoutAsync(); }
         private async Task ShowHelpMessageAsync() { if (isChatEnded || isBotTyping) return; keepChatAtTop = false; await ShowBotReplyAsync(nlpSimulator.GetHelpMenu()); UserInputTextBox.Focus(); }
         private void StartNewChat() { ChatPanel.Children.Clear(); TypingIndicatorBorder.Visibility = Visibility.Collapsed; keepChatAtTop = true; if (isChatEnded) { AddBotMessage("Session ended."); ScrollChatToTop(); return; } chatbotEngine.ResetConversationButKeepUser(); AddBotMessage($"New chat, {userName}."); UserInputTextBox.Clear(); UpdateSessionPanel(); UpdatePlaceholderState(); UpdateSendButtonState(); UpdateInputGlowState(); ScrollChatToTop(); }
-        private async Task LogoutAsync() { if (isBotTyping) { StopTypingAnimation(); isBotTyping = false; } if (MessageBox.Show("Are you sure you want to log out?", "Confirm Log Out", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) { UserInputTextBox.Focus(); return; } CyberDialog.ShowMessage(this, "Logged Out", $"Stay safe, {userName}!"); ResetWelcomePage(); await ShowWelcomePageWithTransitionAsync(); }
+        private async Task LogoutAsync() { if (isBotTyping) { StopTypingAnimation(); isBotTyping = false; } if (!CyberDialog.ShowConfirmation(this, "Confirm Log Out", "Are you sure you want to log out?")) { UserInputTextBox.Focus(); return; } CyberDialog.ShowMessage(this, "Logged Out", $"Stay safe, {userName}!"); ResetWelcomePage(); await ShowWelcomePageWithTransitionAsync(); }
 
         private async Task ShowBotReplyAsync(string m) { isBotTyping = true; UpdateSendButtonState(); UpdateInputGlowState(); StartTypingAnimation(); await Task.Delay(CalculateTypingDelay(m)); StopTypingAnimation(); AddBotMessage(m); isBotTyping = false; UpdateSendButtonState(); UpdateInputGlowState(); }
         private void StartTypingAnimation() { typingDotCount = 0; currentTypingMessage = typingMessages[random.Next(typingMessages.Length)]; TypingIndicatorBorder.Visibility = Visibility.Visible; TypingIndicatorBorder.Opacity = 0; TypingIndicatorTextBlock.Text = currentTypingMessage; _ = FadeElementAsync(TypingIndicatorBorder, 0, 1, 180); StartBouncingTypingDots(); typingDotsTimer.Start(); }
